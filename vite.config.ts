@@ -6,10 +6,6 @@ import { inspectAttr } from 'plugin-inspect-react-code'
 // https://vite.dev/config/
 export default defineConfig({
   base: './',
-  build: {
-    outDir: 'build',
-    emptyOutDir: true,
-  },
   plugins: [inspectAttr(), react()],
   build: {
     outDir: 'build',
