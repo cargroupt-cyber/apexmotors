@@ -338,25 +338,14 @@ export default function Home() {
 
   return (
     <div>
-      {/* ═══════════════════════════════════════════
+            {/* ═══════════════════════════════════════════
           SECTION 1: HERO
           ═══════════════════════════════════════════ */}
       <section
-  ref={heroRef}
-  className="relative min-h-[100dvh] flex items-center bg-obsidian"
->
-        {/* Three.js Particle Canvas */}
-        <div className="absolute inset-0 z-[1] overflow-hidden">
-          <Canvas
-            orthographic
-            camera={{ zoom: 50, position: [0, 0, 10] }}
-            style={{ width: '100%', height: '100%', opacity: 0.4 }}
-          >
-            <Particles />
-          </Canvas>
-        </div>
-
-                {/* Hero Full Background Car Image */}
+        ref={heroRef}
+        className="relative min-h-[100dvh] flex items-center bg-obsidian"
+      >
+        {/* Full-screen Background Car Image */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -368,42 +357,28 @@ export default function Home() {
             alt="Luxury sedan"
             className="w-full h-full object-cover"
           />
-          {/* Dark overlay for text readability */}
+          {/* Dark overlay - strong on left for text, lighter on right to show car */}
           <div
             className="absolute inset-0"
-            style={{ background: 'linear-gradient(to right, rgba(0,8,20,0.92) 0%, rgba(0,8,20,0.75) 35%, rgba(0,8,20,0.4) 60%, rgba(0,8,20,0.2) 100%)' }}
+            style={{ background: 'linear-gradient(to right, rgba(0,8,20,0.88) 0%, rgba(0,8,20,0.65) 40%, rgba(0,8,20,0.35) 65%, rgba(0,8,20,0.15) 100%)' }}
           />
-          {/* Bottom fade for smooth transition */}
+          {/* Bottom fade to next section */}
           <div
-            className="absolute bottom-0 left-0 right-0 h-[150px]"
+            className="absolute bottom-0 left-0 right-0 h-[120px]"
             style={{ background: 'linear-gradient(to top, #000814 0%, transparent 100%)' }}
           />
         </motion.div>
-            {/* Subtle gradient overlay on car for better blending */}
-            <div
-              className="absolute inset-0 pointer-events-none"
-              style={{ background: 'linear-gradient(to left, transparent 60%, #000814 100%)' }}
-            />
-          </div>
-        </motion.div>
 
-        {/* Main gradient overlay for text readability */}
-        <div
-          className="absolute inset-0 z-[3] pointer-events-none"
-          style={{ background: 'linear-gradient(to right, #000814 0%, #000814 25%, rgba(0,8,20,0.7) 45%, transparent 65%)' }}
-        />
-
-        {/* Bottom gradient for smooth transition */}
-        <div
-          className="absolute bottom-0 left-0 right-0 h-[200px] z-[3] pointer-events-none"
-          style={{ background: 'linear-gradient(to top, #000814 0%, transparent 100%)' }}
-        />
-
-        {/* Vignette */}
-        <div
-          className="absolute inset-0 z-[3] pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at center, transparent 40%, #000814 100%)' }}
-        />
+        {/* Three.js Particle Canvas (on top of image) */}
+        <div className="absolute inset-0 z-[2] overflow-hidden pointer-events-none">
+          <Canvas
+            orthographic
+            camera={{ zoom: 50, position: [0, 0, 10] }}
+            style={{ width: '100%', height: '100%', opacity: 0.3 }}
+          >
+            <Particles />
+          </Canvas>
+        </div>
 
         {/* Content */}
         <motion.div
