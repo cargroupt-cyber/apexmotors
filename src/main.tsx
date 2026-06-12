@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import { Suspense, lazy } from 'react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 import './index.css'
 
 // Lazy load App to enable route-level code splitting at the app level
@@ -137,6 +138,7 @@ createRoot(document.getElementById('root')!).render(
       <Suspense fallback={<LoadingFallback />}>
         <App />
       </Suspense>
+      <SpeedInsights />
     </HashRouter>
   </ErrorBoundary>,
 )
