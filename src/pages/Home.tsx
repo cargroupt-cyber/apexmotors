@@ -342,9 +342,9 @@ export default function Home() {
           SECTION 1: HERO
           ═══════════════════════════════════════════ */}
       <section
-        ref={heroRef}
-        className="relative min-h-[100dvh] flex items-center bg-obsidian"
-      >
+  ref={heroRef}
+  className="relative min-h-[100dvh] flex items-center bg-obsidian"
+>
         {/* Three.js Particle Canvas */}
         <div className="absolute inset-0 z-[1] overflow-hidden">
           <Canvas
