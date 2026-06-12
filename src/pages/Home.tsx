@@ -356,19 +356,29 @@ export default function Home() {
           </Canvas>
         </div>
 
-        {/* Hero Car Image */}
+                {/* Hero Full Background Car Image */}
         <motion.div
-          initial={{ opacity: 0, x: 80 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.2 }}
-          className="absolute z-[2] right-0 bottom-0 w-[55%] max-w-[900px] hidden md:block"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5, delay: 0.2 }}
+          className="absolute inset-0 z-[1]"
         >
-          <div className="relative">
-            <img
-              src="/luxury-sedan-hero.jpg"
-              alt="Luxury sedan"
-              className="w-full h-auto object-contain"
-            />
+          <img
+            src="/luxury-sedan-hero.jpg"
+            alt="Luxury sedan"
+            className="w-full h-full object-cover"
+          />
+          {/* Dark overlay for text readability */}
+          <div
+            className="absolute inset-0"
+            style={{ background: 'linear-gradient(to right, rgba(0,8,20,0.92) 0%, rgba(0,8,20,0.75) 35%, rgba(0,8,20,0.4) 60%, rgba(0,8,20,0.2) 100%)' }}
+          />
+          {/* Bottom fade for smooth transition */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-[150px]"
+            style={{ background: 'linear-gradient(to top, #000814 0%, transparent 100%)' }}
+          />
+        </motion.div>
             {/* Subtle gradient overlay on car for better blending */}
             <div
               className="absolute inset-0 pointer-events-none"
