@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
 import {
-  SlidersHorizontal, Grid3X3, List, ChevronDown,
+  Grid3X3, List, ChevronDown,
   Heart, MapPin, Star, Fuel, Gauge, Settings, ArrowUpDown, Car
 } from 'lucide-react'
 import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles'
