@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
+import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles'
 
 gsap.registerPlugin()
 
@@ -127,23 +128,18 @@ function TiltCard({ children, className }: { children: React.ReactNode; classNam
 }
 
 /* ═══════════════════════════════════════════
-   PART 3: Vehicle Data
+   PART 3: Vehicle Card — Uses Supabase field names
    ═══════════════════════════════════════════ */
-const vehicles = [
-  { id: 1, image: '/vehicle-thumb-01.jpg', name: 'Mercedes-Benz C-Class', year: 2023, mileage: '18,500', fuel: 'Diesel', trans: 'Auto', price: '£28,990', monthly: '£389', badge: 'NEW', discount: null, features: ['19" Alloys', 'Leather Seats', 'Nav'], location: 'Birmingham' },
-  { id: 2, image: '/vehicle-thumb-02.jpg', name: 'BMW 3 Series M Sport', year: 2023, mileage: '12,200', fuel: 'Petrol', trans: 'Auto', price: '£32,490', monthly: '£435', badge: 'NEW', discount: null, features: ['18" Alloys', 'Heated Seats', 'Camera'], location: 'Manchester' },
-  { id: 3, image: '/vehicle-thumb-03.jpg', name: 'Audi A4 S Line', year: 2023, mileage: '22,100', fuel: 'Diesel', trans: 'Auto', price: '£26,750', monthly: '£359', badge: 'NEW', discount: null, features: ['Virtual Cockpit', 'Cruise Ctrl'], location: 'London' },
-  { id: 4, image: '/vehicle-thumb-04.jpg', name: 'Range Rover Sport', year: 2023, mileage: '35,400', fuel: 'Diesel', trans: 'Auto', price: '£45,990', monthly: '£615', badge: 'NEW', discount: '£2,000 OFF', features: ['Pan Roof', 'Air Suspension'], location: 'Leeds' },
-  { id: 5, image: '/vehicle-thumb-05.jpg', name: 'Porsche Cayenne', year: 2023, mileage: '19,800', fuel: 'Petrol', trans: 'Auto', price: '£54,490', monthly: '£729', badge: null, discount: '£3,500 OFF', features: ['Sports Chrono', 'Matrix LED'], location: 'Bristol' },
-  { id: 6, image: '/vehicle-thumb-06.jpg', name: 'Tesla Model 3', year: 2023, mileage: '8,500', fuel: 'Electric', trans: 'Auto', price: '£38,990', monthly: '£522', badge: null, discount: '£1,500 OFF', features: ['Autopilot', 'Glass Roof'], location: 'Reading' },
-  { id: 7, image: '/vehicle-thumb-07.jpg', name: 'Jaguar F-PACE', year: 2023, mileage: '28,600', fuel: 'Diesel', trans: 'Auto', price: '£31,490', monthly: '£422', badge: null, discount: '£1,200 OFF', features: ['Meridian Audio', 'AEB'], location: 'Nottingham' },
-  { id: 8, image: '/vehicle-thumb-08.jpg', name: 'Lexus RX 450h', year: 2023, mileage: '31,200', fuel: 'Hybrid', trans: 'Auto', price: '£36,990', monthly: '£495', badge: null, discount: '£1,800 OFF', features: ['Premium Nav', 'Mark Levinson'], location: 'Sheffield' },
-]
+function VehicleCard({ vehicle }: { vehicle: any }) {
+  const vehicleName = `${vehicle.make} ${vehicle.model}`
+  const vehicleImage = vehicle.images?.[0] || '/vehicle-thumb-01.jpg'
+  const vehicleMileage = typeof vehicle.mileage === 'number' ? vehicle.mileage.toLocaleString() : vehicle.mileage
+  const vehiclePrice = typeof vehicle.price === 'number' ? `£${vehicle.price.toLocaleString()}` : vehicle.price
+  const vehicleMonthly = typeof vehicle.monthly_payment === 'number' ? `£${vehicle.monthly_payment}` : vehicle.monthly_payment
+  const hasDiscount = (vehicle.discount_amount || 0) > 0
+  const computedBadge = vehicle.badge || (hasDiscount ? 'SAVE' : null)
+  const vehicleFeatures = Array.isArray(vehicle.features) ? vehicle.features : []
 
-/* ═══════════════════════════════════════════
-   PART 4: Vehicle Card Component
-   ═══════════════════════════════════════════ */
-function VehicleCard({ vehicle }: { vehicle: typeof vehicles[0] }) {
   return (
     <TiltCard className="perspective-1000">
       <motion.div
@@ -162,22 +158,22 @@ function VehicleCard({ vehicle }: { vehicle: typeof vehicles[0] }) {
         {/* Image */}
         <div className="relative h-[210px] overflow-hidden">
           <img
-            src={vehicle.image}
-            alt={vehicle.name}
+            src={vehicleImage}
+            alt={vehicleName}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-midnight/90 via-transparent to-transparent" />
 
           {/* Top-left badges */}
           <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-            {vehicle.discount && (
+            {hasDiscount && (
               <span className="px-2.5 py-1 rounded-md text-[0.6875rem] font-bold bg-error text-pure-white shadow-lg">
-                {vehicle.discount}
+                SAVE £{vehicle.discount_amount?.toLocaleString()}
               </span>
             )}
-            {vehicle.badge && (
+            {computedBadge && computedBadge !== 'SAVE' && (
               <span className="px-2.5 py-1 rounded-md text-[0.6875rem] font-bold bg-success text-pure-white shadow-lg">
-                {vehicle.badge}
+                {computedBadge}
               </span>
             )}
           </div>
@@ -200,15 +196,15 @@ function VehicleCard({ vehicle }: { vehicle: typeof vehicles[0] }) {
         {/* Content */}
         <div className="p-5">
           <h3 className="font-display font-semibold text-pure-white text-[1.0625rem] truncate leading-tight">
-            {vehicle.name}
+            {vehicleName}
           </h3>
           <p className="mt-1.5 font-mono text-[0.6875rem] text-chrome tracking-wide">
-            {vehicle.year} &nbsp;|&nbsp; {vehicle.mileage} mi &nbsp;|&nbsp; {vehicle.fuel} &nbsp;|&nbsp; {vehicle.trans}
+            {vehicle.year} &nbsp;|&nbsp; {vehicleMileage} mi &nbsp;|&nbsp; {vehicle.fuel_type} &nbsp;|&nbsp; {vehicle.transmission}
           </p>
 
           {/* Feature tags */}
           <div className="mt-3 flex flex-wrap gap-1.5">
-            {vehicle.features.map((feat) => (
+            {vehicleFeatures.slice(0, 3).map((feat: string) => (
               <span
                 key={feat}
                 className="px-2 py-0.5 rounded text-[0.625rem] font-medium text-chrome bg-obsidian/60 border border-slate/20"
@@ -222,11 +218,11 @@ function VehicleCard({ vehicle }: { vehicle: typeof vehicles[0] }) {
           <div className="mt-4 pt-4 border-t border-slate/20">
             <div className="flex items-baseline justify-between">
               <div>
-                <span className="font-mono text-lg font-semibold text-pure-white">{vehicle.price}</span>
+                <span className="font-mono text-lg font-semibold text-pure-white">{vehiclePrice}</span>
               </div>
               <div className="text-right">
                 <span className="font-mono text-[0.6875rem] text-chrome">from </span>
-                <span className="font-mono text-base font-semibold text-electric-blue">{vehicle.monthly}/mo</span>
+                <span className="font-mono text-base font-semibold text-electric-blue">{vehicleMonthly}/mo</span>
               </div>
             </div>
           </div>
@@ -237,7 +233,7 @@ function VehicleCard({ vehicle }: { vehicle: typeof vehicles[0] }) {
 }
 
 /* ═══════════════════════════════════════════
-   PART 5: Feature Data
+   PART 4: Feature Data
    ═══════════════════════════════════════════ */
 const features = [
   { icon: Tag, title: 'Best Price Guaranteed', desc: "Found the same car for less? We'll beat it — and give you an extra \u00a3100. Our price promise is rock solid." },
@@ -249,7 +245,7 @@ const features = [
 ]
 
 /* ═══════════════════════════════════════════
-   PART 6: FAQ Data
+   PART 5: FAQ Data
    ═══════════════════════════════════════════ */
 const faqs = [
   { q: 'Can I reserve a car online?', a: 'Yes \u2014 you can reserve any vehicle with a fully refundable \u00a399 deposit. The car will be held for 48 hours, giving you time to arrange a viewing or purchase.' },
@@ -261,12 +257,12 @@ const faqs = [
 ]
 
 /* ═══════════════════════════════════════════
-   PART 7: Body Type Data
+   PART 6: Body Type Data
    ═══════════════════════════════════════════ */
 const bodyTypes = ['Hatchback', 'SUV', 'Saloon', 'Estate', 'Coupe', 'Convertible', 'MPV', '4x4']
 
 /* ═══════════════════════════════════════════
-   PART 8: Review Data
+   PART 7: Review Data
    ═══════════════════════════════════════════ */
 const reviews = [
   { name: 'James Wilson', car: 'Mercedes C-Class', text: "Fantastic experience from start to finish. The team made everything so easy." },
@@ -281,6 +277,7 @@ const reviews = [
    MAIN: Home Page Component
    ═══════════════════════════════════════════ */
 export default function Home() {
+  const { vehicles: dbVehicles } = useSupabaseVehicles()
   const [activeBodyType, setActiveBodyType] = useState('SUV')
   const [monthlyPayment, setMonthlyPayment] = useState(350)
   const [deposit, setDeposit] = useState(2000)
@@ -392,7 +389,7 @@ export default function Home() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-electric-blue/10 border border-electric-blue/20 mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-[0.8125rem] font-medium text-electric-blue tracking-wide">6,000+ RAC-Approved Vehicles</span>
+            <span className="text-[0.8125rem] font-medium text-electric-blue tracking-wide">{dbVehicles.length > 0 ? `${dbVehicles.length.toLocaleString()}+` : '6,000+'} RAC-Approved Vehicles</span>
           </motion.div>
 
           <motion.h1
@@ -527,7 +524,7 @@ export default function Home() {
             className="w-full mt-4 py-4 bg-electric-blue text-pure-white font-display font-semibold text-base rounded-xl flex items-center justify-center gap-3 hover:shadow-glow-lg hover:scale-[1.01] transition-all duration-300"
           >
             <Search size={20} />
-            Search 6,000+ Cars
+            Search {dbVehicles.length > 0 ? `${dbVehicles.length.toLocaleString()}+` : '6,000+'} Cars
           </motion.button>
 
           {/* Quick Links */}
@@ -732,7 +729,7 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          SECTION 5: FEATURED VEHICLES
+          SECTION 5: FEATURED VEHICLES (from Supabase)
           ═══════════════════════════════════════════ */}
       <section className="bg-midnight section-padding">
         <div className="container-apex">
@@ -757,14 +754,14 @@ export default function Home() {
               to="/inventory"
               className="group flex items-center gap-2 text-sm font-semibold text-electric-blue hover:text-blue-glow transition-colors shrink-0"
             >
-              View All 6,000+ Cars
+              View All {dbVehicles.length > 0 ? dbVehicles.length.toLocaleString() : '6,000+'} Cars
               <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
 
-          {/* Vehicle Grid */}
+          {/* Vehicle Grid — from Supabase */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {vehicles.map((vehicle, i) => (
+            {dbVehicles.slice(0, 8).map((vehicle, i) => (
               <motion.div
                 key={vehicle.id}
                 initial={{ opacity: 0, y: 50 }}
