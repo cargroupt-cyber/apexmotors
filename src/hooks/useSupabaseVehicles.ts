@@ -1,13 +1,31 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase, type Vehicle } from '@/lib/supabase'
 
-// Helper: ensure features/images are arrays (not strings)
 function normalizeVehicle(v: any): Vehicle {
-  return {
-    ...v,
-    features: Array.isArray(v.features) ? v.features : (v.features ? [v.features] : []),
-    images: Array.isArray(v.images) ? v.images : (v.images ? [v.images] : []),
+  // Handle features - could be array, string, or null
+  let features: string[] = []
+  if (Array.isArray(v.features)) {
+    features = v.features
+  } else if (typeof v.features === 'string' && v.features.length > 0) {
+    // Try to parse JSON array string like {"item1","item2"}
+    try {
+      const cleaned = v.features.replace(/^{|}$/g, '').split(',').map((s: string) => s.replace(/^"|"$/g, '').trim()).filter(Boolean)
+      features = cleaned
+    } catch { features = [v.features] }
   }
+
+  // Handle images - could be array, string, or null
+  let images: string[] = []
+  if (Array.isArray(v.images)) {
+    images = v.images
+  } else if (typeof v.images === 'string' && v.images.length > 0) {
+    try {
+      const cleaned = v.images.replace(/^{|}$/g, '').split(',').map((s: string) => s.replace(/^"|"$/g, '').trim()).filter(Boolean)
+      images = cleaned
+    } catch { images = [v.images] }
+  }
+
+  return { ...v, features, images }
 }
 
 export function useSupabaseVehicles() {
@@ -16,30 +34,17 @@ export function useSupabaseVehicles() {
 
   const fetchVehicles = useCallback(async () => {
     setLoading(true)
-    const { data, error } = await supabase
-      .from('vehicles')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error('Supabase error:', error)
-      setVehicles([])
-    } else {
-      setVehicles((data || []).map(normalizeVehicle))
-    }
+    const { data, error } = await supabase.from('vehicles').select('*').order('created_at', { ascending: false })
+    if (error) { console.error('Error:', error); setVehicles([]) }
+    else { setVehicles((data || []).map(normalizeVehicle)) }
     setLoading(false)
   }, [])
 
-  useEffect(() => {
-    fetchVehicles()
-  }, [fetchVehicles])
+  useEffect(() => { fetchVehicles() }, [fetchVehicles])
 
   const getVehicleById = useCallback(async (id: string) => {
-    const { data, error } = await supabase
-      .from('vehicles')
-      .select('*')
-      .eq('id', id)
-      .single()
+    if (!id || id === 'undefined') return null
+    const { data, error } = await supabase.from('vehicles').select('*').eq('id', id).single()
     if (error) return null
     return normalizeVehicle(data)
   }, [])
