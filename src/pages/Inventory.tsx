@@ -7,9 +7,6 @@ import {
 } from 'lucide-react'
 import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles'
 
-/* ═══════════════════════════════════════════
-   Fallback Vehicle Data (when Supabase not connected)
-   ═══════════════════════════════════════════ */
 interface UnifiedVehicle {
   id: string
   images: string[]
@@ -153,7 +150,7 @@ function VehicleCard({ vehicle, index }: { vehicle: UnifiedVehicle; index: numbe
 }
 
 function FilterDropdown({ label, options, value, onChange, icon: Icon }: {
-n  label: string; options: string[]; value: string; onChange: (v: string) => void
+  label: string; options: string[]; value: string; onChange: (v: string) => void
   icon?: React.ComponentType<{ size?: number; className?: string }>
 }) {
   const [open, setOpen] = useState(false)
@@ -161,7 +158,7 @@ n  label: string; options: string[]; value: string; onChange: (v: string) => voi
     <div className="relative">
       <button onClick={() => setOpen(!open)} className="glass-input rounded-xl px-4 py-3 flex items-center gap-2.5 cursor-pointer hover:border-slate/50 transition-colors w-full">
         {Icon && <Icon size={16} className="text-slate shrink-0" />}
-n        <span className="text-[0.875rem] text-frost truncate">{value || label}</span>
+        <span className="text-[0.875rem] text-frost truncate">{value || label}</span>
         <ChevronDown size={14} className="text-slate ml-auto shrink-0" />
       </button>
       {open && (
@@ -187,7 +184,6 @@ export default function Inventory() {
   const [activePrice, setActivePrice] = useState('Any Price')
   const [activeFuel, setActiveFuel] = useState('Any Fuel')
   const [activeSort, setActiveSort] = useState('Relevance')
-  const [showFilters, setShowFilters] = useState(false)
 
   const filteredVehicles = allVehicles.filter((v) => {
     const vehicleMakeModel = `${v.make} ${v.model}`
@@ -219,7 +215,7 @@ export default function Inventory() {
       <section className="relative pt-28 pb-10 bg-midnight border-b border-slate/15">
         <div className="container-apex">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}>
-n            <h1 className="font-display font-bold text-pure-white" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.0, letterSpacing: '-0.03em' }}>Our Inventory</h1>
+            <h1 className="font-display font-bold text-pure-white" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.0, letterSpacing: '-0.03em' }}>Our Inventory</h1>
             <p className="mt-3 text-base text-chrome max-w-[500px]">Browse {vehicleCount.toLocaleString()}+ RAC-approved vehicles. All inspected, certified, and ready to drive away.</p>
           </motion.div>
           <div className="mt-8 flex flex-wrap gap-4">
@@ -236,17 +232,14 @@ n            <h1 className="font-display font-bold text-pure-white" style={{ fon
 
       <section className="sticky top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-4">
         <div className="container-apex">
-n          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-n            <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+            <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               <FilterDropdown label="All Makes" options={makes} value={activeMake} onChange={setActiveMake} icon={Settings} />
               <FilterDropdown label="Any Price" options={priceRanges} value={activePrice} onChange={setActivePrice} icon={Gauge} />
               <FilterDropdown label="Any Fuel" options={fuelTypes} value={activeFuel} onChange={setActiveFuel} icon={Fuel} />
               <FilterDropdown label="Sort By" options={sortOptions} value={activeSort} onChange={setActiveSort} icon={ArrowUpDown} />
             </div>
             <div className="flex items-center gap-3 shrink-0">
-              <button onClick={() => setShowFilters(!showFilters)} className="lg:hidden flex items-center gap-2 px-4 py-3 rounded-xl glass-input text-sm font-medium text-frost">
-                <SlidersHorizontal size={16} /> Filters {activeFilterCount > 0 && <span className="w-5 h-5 rounded-full bg-electric-blue text-pure-white text-xs flex items-center justify-center">{activeFilterCount}</span>}
-              </button>
               <div className="h-8 w-px bg-slate/20 hidden sm:block" />
               <div className="flex items-center rounded-xl overflow-hidden border border-slate/20">
                 <button onClick={() => setViewMode('grid')} className={`p-2.5 transition-colors ${viewMode === 'grid' ? 'bg-electric-blue text-pure-white' : 'text-chrome hover:text-frost'}`}><Grid3X3 size={16} /></button>
