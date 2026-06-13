@@ -162,13 +162,23 @@ export default function AdminVehicles() {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Modal - SOLID BACKGROUND, NO TRANSPARENCY */}
       <AnimatePresence>
         {showForm && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 overflow-y-auto">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }}
-              className="w-full max-w-[800px] bg-slate-900 rounded-2xl border border-slate-700 my-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-start justify-center p-4 overflow-y-auto"
+            style={{ backgroundColor: '#000814' }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              className="w-full max-w-[800px] rounded-2xl my-8 shadow-2xl"
+              style={{ backgroundColor: '#0a1628', border: '1px solid #1a2744' }}
+            >
               <div className="flex items-center justify-between p-6 border-b border-slate-800">
                 <h2 className="text-xl font-bold text-white">{editingId ? 'Edit' : 'Add'} Vehicle</h2>
                 <button onClick={() => setShowForm(false)} className="p-2 hover:bg-white/10 rounded-lg">
@@ -179,49 +189,49 @@ export default function AdminVehicles() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2"><h3 className="text-sm font-semibold text-blue-400 mb-3 uppercase">Basic Info</h3></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Make *</label>
-                    <input value={form.make} onChange={e => setForm(p => ({ ...p, make: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input value={form.make} onChange={e => setForm(p => ({ ...p, make: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Model *</label>
-                    <input value={form.model} onChange={e => setForm(p => ({ ...p, model: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input value={form.model} onChange={e => setForm(p => ({ ...p, model: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Variant</label>
-                    <input value={form.variant} onChange={e => setForm(p => ({ ...p, variant: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input value={form.variant} onChange={e => setForm(p => ({ ...p, variant: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Year *</label>
-                    <input type="number" value={form.year} onChange={e => setForm(p => ({ ...p, year: Number(e.target.value) }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input type="number" value={form.year} onChange={e => setForm(p => ({ ...p, year: Number(e.target.value) }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Registration</label>
-                    <input value={form.registration} onChange={e => setForm(p => ({ ...p, registration: e.target.value.toUpperCase() }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm uppercase" /></div>
+                    <input value={form.registration} onChange={e => setForm(p => ({ ...p, registration: e.target.value.toUpperCase() }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500 uppercase" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Colour</label>
-                    <input value={form.colour} onChange={e => setForm(p => ({ ...p, colour: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input value={form.colour} onChange={e => setForm(p => ({ ...p, colour: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
 
                   <div className="md:col-span-2 mt-2"><h3 className="text-sm font-semibold text-blue-400 mb-3 uppercase">Specs</h3></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Body Type</label>
-                    <select value={form.body_type} onChange={e => setForm(p => ({ ...p, body_type: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm">{BODY_TYPES.map(t => <option key={t}>{t}</option>)}</select></div>
+                    <select value={form.body_type} onChange={e => setForm(p => ({ ...p, body_type: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm">{BODY_TYPES.map(t => <option key={t}>{t}</option>)}</select></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Fuel</label>
-                    <select value={form.fuel_type} onChange={e => setForm(p => ({ ...p, fuel_type: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm">{FUEL_TYPES.map(t => <option key={t}>{t}</option>)}</select></div>
+                    <select value={form.fuel_type} onChange={e => setForm(p => ({ ...p, fuel_type: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm">{FUEL_TYPES.map(t => <option key={t}>{t}</option>)}</select></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Transmission</label>
-                    <select value={form.transmission} onChange={e => setForm(p => ({ ...p, transmission: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm">{TRANSMISSIONS.map(t => <option key={t}>{t}</option>)}</select></div>
+                    <select value={form.transmission} onChange={e => setForm(p => ({ ...p, transmission: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm">{TRANSMISSIONS.map(t => <option key={t}>{t}</option>)}</select></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Engine</label>
-                    <input value={form.engine_size} onChange={e => setForm(p => ({ ...p, engine_size: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input value={form.engine_size} onChange={e => setForm(p => ({ ...p, engine_size: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Mileage</label>
-                    <input type="number" value={form.mileage} onChange={e => setForm(p => ({ ...p, mileage: Number(e.target.value) }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input type="number" value={form.mileage} onChange={e => setForm(p => ({ ...p, mileage: Number(e.target.value) }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div className="flex gap-3">
                     <div className="flex-1"><label className="block text-xs text-slate-400 mb-1">Doors</label>
-                      <input type="number" value={form.doors} onChange={e => setForm(p => ({ ...p, doors: Number(e.target.value) }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                      <input type="number" value={form.doors} onChange={e => setForm(p => ({ ...p, doors: Number(e.target.value) }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                     <div className="flex-1"><label className="block text-xs text-slate-400 mb-1">Seats</label>
-                      <input type="number" value={form.seats} onChange={e => setForm(p => ({ ...p, seats: Number(e.target.value) }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                      <input type="number" value={form.seats} onChange={e => setForm(p => ({ ...p, seats: Number(e.target.value) }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   </div>
 
                   <div className="md:col-span-2 mt-2"><h3 className="text-sm font-semibold text-blue-400 mb-3 uppercase">Pricing</h3></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Price (£) *</label>
-                    <input type="number" value={form.price} onChange={e => setForm(p => ({ ...p, price: Number(e.target.value) }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input type="number" value={form.price} onChange={e => setForm(p => ({ ...p, price: Number(e.target.value) }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Monthly (£)</label>
-                    <input type="number" value={form.monthly_payment} onChange={e => setForm(p => ({ ...p, monthly_payment: Number(e.target.value) }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input type="number" value={form.monthly_payment} onChange={e => setForm(p => ({ ...p, monthly_payment: Number(e.target.value) }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Discount (£)</label>
-                    <input type="number" value={form.discount_amount} onChange={e => setForm(p => ({ ...p, discount_amount: Number(e.target.value) }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input type="number" value={form.discount_amount} onChange={e => setForm(p => ({ ...p, discount_amount: Number(e.target.value) }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
                   <div><label className="block text-xs text-slate-400 mb-1">Location</label>
-                    <input value={form.location} onChange={e => setForm(p => ({ ...p, location: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" /></div>
+                    <input value={form.location} onChange={e => setForm(p => ({ ...p, location: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" /></div>
 
                   <div className="md:col-span-2 flex gap-4 mt-2">
                     <div className="flex-1"><label className="block text-xs text-slate-400 mb-1">Status</label>
-                      <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))} className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm">{STATUSES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}</select></div>
+                      <select value={form.status} onChange={e => setForm(p => ({ ...p, status: e.target.value }))} className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm">{STATUSES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}</select></div>
                     <div className="flex items-end"><label className="flex items-center gap-2 cursor-pointer">
                       <input type="checkbox" checked={form.featured} onChange={e => setForm(p => ({ ...p, featured: e.target.checked }))} className="w-5 h-5 rounded accent-blue-600" />
                       <span className="text-sm text-white">Featured</span></label></div>
@@ -230,7 +240,7 @@ export default function AdminVehicles() {
                   <div className="md:col-span-2 mt-2">
                     <h3 className="text-sm font-semibold text-blue-400 mb-3 uppercase">Description</h3>
                     <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} rows={3}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm resize-none" />
+                      className="w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm resize-none placeholder-slate-500" />
                   </div>
 
                   <div className="md:col-span-2 mt-2">
@@ -253,7 +263,7 @@ export default function AdminVehicles() {
                         const url = e.currentTarget.value.trim()
                         if (url) { setForm(p => ({ ...p, images: [...p.images, url] })); e.currentTarget.value = '' }
                       }
-                    }} className="mt-1 w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm" placeholder="Paste URL and press Enter" />
+                    }} className="mt-1 w-full bg-[#0d1d35] border border-[#1e3a5f] rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500" placeholder="Paste URL and press Enter" />
                   </div>
 
                   <div className="md:col-span-2 mt-2">
@@ -261,7 +271,7 @@ export default function AdminVehicles() {
                     <div className="flex flex-wrap gap-2">
                       {FEATURES_LIST.map(feat => (
                         <button key={feat} onClick={() => toggleFeature(feat)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${form.features.includes(feat) ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-slate-950 text-slate-400 border-slate-700'}`}>
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${form.features.includes(feat) ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-[#0d1d35] text-slate-400 border-[#1e3a5f]'}`}>
                           {form.features.includes(feat) && <Check size={10} className="inline mr-1" />}{feat}</button>
                       ))}
                     </div>
