@@ -1,107 +1,108 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import { Shield, Lock, Mail, ArrowRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { LogIn, Shield, AlertCircle } from 'lucide-react'
+import { useAuth } from '@/hooks/useAuth'
 
 export default function AdminLogin() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('james@apexautomotive.co.uk')
+  const { login, isAdmin } = useAuth()
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-  function handleLogin(e: React.FormEvent) {
+  if (isAdmin) {
+    navigate('/admin')
+    return null
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    // Mock login - any password works for demo
-    if (email && password) {
-      navigate('/admin')
-    } else {
-      setError('Please enter both email and password')
+    setLoading(true)
+
+    const { error } = await login(email, password)
+
+    if (error) {
+      setError(error.message === 'Invalid login credentials'
+        ? 'Invalid email or password'
+        : 'Login failed. Please try again.'
+      )
+      setLoading(false)
+      return
     }
+
+    navigate('/admin')
   }
 
   return (
-    <div className="min-h-[100dvh] flex items-center justify-center bg-[#000814] p-4">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#0077B6]/10 rounded-full blur-[128px]" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#00B4D8]/5 rounded-full blur-[128px]" />
-      </div>
-
+    <div className="min-h-screen bg-obsidian flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
-        className="relative w-full max-w-md"
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-[420px]"
       >
-        <div className="glass-dark rounded-2xl p-8 shadow-2xl">
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-8">
-            <div className="w-14 h-14 rounded-xl bg-[#0077B6] flex items-center justify-center mb-4 shadow-lg shadow-[#0077B6]/20">
-              <Shield className="w-7 h-7 text-white" />
-            </div>
-            <h1
-              className="text-2xl font-bold text-white tracking-wide"
-              style={{ fontFamily: 'Space Grotesk, sans-serif' }}
-            >
-              APEX
-              <span className="text-[#0077B6]"> Admin</span>
-            </h1>
-            <p className="text-sm text-[#5C677D] mt-1">Sign in to your admin dashboard</p>
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 rounded-2xl bg-electric-blue/10 border border-electric-blue/20 flex items-center justify-center mx-auto mb-4">
+            <Shield size={28} className="text-electric-blue" />
           </div>
+          <h1 className="text-2xl font-bold text-pure-white">APEX Admin</h1>
+          <p className="text-chrome mt-1">Sign in to manage your inventory</p>
+        </div>
 
-          {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-4">
+        <div className="bg-midnight/50 rounded-2xl p-8 border border-white/5">
+          {error && (
+            <div className="mb-5 flex items-center gap-3 px-4 py-3 rounded-lg bg-error/10 border border-error/20">
+              <AlertCircle size={18} className="text-error flex-shrink-0" />
+              <p className="text-sm text-error">{error}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-medium text-[#C8D3D9] mb-1.5">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C677D]" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-11 pl-10 pr-4 rounded-lg bg-[#001233] border border-[#33415C]/40 text-sm text-[#E5E5E5] placeholder:text-[#5C677D] focus:outline-none focus:border-[#0077B6]/50 focus:ring-1 focus:ring-[#0077B6]/20 transition-all"
-                  placeholder="Enter your email"
-                />
-              </div>
+              <label className="block text-sm text-chrome mb-2">Email Address</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="w-full bg-obsidian border border-white/10 rounded-lg px-4 py-3 text-pure-white placeholder-chrome focus:border-electric-blue focus:outline-none"
+                placeholder="admin@apexautomotive.co.uk"
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#C8D3D9] mb-1.5">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#5C677D]" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-11 pl-10 pr-4 rounded-lg bg-[#001233] border border-[#33415C]/40 text-sm text-[#E5E5E5] placeholder:text-[#5C677D] focus:outline-none focus:border-[#0077B6]/50 focus:ring-1 focus:ring-[#0077B6]/20 transition-all"
-                  placeholder="Enter your password"
-                />
-              </div>
+              <label className="block text-sm text-chrome mb-2">Password</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="w-full bg-obsidian border border-white/10 rounded-lg px-4 py-3 text-pure-white placeholder-chrome focus:border-electric-blue focus:outline-none"
+                placeholder="Enter your password"
+              />
             </div>
-
-            {error && (
-              <motion.p
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-xs text-[#FF4D6D] bg-[#FF4D6D]/10 px-3 py-2 rounded-lg"
-              >
-                {error}
-              </motion.p>
-            )}
 
             <button
               type="submit"
-              className="w-full h-11 flex items-center justify-center gap-2 rounded-lg bg-[#0077B6] hover:bg-[#0077B6]/90 text-white text-sm font-medium transition-all shadow-lg shadow-[#0077B6]/20 mt-2"
+              disabled={loading}
+              className="w-full bg-electric-blue text-pure-white py-3.5 rounded-lg hover:bg-blue-glow transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              Sign In
-              <ArrowRight className="w-4 h-4" />
+              {loading ? 'Signing in...' : (
+                <>
+                  <LogIn size={18} />
+                  Sign In
+                </>
+              )}
             </button>
           </form>
-
-          <p className="text-center text-xs text-[#5C677D] mt-6">
-            For demo purposes, any password will work.
-          </p>
         </div>
+
+        <p className="text-center mt-6 text-sm text-chrome">
+          <a href="/" className="text-electric-blue hover:underline">Back to website</a>
+        </p>
       </motion.div>
     </div>
   )
