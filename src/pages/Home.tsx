@@ -515,17 +515,19 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Search Button */}
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="w-full mt-4 py-4 bg-electric-blue text-pure-white font-display font-semibold text-base rounded-xl flex items-center justify-center gap-3 hover:shadow-glow-lg hover:scale-[1.01] transition-all duration-300"
-          >
-            <Search size={20} />
-            Search {dbVehicles.length > 0 ? `${dbVehicles.length.toLocaleString()}+` : '6,000+'} Cars
-          </motion.button>
+          {/* Search Button — now navigates to inventory */}
+          <Link to="/inventory">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="w-full mt-4 py-4 bg-electric-blue text-pure-white font-display font-semibold text-base rounded-xl flex items-center justify-center gap-3 hover:shadow-glow-lg hover:scale-[1.01] transition-all duration-300"
+            >
+              <Search size={20} />
+              Search {dbVehicles.length > 0 ? `${dbVehicles.length.toLocaleString()}+` : '6,000+'} Cars
+            </motion.button>
+          </Link>
 
           {/* Quick Links */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
