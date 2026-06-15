@@ -4,7 +4,7 @@ import { motion, useInView, useMotionValue, useTransform, AnimatePresence } from
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import {
-  Search, ChevronDown, CheckCircle, Star, Phone, Mail,
+  Search, ChevronDown, Star, Phone, Mail,
   MessageCircle, Shield, Clock, Handshake, Award, MapPin,
   Tag, Car, Fuel, Gauge, ChevronRight, Settings, Heart
 } from 'lucide-react'
