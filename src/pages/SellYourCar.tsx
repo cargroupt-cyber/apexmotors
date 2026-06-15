@@ -244,13 +244,17 @@ export default function SellYourCar() {
       {/* ============================================================ */}
       {/*  SECTION 1: Page Header                                       */}
       {/* ============================================================ */}
-      <section
-        className="relative flex items-center justify-center overflow-hidden"
-        style={{
-          minHeight: '50vh',
-          background: 'linear-gradient(135deg, #000814 0%, #001233 50%, rgba(0, 119, 182, 0.1) 100%)',
-        }}
-      >
+      <section className="relative flex items-center justify-center overflow-hidden" style={{ minHeight: '50vh' }}>
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/sellcar-hero.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#000814]/95 via-[#000814]/80 to-[#000814]/60" />
+        </div>
         {/* Floating decorative shapes */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-electric-blue/5 blur-3xl animate-pulse" />
