@@ -222,8 +222,22 @@ export default function Inventory() {
 
   return (
     <div className="min-h-screen bg-obsidian">
-      <section className="relative pt-28 pb-10 bg-midnight border-b border-slate/15">
-        <div className="container-apex">
+      {/* ═══════════════════════════════════════════
+          HERO HEADER — with background image
+          ═══════════════════════════════════════════ */}
+      <section className="relative pt-28 pb-10 border-b border-slate/15 overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/inventory-hero.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          {/* Dark overlay for text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#000814]/95 via-[#000814]/80 to-[#000814]/60" />
+        </div>
+
+        <div className="container-apex relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}>
             <h1 className="font-display font-bold text-pure-white" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.0, letterSpacing: '-0.03em' }}>Our Inventory</h1>
             <p className="mt-3 text-base text-chrome max-w-[500px]">Browse {vehicleCount.toLocaleString()}+ RAC-approved vehicles. All inspected, certified, and ready to drive away.</p>
