@@ -4,7 +4,9 @@ import { motion, useInView, useMotionValue, useTransform, AnimatePresence } from
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
 import {
-    Search, ChevronDown, Star, Phone, Mail,
+  Search, ChevronDown, Star, Phone, Mail,
+  MessageCircle, Shield, Clock, Handshake, Award, MapPin,
+  Tag, Car, Fuel, Gauge, ChevronRight, Settings, Heart
 } from 'lucide-react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
