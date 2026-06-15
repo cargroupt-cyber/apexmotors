@@ -256,7 +256,7 @@ export default function SellYourCar() {
           <div className="absolute inset-0 bg-gradient-to-r from-[#000814]/95 via-[#000814]/80 to-[#000814]/60" />
         </div>
         {/* Floating decorative shapes */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-[1]">
           <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-electric-blue/5 blur-3xl animate-pulse" />
           <div className="absolute top-1/2 -right-20 w-60 h-60 rounded-full bg-blue-glow/5 blur-3xl animate-pulse" style={{ animationDelay: '0.75s' }} />
         </div>
