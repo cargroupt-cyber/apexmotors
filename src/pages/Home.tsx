@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion, useInView, useMotionValue, useTransform, AnimatePresence } from 'framer-motion'
 import gsap from 'gsap'
 import { useGSAP } from '@gsap/react'
@@ -260,6 +260,55 @@ const faqs = [
    PART 6: Body Type Data
    ═══════════════════════════════════════════ */
 const bodyTypes = ['Hatchback', 'SUV', 'Saloon', 'Estate', 'Coupe', 'Convertible', 'MPV', '4x4']
+const searchBodyTypes = ['Any Body', 'Hatchback', 'SUV', 'Saloon', 'Estate', 'Coupe', 'Convertible', 'MPV', '4x4']
+const makes = ['Any Make', 'Mercedes-Benz', 'BMW', 'Audi', 'Range Rover', 'Porsche', 'Tesla', 'Jaguar', 'Lexus']
+const priceRanges = ['Any Price', 'Under £20k', '£20k - £30k', '£30k - £40k', '£40k - £50k', '£50k+']
+const fuelTypes = ['Any Fuel', 'Petrol', 'Diesel', 'Hybrid', 'Electric']
+
+/* ═══════════════════════════════════════════
+   SEARCH DROPDOWN COMPONENT
+   ═══════════════════════════════════════════ */
+function SearchDropdown({ label, options, value, onChange, icon: Icon }: {
+  label: string
+  options: string[]
+  value: string
+  onChange: (v: string) => void
+  icon?: React.ComponentType<{ size?: number; className?: string }>
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen(!open)}
+        className="glass-input rounded-xl px-4 py-3.5 flex items-center gap-2.5 cursor-pointer hover:border-slate/50 transition-colors w-full"
+      >
+        {Icon && <Icon size={16} className="text-slate shrink-0" />}
+        <span className="text-[0.875rem] text-frost truncate">{value || label}</span>
+        <ChevronDown size={14} className="text-slate ml-auto shrink-0" />
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-30" onClick={() => setOpen(false)} />
+          <div className="absolute top-full left-0 right-0 mt-1 z-40 rounded-xl overflow-hidden glass-dark shadow-2xl border border-slate/25 max-h-[240px] overflow-y-auto">
+            {options.map((opt) => (
+              <button
+                key={opt}
+                onClick={() => { onChange(opt === label ? '' : opt); setOpen(false) }}
+                className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${
+                  value === opt
+                    ? 'bg-electric-blue/20 text-electric-blue font-medium'
+                    : 'text-frost hover:bg-obsidian/60'
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
 
 /* ═══════════════════════════════════════════
    PART 7: Review Data
@@ -283,6 +332,11 @@ export default function Home() {
   const [deposit, setDeposit] = useState(2000)
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [searchTab, setSearchTab] = useState<'buy' | 'exchange'>('buy')
+  const [searchMake, setSearchMake] = useState('')
+  const [searchPrice, setSearchPrice] = useState('')
+  const [searchBody, setSearchBody] = useState('')
+  const [searchFuel, setSearchFuel] = useState('')
+  const navigate = useNavigate()
 
   const heroRef = useRef<HTMLDivElement>(null)
   const statsRef = useRef<HTMLDivElement>(null)
@@ -335,7 +389,7 @@ export default function Home() {
 
   return (
     <div>
-            {/* ═══════════════════════════════════════════
+      {/* ═══════════════════════════════════════════
           SECTION 1: HERO
           ═══════════════════════════════════════════ */}
       <section
@@ -490,44 +544,81 @@ export default function Home() {
 
           {/* Filter Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {[
-              { label: 'Any Make', icon: Car },
-              { label: 'Any Model', icon: Settings },
-              { label: 'Max Price', icon: Tag },
-              { label: 'Monthly', icon: Gauge },
-              { label: 'Body Type', icon: Car },
-              { label: 'Fuel Type', icon: Fuel },
-            ].map((field, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 + i * 0.05 }}
-                className="relative"
-              >
-                <div className="glass-input rounded-xl px-4 py-3.5 flex items-center gap-2.5 cursor-pointer hover:border-slate/50 transition-colors">
-                  <field.icon size={16} className="text-slate shrink-0" />
-                  <span className="text-[0.875rem] text-slate truncate">{field.label}</span>
-                  <ChevronDown size={14} className="text-slate ml-auto shrink-0" />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Search Button — now navigates to inventory */}
-          <Link to="/inventory">
-            <motion.button
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="w-full mt-4 py-4 bg-electric-blue text-pure-white font-display font-semibold text-base rounded-xl flex items-center justify-center gap-3 hover:shadow-glow-lg hover:scale-[1.01] transition-all duration-300"
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="relative"
             >
-              <Search size={20} />
-              Search {dbVehicles.length > 0 ? `${dbVehicles.length.toLocaleString()}+` : '6,000+'} Cars
-            </motion.button>
-          </Link>
+              <SearchDropdown label="Any Make" options={makes} value={searchMake} onChange={setSearchMake} icon={Car} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.15 }}
+              className="relative"
+            >
+              <SearchDropdown label="Any Model" options={['Any Model']} value="" onChange={() => {}} icon={Settings} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative"
+            >
+              <SearchDropdown label="Any Price" options={priceRanges} value={searchPrice} onChange={setSearchPrice} icon={Tag} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="relative"
+            >
+              <SearchDropdown label="Any Monthly" options={['Any Monthly']} value="" onChange={() => {}} icon={Gauge} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="relative"
+            >
+              <SearchDropdown label="Any Body" options={searchBodyTypes} value={searchBody} onChange={setSearchBody} icon={Car} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.35 }}
+              className="relative"
+            >
+              <SearchDropdown label="Any Fuel" options={fuelTypes} value={searchFuel} onChange={setSearchFuel} icon={Fuel} />
+            </motion.div>
+          </div>
+
+          {/* Search Button */}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            onClick={() => {
+              const params = new URLSearchParams()
+              if (searchMake && searchMake !== 'Any Make') params.set('make', searchMake)
+              if (searchPrice && searchPrice !== 'Any Price') params.set('price', searchPrice)
+              if (searchBody && searchBody !== 'Any Body') params.set('body', searchBody)
+              if (searchFuel && searchFuel !== 'Any Fuel') params.set('fuel', searchFuel)
+              navigate(`/inventory?${params.toString()}`)
+            }}
+            className="w-full mt-4 py-4 bg-electric-blue text-pure-white font-display font-semibold text-base rounded-xl flex items-center justify-center gap-3 hover:shadow-glow-lg hover:scale-[1.01] transition-all duration-300"
+          >
+            <Search size={20} />
+            Search {dbVehicles.length > 0 ? `${dbVehicles.length.toLocaleString()}+` : '6,000+'} Cars
+          </motion.button>
 
           {/* Quick Links */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
@@ -998,41 +1089,33 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{
-                  duration: 0.5,
-                  delay: i * 0.08,
-                  ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
-                }}
-                className="rounded-xl overflow-hidden"
-                style={{ background: 'rgba(0, 8, 20, 0.5)', border: '1px solid rgba(92, 103, 125, 0.25)' }}
+                transition={{ duration: 0.5, delay: i * 0.05 }}
               >
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between px-6 py-5 text-left cursor-pointer hover:bg-obsidian/40 transition-colors"
+                  className="w-full text-left p-5 rounded-xl glass hover:border-electric-blue/20 transition-all duration-300"
                 >
-                  <span className="text-[0.9375rem] font-medium text-pure-white pr-4">{faq.q}</span>
-                  <motion.div
-                    animate={{ rotate: openFaq === i ? 180 : 0 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                  >
-                    <ChevronDown size={20} className="text-chrome shrink-0" />
-                  </motion.div>
+                  <div className="flex items-center justify-between gap-4">
+                    <span className="font-display font-semibold text-pure-white">{faq.q}</span>
+                    <ChevronDown
+                      size={18}
+                      className={`text-chrome shrink-0 transition-transform duration-300 ${openFaq === i ? 'rotate-180' : ''}`}
+                    />
+                  </div>
+                  <AnimatePresence>
+                    {openFaq === i && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="mt-3 text-sm text-chrome leading-relaxed">{faq.a}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </button>
-                <AnimatePresence initial={false}>
-                  {openFaq === i && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
-                      className="overflow-hidden"
-                    >
-                      <p className="px-6 pb-5 text-[0.9375rem] text-frost leading-relaxed">
-                        {faq.a}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </motion.div>
             ))}
           </div>
@@ -1040,41 +1123,10 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          SECTION 9: TRUST BADGES ROW
+          SECTION 9: CONTACT CTA
           ═══════════════════════════════════════════ */}
-      <section className="bg-midnight py-10 border-y border-slate/10">
-        <div className="container-apex">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-wrap justify-center items-center gap-8 md:gap-14"
-          >
-            {[
-              { icon: Shield, text: 'RAC Approved Dealer', color: 'text-success' },
-              { icon: Award, text: 'Motor Ombudsman', color: 'text-electric-blue' },
-              { icon: Star, text: '5-Star Trustpilot Rating', color: 'text-warning' },
-              { icon: CheckCircle, text: '7-Day Money Back', color: 'text-success' },
-              { icon: Clock, text: 'Same-Day Driveaway', color: 'text-blue-glow' },
-            ].map((badge) => (
-              <div key={badge.text} className="flex items-center gap-2.5">
-                <badge.icon size={18} className={badge.color} />
-                <span className="text-sm font-medium text-frost">{badge.text}</span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
-          SECTION 10: CONTACT CTA
-          ═══════════════════════════════════════════ */}
-      <section
-        className="section-padding"
-        style={{ background: 'linear-gradient(180deg, #000814 0%, #001233 100%)' }}
-      >
-        <div className="container-apex max-w-[700px]">
+      <section className="bg-midnight section-padding">
+        <div className="container-apex max-w-[800px]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1086,56 +1138,37 @@ export default function Home() {
               className="font-display font-bold text-pure-white"
               style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', lineHeight: 1.0, letterSpacing: '-0.03em' }}
             >
-              Start Your Journey Today
+              Ready to Find Your Car?
             </h2>
-            <p className="mt-5 text-lg text-frost leading-relaxed">
-              Visit one of our 15 nationwide showrooms, browse online, or speak to our team. Your perfect car is waiting.
+            <p className="mt-4 text-lg text-frost max-w-[500px] mx-auto">
+              Our team is here to help. Call us, email us, or visit your nearest showroom.
             </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <Link
-                to="/inventory"
-                className="px-8 py-4 bg-electric-blue text-pure-white font-semibold text-sm rounded-full hover:bg-blue-glow hover:shadow-glow transition-all duration-300 inline-flex items-center gap-2"
-              >
-                <Search size={16} />
-                Browse All Cars
-              </Link>
-              <a
-                href="tel:08001234567"
-                className="px-8 py-4 bg-transparent text-pure-white font-semibold text-sm rounded-full border-2 border-white/30 hover:bg-white/10 hover:border-electric-blue transition-all duration-300 flex items-center gap-2"
-              >
-                <Phone size={16} />
-                Call Us Now
-              </a>
-            </div>
           </motion.div>
 
-          {/* Contact Cards */}
-          <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4"
+          >
             {[
-              { icon: Phone, label: 'Call Us', detail: '0800 123 4567' },
-              { icon: Mail, label: 'Email Us', detail: 'hello@apexautomotive.co.uk' },
-              { icon: MessageCircle, label: 'Live Chat', detail: 'Available 9am–7pm' },
-            ].map((item, i) => (
-              <motion.div
-                key={item.label}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.7,
-                  delay: i * 0.1,
-                  ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
-                }}
-                className="text-center rounded-2xl p-6 glass hover:border-electric-blue/20 transition-colors"
+              { icon: Phone, label: 'Call Us', value: '0800 123 4567' },
+              { icon: Mail, label: 'Email Us', value: 'hello@apexauto.co.uk' },
+              { icon: MessageCircle, label: 'Live Chat', value: 'Available 9am-6pm' },
+            ].map((contact) => (
+              <div
+                key={contact.label}
+                className="flex flex-col items-center gap-3 p-6 rounded-2xl glass"
               >
-                <div className="w-14 h-14 rounded-full flex items-center justify-center bg-electric-blue/10 mx-auto">
-                  <item.icon size={24} className="text-electric-blue" />
+                <div className="w-12 h-12 rounded-xl bg-electric-blue/10 border border-electric-blue/20 flex items-center justify-center">
+                  <contact.icon size={22} className="text-electric-blue" />
                 </div>
-                <p className="mt-3 font-semibold text-[0.9375rem] text-pure-white">{item.label}</p>
-                <p className="mt-1 text-sm text-chrome">{item.detail}</p>
-              </motion.div>
+                <p className="text-sm font-semibold text-pure-white">{contact.label}</p>
+                <p className="text-xs text-chrome">{contact.value}</p>
+              </div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
