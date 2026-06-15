@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
 import {
   Grid3X3, List, ChevronDown,
@@ -49,6 +49,7 @@ const fallbackVehicles: UnifiedVehicle[] = [
 const makes = ['All Makes', 'Mercedes-Benz', 'BMW', 'Audi', 'Range Rover', 'Porsche', 'Tesla', 'Jaguar', 'Lexus']
 const priceRanges = ['Any Price', 'Under £20k', '£20k - £30k', '£30k - £40k', '£40k - £50k', '£50k+']
 const fuelTypes = ['Any Fuel', 'Petrol', 'Diesel', 'Hybrid', 'Electric']
+const bodyTypes = ['Any Body', 'Hatchback', 'SUV', 'Saloon', 'Estate', 'Coupe', 'Convertible', 'MPV', '4x4']
 const sortOptions = ['Relevance', 'Price: Low to High', 'Price: High to Low', 'Mileage: Low to High', 'Newest First']
 
 function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -176,19 +177,22 @@ function FilterDropdown({ label, options, value, onChange, icon: Icon }: {
 }
 
 export default function Inventory() {
+  const [searchParams] = useSearchParams()
   const { vehicles: dbVehicles, loading } = useSupabaseVehicles()
   const allVehicles: UnifiedVehicle[] = dbVehicles.length > 0 ? dbVehicles as UnifiedVehicle[] : fallbackVehicles
 
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [activeMake, setActiveMake] = useState('All Makes')
-  const [activePrice, setActivePrice] = useState('Any Price')
-  const [activeFuel, setActiveFuel] = useState('Any Fuel')
+  const [activeMake, setActiveMake] = useState(searchParams.get('make') || 'All Makes')
+  const [activePrice, setActivePrice] = useState(searchParams.get('price') || 'Any Price')
+  const [activeFuel, setActiveFuel] = useState(searchParams.get('fuel') || 'Any Fuel')
+  const [activeBody, setActiveBody] = useState(searchParams.get('body') || 'Any Body')
   const [activeSort, setActiveSort] = useState('Relevance')
 
   const filteredVehicles = allVehicles.filter((v) => {
     const vehicleMakeModel = `${v.make} ${v.model}`
     if (activeMake !== 'All Makes' && !vehicleMakeModel.includes(activeMake)) return false
     if (activeFuel !== 'Any Fuel' && v.fuel_type !== activeFuel) return false
+    if (activeBody !== 'Any Body' && v.body_type !== activeBody) return false
     if (activePrice !== 'Any Price') {
       if (activePrice === 'Under £20k' && v.price >= 20000) return false
       if (activePrice === '£20k - £30k' && (v.price < 20000 || v.price >= 30000)) return false
@@ -207,7 +211,13 @@ export default function Inventory() {
     return 0
   })
 
-  const activeFilterCount = [activeMake !== 'All Makes', activePrice !== 'Any Price', activeFuel !== 'Any Fuel'].filter(Boolean).length
+  const activeFilterCount = [
+    activeMake !== 'All Makes',
+    activePrice !== 'Any Price',
+    activeFuel !== 'Any Fuel',
+    activeBody !== 'Any Body',
+  ].filter(Boolean).length
+
   const vehicleCount = allVehicles.length
 
   return (
@@ -233,10 +243,11 @@ export default function Inventory() {
       <section className="sticky top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-4">
         <div className="container-apex">
           <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-            <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
               <FilterDropdown label="All Makes" options={makes} value={activeMake} onChange={setActiveMake} icon={Settings} />
               <FilterDropdown label="Any Price" options={priceRanges} value={activePrice} onChange={setActivePrice} icon={Gauge} />
               <FilterDropdown label="Any Fuel" options={fuelTypes} value={activeFuel} onChange={setActiveFuel} icon={Fuel} />
+              <FilterDropdown label="Any Body" options={bodyTypes} value={activeBody} onChange={setActiveBody} icon={Car} />
               <FilterDropdown label="Sort By" options={sortOptions} value={activeSort} onChange={setActiveSort} icon={ArrowUpDown} />
             </div>
             <div className="flex items-center gap-3 shrink-0">
@@ -253,7 +264,8 @@ export default function Inventory() {
               {activeMake !== 'All Makes' && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">{activeMake} <button onClick={() => setActiveMake('All Makes')} className="hover:text-pure-white">&times;</button></span>}
               {activePrice !== 'Any Price' && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">{activePrice} <button onClick={() => setActivePrice('Any Price')} className="hover:text-pure-white">&times;</button></span>}
               {activeFuel !== 'Any Fuel' && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">{activeFuel} <button onClick={() => setActiveFuel('Any Fuel')} className="hover:text-pure-white">&times;</button></span>}
-              <button onClick={() => { setActiveMake('All Makes'); setActivePrice('Any Price'); setActiveFuel('Any Fuel') }} className="text-xs text-chrome hover:text-frost underline underline-offset-2">Clear all</button>
+              {activeBody !== 'Any Body' && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">{activeBody} <button onClick={() => setActiveBody('Any Body')} className="hover:text-pure-white">&times;</button></span>}
+              <button onClick={() => { setActiveMake('All Makes'); setActivePrice('Any Price'); setActiveFuel('Any Fuel'); setActiveBody('Any Body') }} className="text-xs text-chrome hover:text-frost underline underline-offset-2">Clear all</button>
             </motion.div>
           )}
         </div>
@@ -326,7 +338,7 @@ export default function Inventory() {
                   <Car size={48} className="text-slate/30 mx-auto mb-4" />
                   <h3 className="font-display font-semibold text-xl text-pure-white">No vehicles found</h3>
                   <p className="mt-2 text-chrome">Try adjusting your filters to see more results.</p>
-                  <button onClick={() => { setActiveMake('All Makes'); setActivePrice('Any Price'); setActiveFuel('Any Fuel') }} className="mt-6 px-6 py-3 bg-electric-blue text-pure-white rounded-full text-sm font-semibold hover:bg-blue-glow transition-colors">Clear All Filters</button>
+                  <button onClick={() => { setActiveMake('All Makes'); setActivePrice('Any Price'); setActiveFuel('Any Fuel'); setActiveBody('Any Body') }} className="mt-6 px-6 py-3 bg-electric-blue text-pure-white rounded-full text-sm font-semibold hover:bg-blue-glow transition-colors">Clear All Filters</button>
                 </div>
               )}
               {sortedVehicles.length > 0 && (
