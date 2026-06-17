@@ -6,7 +6,7 @@ import {
   User, Building2, Image, Megaphone, BarChart3, HelpCircle,
   RefreshCw,
 } from 'lucide-react'
-import { supabase } from '@/lib/supabaseClient'
+import { supabase } from '@/lib/supabase'
 
 /* ═══════════════════════════════════════════
    TYPES
