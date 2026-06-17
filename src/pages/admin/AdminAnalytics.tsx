@@ -1,400 +1,292 @@
 // @ts-nocheck
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react'
+import { motion } from 'framer-motion'
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  AreaChart,
-  Area,
-  Legend,
-} from 'recharts';
-import {
-  TrendingUp,
-  Users,
-  Clock,
-  Target,
-  ArrowUpRight,
-  ArrowDownRight,
-} from 'lucide-react';
-import { allLeads, contactEnquiries } from '../../data/leadsData';
-import type { Lead } from '../../data/leadsData';
+  TrendingUp, Users, Eye, DollarSign, Car, CreditCard,
+  ChevronDown, ArrowUpRight,
+} from 'lucide-react'
+import { useSupabaseAnalytics } from '@/hooks/useSupabaseAnalytics'
 
-function gf(lead: Lead, field: string): unknown {
-  return (lead as unknown as Record<string, unknown>)[field];
+/* ═══════════════════════════════════════════
+   SIMPLE SVG BAR CHART COMPONENT
+   ═══════════════════════════════════════════ */
+
+function BarChart({ data, color = '#0077B6', maxHeight = 120 }: { data: number[]; color?: string; maxHeight?: number }) {
+  const max = Math.max(...data, 1)
+  return (
+    <div className="flex items-end gap-1 h-[140px]">
+      {data.map((v, i) => (
+        <div
+          key={i}
+          className="flex-1 rounded-t-sm transition-all duration-300 hover:opacity-80"
+          style={{
+            height: `${(v / max) * maxHeight}px`,
+            backgroundColor: color,
+            opacity: 0.6 + (v / max) * 0.4,
+            minHeight: 4,
+          }}
+          title={`${v}`}
+        />
+      ))}
+    </div>
+  )
 }
 
-function getStatus(lead: Lead): string {
-  return String(gf(lead, 'status') || '');
-}
+/* ═══════════════════════════════════════════
+   DONUT CHART COMPONENT
+   ═══════════════════════════════════════════ */
 
-const COLORS = ['#0077B6', '#00B4D8', '#00C896', '#FFB703', '#FF4D6D', '#A855F7'];
-
-const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number; name: string }>; label?: string }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div
-        className="rounded-lg px-3 py-2 text-sm"
-        style={{
-          background: 'rgba(0, 8, 20, 0.95)',
-          border: '1px solid rgba(92, 103, 125, 0.3)',
-          backdropFilter: 'blur(12px)',
-        }}
-      >
-        <p className="text-white font-medium mb-1">{label}</p>
-        {payload.map((p, i) => (
-          <p key={i} className="text-[#C8D3D9] text-xs">
-            {p.name}: <span className="text-white font-semibold">{p.value}</span>
-          </p>
-        ))}
-      </div>
-    );
-  }
-  return null;
-};
-
-export default function AdminAnalytics() {
-  // Lead Funnel Data
-  const funnelData = useMemo(() => {
-    const newLeads = allLeads.filter((l) => {
-      const s = getStatus(l);
-      return s === 'new' || s === 'pending';
-    }).length;
-    const contacted = allLeads.filter((l) => {
-      const s = getStatus(l);
-      return s === 'contacted' || s === 'confirmed' || s === 'valued' || s === 'referred';
-    }).length;
-    const qualified = allLeads.filter((l) => {
-      const s = getStatus(l);
-      return s === 'qualified' || s === 'appointment';
-    }).length;
-    const converted = allLeads.filter((l) => {
-      const s = getStatus(l);
-      return s === 'closed' || s === 'completed' || s === 'approved' || s === 'sold';
-    }).length;
-
-    return [
-      { name: 'New', value: newLeads, fill: '#0077B6' },
-      { name: 'Contacted', value: contacted, fill: '#00B4D8' },
-      { name: 'Qualified', value: qualified, fill: '#A855F7' },
-      { name: 'Converted', value: converted, fill: '#00C896' },
-    ];
-  }, []);
-
-  // Source Breakdown
-  const sourceData = useMemo(() => {
-    const sources: Record<string, number> = {};
-    allLeads.forEach((l) => {
-      sources[l.source] = (sources[l.source] || 0) + 1;
-    });
-    return Object.entries(sources).map(([name, value]) => ({ name, value }));
-  }, []);
-
-  // Monthly Lead Volume
-  const monthlyData = useMemo(() => {
-    const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return months.map((month) => ({
-      name: month,
-      enquiries: Math.floor(Math.random() * 20) + 10,
-      'sell-my-car': Math.floor(Math.random() * 12) + 5,
-      'test-drives': Math.floor(Math.random() * 15) + 8,
-      finance: Math.floor(Math.random() * 10) + 3,
-    }));
-  }, []);
-
-  // Conversion by Type
-  const conversionByType = useMemo(() => {
-    const types = [
-      { name: 'Contact Forms', total: contactEnquiries.length, converted: contactEnquiries.filter((l) => l.status === 'closed').length },
-      { name: 'Sell My Car', total: allLeads.filter((l) => l.type === 'sell-my-car').length, converted: allLeads.filter((l) => l.type === 'sell-my-car' && getStatus(l) === 'sold').length },
-      { name: 'Test Drives', total: allLeads.filter((l) => l.type === 'test-drive').length, converted: allLeads.filter((l) => l.type === 'test-drive' && getStatus(l) === 'completed').length },
-      { name: 'Finance', total: allLeads.filter((l) => l.type === 'finance').length, converted: allLeads.filter((l) => l.type === 'finance' && getStatus(l) === 'approved').length },
-    ];
-    return types.map((t) => ({
-      ...t,
-      rate: t.total > 0 ? ((t.converted / t.total) * 100).toFixed(1) : '0',
-    }));
-  }, []);
-
-  // Top Vehicles
-  const topVehicles = useMemo(() => {
-    const vehicles: Record<string, number> = {};
-    allLeads.forEach((l) => {
-      let vehicle = '';
-      if (l.type === 'contact') {
-        vehicle = String(gf(l, 'vehicleInterested') || '');
-      } else if (l.type === 'test-drive') {
-        vehicle = String(gf(l, 'vehicle') || '');
-      } else if (l.type === 'finance') {
-        vehicle = String(gf(l, 'vehicle') || '');
-      }
-      if (vehicle && vehicle !== 'N/A') {
-        vehicles[vehicle] = (vehicles[vehicle] || 0) + 1;
-      }
-    });
-    return Object.entries(vehicles)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 8)
-      .map(([name, count]) => ({ name, count }));
-  }, []);
-
-  // Staff Performance
-  const staffPerformance = useMemo(() => {
-    const staff = ['Tom Bradley', 'Emma Watson', 'Sarah Jenkins', 'James Cooper'];
-    return staff.map((name) => ({
-      name,
-      leads: Math.floor(Math.random() * 20) + 15,
-      converted: Math.floor(Math.random() * 12) + 5,
-      response: (Math.random() * 4 + 0.5).toFixed(1),
-    }));
-  }, []);
-
-  const stats = [
-    {
-      label: 'Total Leads',
-      value: allLeads.length,
-      change: '+12.5%',
-      up: true,
-      icon: Users,
-      color: '#0077B6',
-    },
-    {
-      label: 'Avg Conversion',
-      value: '34.2%',
-      change: '+5.1%',
-      up: true,
-      icon: Target,
-      color: '#00C896',
-    },
-    {
-      label: 'Avg Response',
-      value: '2.4h',
-      change: '-0.8h',
-      up: true,
-      icon: Clock,
-      color: '#FFB703',
-    },
-    {
-      label: 'This Month',
-      value: '47',
-      change: '+8.2%',
-      up: true,
-      icon: TrendingUp,
-      color: '#A855F7',
-    },
-  ];
+function DonutChart({ segments, size = 140 }: { segments: { label: string; value: number; color: string }[]; size?: number }) {
+  const total = segments.reduce((s, seg) => s + seg.value, 0)
+  let cumulative = 0
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white font-[Space_Grotesk]">Analytics Dashboard</h1>
-        <p className="text-sm text-[#5C677D] mt-1">Lead performance metrics and insights</p>
-      </div>
+    <div className="flex items-center gap-6">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {segments.map((seg, i) => {
+          const startAngle = (cumulative / total) * 360
+          cumulative += seg.value
+          const endAngle = (cumulative / total) * 360
+          const startRad = ((startAngle - 90) * Math.PI) / 180
+          const endRad = ((endAngle - 90) * Math.PI) / 180
+          const cx = size / 2, cy = size / 2, r = size / 2 - 10
+          const x1 = cx + r * Math.cos(startRad)
+          const y1 = cy + r * Math.sin(startRad)
+          const x2 = cx + r * Math.cos(endRad)
+          const y2 = cy + r * Math.sin(endRad)
+          const largeArc = endAngle - startAngle > 180 ? 1 : 0
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => (
-          <div key={stat.label} className="glass rounded-xl p-4 hover:border-[#0077B6]/30 transition-all">
-            <div className="flex items-center justify-between mb-3">
-              <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                style={{ background: `${stat.color}15` }}
-              >
-                <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
-              </div>
-              <div className="flex items-center gap-1 text-xs">
-                {stat.up ? (
-                  <ArrowUpRight className="w-3 h-3 text-[#00C896]" />
-                ) : (
-                  <ArrowDownRight className="w-3 h-3 text-[#FF4D6D]" />
-                )}
-                <span className={stat.up ? 'text-[#00C896]' : 'text-[#FF4D6D]'}>{stat.change}</span>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-white font-[Space_Grotesk]">{stat.value}</p>
-            <p className="text-xs text-[#5C677D] mt-0.5">{stat.label}</p>
+          return (
+            <path
+              key={i}
+              d={`M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`}
+              fill={seg.color}
+              stroke="#0a1628"
+              strokeWidth={2}
+            />
+          )
+        })}
+        <circle cx={size / 2} cy={size / 2} r={size / 4} fill="#0a1628" />
+        <text x={size / 2} y={size / 2 - 4} textAnchor="middle" fill="#FAFAFA" fontSize={size / 10} fontWeight="bold">{total}</text>
+        <text x={size / 2} y={size / 2 + 10} textAnchor="middle" fill="#8B95A5" fontSize={size / 14}>Total</text>
+      </svg>
+      <div className="flex flex-col gap-2">
+        {segments.map((seg, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: seg.color }} />
+            <span className="text-xs text-chrome">{seg.label}</span>
+            <span className="text-xs text-pure-white font-medium ml-auto">{seg.value}</span>
           </div>
         ))}
       </div>
-
-      {/* Charts Row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Lead Funnel */}
-        <div className="glass rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 font-[Space_Grotesk]">Lead Conversion Funnel</h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={funnelData} layout="vertical" margin={{ top: 0, right: 20, left: 10, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#33415C30" horizontal={false} />
-              <XAxis type="number" stroke="#5C677D" fontSize={12} />
-              <YAxis dataKey="name" type="category" stroke="#C8D3D9" fontSize={12} width={80} />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="value" radius={[0, 6, 6, 0]} barSize={32}>
-                {funnelData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.fill} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Source Breakdown */}
-        <div className="glass rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 font-[Space_Grotesk]">Lead Source Breakdown</h3>
-          <div className="flex items-center">
-            <ResponsiveContainer width="60%" height={280}>
-              <PieChart>
-                <Pie
-                  data={sourceData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={4}
-                  dataKey="value"
-                >
-                  {sourceData.map((_entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="flex-1 space-y-3">
-              {sourceData.map((s, i) => (
-                <div key={s.name} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full flex-shrink-0"
-                    style={{ background: COLORS[i % COLORS.length] }}
-                  />
-                  <span className="text-xs text-[#C8D3D9]">{s.name}</span>
-                  <span className="text-xs text-white font-medium ml-auto">{s.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Row 2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Monthly Volume */}
-        <div className="glass rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 font-[Space_Grotesk]">Monthly Lead Volume</h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={monthlyData} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorEnq" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#0077B6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#0077B6" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="colorSell" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#FFB703" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#FFB703" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#33415C30" />
-              <XAxis dataKey="name" stroke="#5C677D" fontSize={12} />
-              <YAxis stroke="#5C677D" fontSize={12} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend
-                wrapperStyle={{ fontSize: '11px', color: '#C8D3D9' }}
-                formatter={(value: string) => <span style={{ color: '#C8D3D9' }}>{value}</span>}
-              />
-              <Area type="monotone" dataKey="enquiries" stroke="#0077B6" fillOpacity={1} fill="url(#colorEnq)" strokeWidth={2} />
-              <Area type="monotone" dataKey="sell-my-car" stroke="#FFB703" fillOpacity={1} fill="url(#colorSell)" strokeWidth={2} />
-              <Area type="monotone" dataKey="test-drives" stroke="#A855F7" fillOpacity={0} fill="transparent" strokeWidth={2} />
-              <Area type="monotone" dataKey="finance" stroke="#00C896" fillOpacity={0} fill="transparent" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Conversion by Type */}
-        <div className="glass rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 font-[Space_Grotesk]">Conversion Rate by Lead Type</h3>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={conversionByType} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#33415C30" />
-              <XAxis dataKey="name" stroke="#5C677D" fontSize={11} />
-              <YAxis stroke="#5C677D" fontSize={12} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend
-                wrapperStyle={{ fontSize: '11px' }}
-                formatter={(value: string) => <span style={{ color: '#C8D3D9' }}>{value}</span>}
-              />
-              <Bar dataKey="total" fill="#33415C" radius={[6, 6, 0, 0]} name="Total" />
-              <Bar dataKey="converted" fill="#00C896" radius={[6, 6, 0, 0]} name="Converted" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Charts Row 3 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Top Vehicles */}
-        <div className="glass rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 font-[Space_Grotesk]">Most Enquired Vehicles</h3>
-          <div className="space-y-3">
-            {topVehicles.map((v, i) => (
-              <div key={v.name} className="flex items-center gap-3">
-                <span className="text-xs text-[#5C677D] w-4 text-right">{i + 1}</span>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-[#C8D3D9]">{v.name}</span>
-                    <span className="text-xs text-white font-medium">{v.count} enquiries</span>
-                  </div>
-                  <div className="h-1.5 rounded-full bg-[#33415C]/30 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-[#0077B6] transition-all"
-                      style={{ width: `${(v.count / topVehicles[0].count) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Staff Performance */}
-        <div className="glass rounded-xl p-5">
-          <h3 className="text-sm font-semibold text-white mb-4 font-[Space_Grotesk]">Sales Staff Performance</h3>
-          <div className="space-y-4">
-            {staffPerformance.map((s) => (
-              <div key={s.name} className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-full bg-[#0077B6]/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs font-bold text-[#00B4D8]">
-                    {s.name.split(' ').map((n) => n[0]).join('')}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-white truncate">{s.name}</span>
-                    <span className="text-xs text-[#00C896] font-medium">
-                      {((s.converted / s.leads) * 100).toFixed(0)}% conv.
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4 mt-1">
-                    <div className="flex-1 h-1.5 rounded-full bg-[#33415C]/30 overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-[#0077B6]"
-                        style={{ width: `${(s.leads / 35) * 100}%` }}
-                      />
-                    </div>
-                    <span className="text-[10px] text-[#5C677D] whitespace-nowrap">{s.leads} leads</span>
-                    <span className="text-[10px] text-[#5C677D] whitespace-nowrap">{s.response}h resp</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     </div>
-  );
+  )
+}
+
+/* ═══════════════════════════════════════════
+   MAIN COMPONENT
+   ═══════════════════════════════════════════ */
+
+export default function AdminAnalytics() {
+  const { summary, statusChart, timeChart, sourceChart, typeChart, vehicleCount, loading, refresh } = useSupabaseAnalytics()
+  const [period, setPeriod] = useState('30d')
+
+  /* Top stats */
+  const topStats = [
+    { label: 'Total Leads', value: summary.totalLeads, change: '+12%', up: true, icon: Users, color: 'text-electric-blue', bg: 'bg-electric-blue/10' },
+    { label: 'New This Week', value: summary.thisWeek, change: '+8%', up: true, icon: TrendingUp, color: 'text-success', bg: 'bg-success/10' },
+    { label: 'New This Month', value: summary.thisMonth, change: '+15%', up: true, icon: Eye, color: 'text-info', bg: 'bg-info/10' },
+    { label: 'Sell My Car', value: summary.sellCar, change: '+23%', up: true, icon: DollarSign, color: 'text-warning', bg: 'bg-warning/10' },
+    { label: 'Finance Apps', value: summary.finance, change: '+10%', up: true, icon: CreditCard, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+    { label: 'Test Drives', value: summary.testDriveReq, change: '+5%', up: true, icon: Car, color: 'text-pink-400', bg: 'bg-pink-500/10' },
+  ]
+
+  /* Funnel stages */
+  const funnelStages = [
+    { label: 'New', count: summary.newLeads, color: '#0077B6' },
+    { label: 'Contacted', count: summary.contacted, color: '#F59E0B' },
+    { label: 'Qualified', count: summary.qualified, color: '#8B5CF6' },
+    { label: 'Test Drive', count: summary.testDrive, color: '#06B6D4' },
+    { label: 'Closed', count: summary.closed, color: '#00C896' },
+  ]
+
+  const maxFunnel = Math.max(...funnelStages.map(s => s.count), 1)
+
+  /* Status donut data */
+  const statusColors = ['#0077B6', '#F59E0B', '#8B5CF6', '#06B6D4', '#00C896', '#EF4444', '#EC4899']
+  const statusDonutData = useMemo(() =>
+    statusChart.labels.map((label, i) => ({
+      label,
+      value: statusChart.datasets[0].data[i],
+      color: statusColors[i % statusColors.length],
+    })).filter(d => d.value > 0),
+    [statusChart]
+  )
+
+  /* Source donut data */
+  const sourceDonutData = useMemo(() =>
+    sourceChart.labels.map((label, i) => ({
+      label,
+      value: sourceChart.datasets[0].data[i],
+      color: statusColors[(i + 3) % statusColors.length],
+    })).filter(d => d.value > 0),
+    [sourceChart]
+  )
+
+  if (loading) {
+    return (
+      <div className="flex-1 p-6 md:p-10 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-electric-blue border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex-1 p-6 md:p-10 overflow-y-auto">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 className="font-display font-bold text-2xl text-pure-white">Analytics</h1>
+          <p className="text-chrome text-sm mt-1">Real-time data from your Supabase database</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <select value={period} onChange={e => setPeriod(e.target.value)} className="px-3 py-2 rounded-xl bg-[rgba(0,8,20,0.6)] border border-slate/20 text-pure-white text-sm outline-none focus:border-electric-blue">
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+            <option value="all">All time</option>
+          </select>
+          <button onClick={refresh} className="px-4 py-2 bg-obsidian/60 border border-slate/15 rounded-xl text-sm text-chrome hover:text-pure-white hover:border-electric-blue transition-all">
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      {/* Top Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+        {topStats.map((stat, i) => (
+          <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}>
+            <div className="p-5 rounded-2xl glass hover:border-electric-blue/30 transition-all duration-300">
+              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}>
+                <stat.icon size={18} className={stat.color} />
+              </div>
+              <div className="flex items-center gap-2 mb-1">
+                <p className="font-display font-bold text-xl text-pure-white">{stat.value}</p>
+                <span className="text-xs font-medium text-success flex items-center gap-0.5">
+                  {stat.change} <ArrowUpRight size={10} />
+                </span>
+              </div>
+              <p className="text-xs text-chrome">{stat.label}</p>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Leads Over Time */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="glass rounded-2xl p-6">
+          <h3 className="font-display font-semibold text-lg text-pure-white mb-4">Leads Over Time (30 Days)</h3>
+          {timeChart.datasets[0].data.every(v => v === 0) ? (
+            <div className="text-center py-10 text-chrome text-sm">No data yet — leads will appear here</div>
+          ) : (
+            <BarChart data={timeChart.datasets[0].data} color="#0077B6" />
+          )}
+          <div className="flex justify-between text-xs text-chrome mt-3">
+            <span>{timeChart.labels[0]}</span>
+            <span>{timeChart.labels[timeChart.labels.length - 1]}</span>
+          </div>
+        </motion.div>
+
+        {/* Conversion Funnel */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="glass rounded-2xl p-6">
+          <h3 className="font-display font-semibold text-lg text-pure-white mb-4">Conversion Funnel</h3>
+          <div className="flex flex-col gap-3">
+            {funnelStages.map((stage) => (
+              <div key={stage.label}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm text-frost">{stage.label}</span>
+                  <span className="text-sm font-semibold text-pure-white">{stage.count}</span>
+                </div>
+                <div className="h-8 bg-obsidian/60 rounded-lg overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(stage.count / maxFunnel) * 100}%` }}
+                    transition={{ duration: 0.8, ease: 'easeOut' }}
+                    className="h-full rounded-lg flex items-center px-3"
+                    style={{ backgroundColor: stage.color }}
+                  >
+                    <span className="text-xs font-medium text-pure-white">{maxFunnel > 0 ? Math.round((stage.count / maxFunnel) * 100) : 0}%</span>
+                  </motion.div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        {/* Status Distribution */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="glass rounded-2xl p-6">
+          <h3 className="font-display font-semibold text-lg text-pure-white mb-4">Status Distribution</h3>
+          {statusDonutData.length === 0 ? (
+            <div className="text-center py-10 text-chrome text-sm">No data yet</div>
+          ) : (
+            <DonutChart segments={statusDonutData} />
+          )}
+        </motion.div>
+
+        {/* Source Distribution */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }} className="glass rounded-2xl p-6">
+          <h3 className="font-display font-semibold text-lg text-pure-white mb-4">Lead Sources</h3>
+          {sourceDonutData.length === 0 ? (
+            <div className="text-center py-10 text-chrome text-sm">No data yet</div>
+          ) : (
+            <DonutChart segments={sourceDonutData} />
+          )}
+        </motion.div>
+      </div>
+
+      {/* Lead Types Table */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.6 }} className="glass rounded-2xl p-6 mb-8">
+        <h3 className="font-display font-semibold text-lg text-pure-white mb-4">Enquiry Types</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-slate/15">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-chrome uppercase tracking-wider">Type</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-chrome uppercase tracking-wider">Count</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-chrome uppercase tracking-wider">Percentage</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-chrome uppercase tracking-wider">Bar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {typeChart.labels.map((label, i) => {
+                const count = typeChart.datasets[0].data[i]
+                const pct = summary.totalLeads > 0 ? Math.round((count / summary.totalLeads) * 100) : 0
+                const typeColors: Record<string, string> = {
+                  contact: '#0077B6',
+                  'sell-my-car': '#F59E0B',
+                  sell_car: '#F59E0B',
+                  'test-drive': '#00C896',
+                  finance: '#8B5CF6',
+                }
+                return (
+                  <tr key={label} className="border-b border-slate/10">
+                    <td className="px-4 py-3 text-sm text-pure-white capitalize">{label.replace(/-/g, ' ')}</td>
+                    <td className="px-4 py-3 text-sm text-frost">{count}</td>
+                    <td className="px-4 py-3 text-sm text-frost">{pct}%</td>
+                    <td className="px-4 py-3">
+                      <div className="h-2 bg-obsidian/60 rounded-full overflow-hidden w-32">
+                        <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, backgroundColor: typeColors[label] || '#0077B6' }} />
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </motion.div>
+    </div>
+  )
 }
