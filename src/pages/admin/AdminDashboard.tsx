@@ -1,454 +1,156 @@
-// @ts-nocheck
-import { useMemo } from 'react';
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import {
-  Users,
-  MessageSquare,
-  Car,
-  CalendarDays,
-  Wallet,
-  TrendingUp,
-  ArrowUpRight,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Eye,
-} from 'lucide-react';
-import { useVehicles } from '@/hooks/useVehicles';
-import { useLeads } from '@/hooks/useLeads';
-import { useAnalytics } from '@/hooks/useAnalytics';
-import { useNavigate } from 'react-router-dom';
-import type { Lead } from '@/lib/store';
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
-
-function formatTime(dateStr: string): string {
-  const d = new Date(dateStr);
-  return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-}
-
-function getStatusColor(status: string): string {
-  const colors: Record<string, string> = {
-    'New': 'bg-[#0077B6]/10 text-[#00B4D8] border-[#0077B6]/25',
-    'Contacted': 'bg-[#FFB703]/10 text-[#FFB703] border-[#FFB703]/25',
-    'Qualified': 'bg-[#00C896]/10 text-[#00C896] border-[#00C896]/25',
-    'Test Drive': 'bg-purple-500/10 text-purple-400 border-purple-500/25',
-    'Closed': 'bg-[#FF4D6D]/10 text-[#FF4D6D] border-[#FF4D6D]/25',
-  };
-  return colors[status] || 'bg-[#33415C]/10 text-[#5C677D] border-[#33415C]/25';
-}
-
-function getStatusLabel(status: string): string {
-  return status;
-}
-
-function getLeadIcon(type: string) {
-  switch (type) {
-    case 'contact':
-      return <MessageSquare className="w-4 h-4 text-[#00B4D8]" />;
-    case 'sell-my-car':
-      return <Car className="w-4 h-4 text-[#FFB703]" />;
-    case 'test-drive':
-      return <CalendarDays className="w-4 h-4 text-purple-400" />;
-    case 'finance':
-      return <Wallet className="w-4 h-4 text-[#00C896]" />;
-    default:
-      return <MessageSquare className="w-4 h-4 text-[#00B4D8]" />;
-  }
-}
-
-function getLeadSubject(lead: Lead): string {
-  const l = lead as unknown as Record<string, unknown>;
-  switch (lead.type) {
-    case 'contact':
-      return lead.vehicleInterest || '';
-    case 'sell-my-car':
-      return `Reg: ${l.registration || ''}`;
-    case 'test-drive':
-      return lead.vehicleInterest || '';
-    case 'finance':
-      return `${lead.vehicleInterest || ''} - £${l.amount || ''}`;
-    default:
-      return lead.vehicleInterest || '';
-  }
-}
+  LayoutDashboard, Car, Users, TrendingUp, Clock,
+  DollarSign, ArrowUpRight, Activity, ChevronRight,
+  ShoppingCart, MessageSquare, Star,
+} from 'lucide-react'
+import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles'
+import { useSupabaseLeads } from '@/hooks/useSupabaseLeads'
+import { useSupabaseAnalytics } from '@/hooks/useSupabaseAnalytics'
 
 export default function AdminDashboard() {
-  const navigate = useNavigate();
-  const { vehicles } = useVehicles();
-  const { leads } = useLeads();
-  const { vehicleCounts, leadCounts } = useAnalytics();
+  const { vehicles, loading: vLoading } = useSupabaseVehicles()
+  const { leads, loading: lLoading } = useSupabaseLeads()
+  const { summary, recentActivity, loading: aLoading } = useSupabaseAnalytics()
 
-  const stats = useMemo(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayLeads = leads.filter((l) => {
-      const d = new Date(l.date);
-      return d.toDateString() === today.toDateString();
-    });
+  const loading = vLoading || lLoading || aLoading
+  const recentLeads = leads.slice(0, 5)
 
-    const activeStatuses = ['New', 'Contacted', 'Qualified', 'Test Drive'];
-    const activeLeads = leads.filter((l) => activeStatuses.includes(l.status));
+  const stats = [
+    { label: 'Total Vehicles', value: vehicles.length, change: '+12%', up: true, icon: Car, href: '/admin/vehicles' },
+    { label: 'Active Enquiries', value: summary.newLeads + summary.contacted + summary.qualified, change: '+8%', up: true, icon: MessageSquare, href: '/admin/leads' },
+    { label: 'Sell My Car', value: summary.sellCar, change: '+23%', up: true, icon: DollarSign, href: '/admin/leads?sellcar=true' },
+    { label: 'Finance Apps', value: summary.finance, change: '+15%', up: true, icon: TrendingUp, href: '/admin/leads?finance=true' },
+    { label: 'Test Drives', value: summary.testDrive, change: '+5%', up: true, icon: Activity, href: '/admin/leads?testdrive=true' },
+    { label: 'Conversion Rate', value: `${summary.conversionRate}%`, change: '+3%', up: true, icon: Activity, href: '/admin/analytics' },
+  ]
 
-    const newLeads = leads.filter((l) => l.status === 'New');
+  const actions = [
+    { label: 'Add Vehicle', icon: Car, href: '/admin/vehicles', color: 'bg-electric-blue/20 text-electric-blue' },
+    { label: 'View Enquiries', icon: MessageSquare, href: '/admin/leads', color: 'bg-success/20 text-success' },
+    { label: 'Analytics', icon: TrendingUp, href: '/admin/analytics', color: 'bg-warning/20 text-warning' },
+    { label: 'Settings', icon: LayoutDashboard, href: '/admin/settings', color: 'bg-slate/20 text-slate' },
+  ]
 
-    const byType = (type: string) => leads.filter((l) => l.type === type).length;
-
-    return {
-      newLeadsToday: todayLeads.length,
-      totalActive: activeLeads.length,
-      requiresAttention: newLeads.length,
-      contactForms: byType('contact'),
-      sellMyCar: byType('sell-my-car'),
-      testDrives: byType('test-drive'),
-      financeApps: byType('finance'),
-    };
-  }, [leads]);
-
-  const recentLeads = useMemo(() => {
-    return [...leads]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 8);
-  }, [leads]);
-
-  // Recent vehicles added
-  const recentVehicles = useMemo(() => {
-    return [...vehicles]
-      .sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime())
-      .slice(0, 4);
-  }, [vehicles]);
+  if (loading) {
+    return (
+      <div className="flex-1 p-6 md:p-10 flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-electric-blue border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="flex-1 p-6 md:p-10 overflow-y-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white font-[Space_Grotesk]">Dashboard</h1>
-          <p className="text-sm text-[#5C677D] mt-1">
-            Overview of your lead management system
-          </p>
+          <h1 className="font-display font-bold text-2xl text-pure-white">Dashboard</h1>
+          <p className="text-chrome text-sm mt-1">Welcome back to APEX Automotive Admin</p>
         </div>
-        <div className="text-xs text-[#5C677D]">
-          Last updated: {formatTime(new Date().toISOString())}
-        </div>
+        <span className="text-xs text-chrome bg-obsidian/60 px-3 py-1.5 rounded-lg border border-slate/15">
+          <Clock size={12} className="inline mr-1" /> Live Data
+        </span>
       </div>
 
-      {/* Primary Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          {
-            label: 'New Leads Today',
-            value: stats.newLeadsToday,
-            icon: TrendingUp,
-            color: '#00B4D8',
-            bg: 'bg-[#0077B6]/10',
-            trend: '+3',
-          },
-          {
-            label: 'Total Active Leads',
-            value: stats.totalActive,
-            icon: Users,
-            color: '#FFB703',
-            bg: 'bg-[#FFB703]/10',
-            trend: '+8%',
-          },
-          {
-            label: 'Requires Attention',
-            value: stats.requiresAttention,
-            icon: AlertCircle,
-            color: '#FF4D6D',
-            bg: 'bg-[#FF4D6D]/10',
-            trend: 'New',
-          },
-          {
-            label: 'Avg Response Time',
-            value: '2.4h',
-            icon: Clock,
-            color: '#A855F7',
-            bg: 'bg-purple-500/10',
-            trend: '-0.3h',
-          },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className="glass rounded-xl p-5 hover:border-[#0077B6]/30 transition-all cursor-pointer"
-            onClick={() => {
-              if (stat.label === 'Requires Attention') {
-                navigate('/admin/leads');
-              }
-            }}
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div
-                className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center`}
-              >
-                <stat.icon className="w-5 h-5" style={{ color: stat.color }} />
+      <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
+        {stats.map((stat, i) => (
+          <motion.div key={stat.label} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: i * 0.05 }}>
+            <Link to={stat.href} className="block p-5 rounded-2xl glass hover:border-electric-blue/30 transition-all duration-300 group">
+              <div className="flex items-center justify-between mb-3">
+                <stat.icon size={20} className="text-electric-blue" />
+                <span className={`text-xs font-medium flex items-center gap-0.5 ${stat.up ? 'text-success' : 'text-error'}`}>
+                  {stat.change} {stat.up ? <ArrowUpRight size={12} /> : <ArrowUpRight size={12} className="rotate-90" />}
+                </span>
               </div>
-              <div className="flex items-center gap-1 text-xs">
-                <ArrowUpRight className="w-3 h-3 text-[#00C896]" />
-                <span className="text-[#00C896]">{stat.trend}</span>
-              </div>
-            </div>
-            <p className="text-2xl font-bold text-white font-[Space_Grotesk]">
-              {stat.value}
-            </p>
-            <p className="text-xs text-[#5C677D] mt-0.5">{stat.label}</p>
+              <p className="font-display font-bold text-2xl text-pure-white">{stat.value}</p>
+              <p className="text-xs text-chrome mt-1">{stat.label}</p>
+            </Link>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="lg:col-span-2 glass rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="font-display font-semibold text-lg text-pure-white">Recent Enquiries</h2>
+            <Link to="/admin/leads" className="text-xs text-electric-blue hover:text-blue-glow transition-colors flex items-center gap-1">View All <ChevronRight size={14} /></Link>
           </div>
-        ))}
-      </div>
 
-      {/* KPI Cards with Real Data */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          {
-            label: 'Total Vehicles',
-            value: vehicleCounts.total,
-            icon: Car,
-            color: '#0077B6',
-            path: '/admin/vehicles',
-          },
-          {
-            label: 'Available Stock',
-            value: vehicleCounts.available,
-            icon: Car,
-            color: '#00C896',
-            path: '/admin/vehicles',
-          },
-          {
-            label: 'Total Leads',
-            value: leadCounts.total,
-            icon: Users,
-            color: '#FFB703',
-            path: '/admin/leads',
-          },
-          {
-            label: 'New Leads',
-            value: leadCounts.new,
-            icon: MessageSquare,
-            color: '#FF4D6D',
-            path: '/admin/leads',
-          },
-        ].map((item) => (
-          <button
-            key={item.label}
-            onClick={() => navigate(item.path)}
-            className="glass rounded-xl p-4 flex items-center gap-4 hover:border-[#0077B6]/30 transition-all text-left"
-          >
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: `${item.color}15` }}
-            >
-              <item.icon className="w-5 h-5" style={{ color: item.color }} />
+          {recentLeads.length === 0 ? (
+            <div className="text-center py-10">
+              <MessageSquare size={32} className="text-slate/30 mx-auto mb-3" />
+              <p className="text-chrome text-sm">No enquiries yet</p>
+              <p className="text-slate text-xs mt-1">Enquiries will appear here when customers submit forms</p>
             </div>
-            <div>
-              <p className="text-xl font-bold text-white font-[Space_Grotesk]">
-                {item.value}
-              </p>
-              <p className="text-xs text-[#5C677D]">{item.label}</p>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Type Breakdown */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          {
-            label: 'Contact Forms',
-            value: stats.contactForms,
-            icon: MessageSquare,
-            color: '#0077B6',
-            path: '/admin/leads?tab=contact',
-          },
-          {
-            label: 'Sell My Car',
-            value: stats.sellMyCar,
-            icon: Car,
-            color: '#FFB703',
-            path: '/admin/leads?tab=sell-my-car',
-          },
-          {
-            label: 'Test Drives',
-            value: stats.testDrives,
-            icon: CalendarDays,
-            color: '#A855F7',
-            path: '/admin/leads?tab=test-drive',
-          },
-          {
-            label: 'Finance Apps',
-            value: stats.financeApps,
-            icon: Wallet,
-            color: '#00C896',
-            path: '/admin/leads?tab=finance',
-          },
-        ].map((item) => (
-          <button
-            key={item.label}
-            onClick={() => navigate(item.path)}
-            className="glass rounded-xl p-4 flex items-center gap-4 hover:border-[#0077B6]/30 transition-all text-left"
-          >
-            <div
-              className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-              style={{ background: `${item.color}15` }}
-            >
-              <item.icon className="w-5 h-5" style={{ color: item.color }} />
-            </div>
-            <div>
-              <p className="text-xl font-bold text-white font-[Space_Grotesk]">
-                {item.value}
-              </p>
-              <p className="text-xs text-[#5C677D]">{item.label}</p>
-            </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Recent Vehicles */}
-      <div className="glass rounded-xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#33415C]/20">
-          <h2 className="text-sm font-semibold text-white font-[Space_Grotesk]">
-            Recently Added Vehicles
-          </h2>
-          <button
-            onClick={() => navigate('/admin/vehicles')}
-            className="text-xs text-[#0077B6] hover:text-[#00B4D8] transition-colors flex items-center gap-1"
-          >
-            View all
-            <ArrowUpRight className="w-3 h-3" />
-          </button>
-        </div>
-        <div className="divide-y divide-[#33415C]/20">
-          {recentVehicles.map((vehicle) => (
-            <div
-              key={vehicle.id}
-              className="flex items-center gap-4 px-5 py-3 hover:bg-white/[0.02] transition-colors group cursor-pointer"
-              onClick={() => navigate('/admin/vehicles')}
-            >
-              <div className="w-8 h-8 rounded-lg bg-[#0077B6]/10 flex items-center justify-center flex-shrink-0">
-                <Car className="w-4 h-4 text-[#00B4D8]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-white truncate">{vehicle.make} {vehicle.model}</p>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full border ${getStatusColor(vehicle.status)}`}
-                  >
-                    {vehicle.status}
-                  </span>
-                </div>
-                <p className="text-xs text-[#5C677D] mt-0.5">
-                  {vehicle.registration} &middot; &pound;{vehicle.cashPrice.toLocaleString()}
-                </p>
-              </div>
-              <div className="text-right flex-shrink-0">
-                <p className="text-xs text-[#C8D3D9]">{formatDate(vehicle.dateAdded)}</p>
-              </div>
-              <button className="p-1.5 rounded-md opacity-0 group-hover:opacity-100 hover:bg-[#0077B6]/20 text-[#5C677D] hover:text-[#00B4D8] transition-all flex-shrink-0">
-                <Eye className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          ))}
-          {recentVehicles.length === 0 && (
-            <div className="px-5 py-8 text-center text-[#5C677D] text-sm">
-              No vehicles found
+          ) : (
+            <div className="flex flex-col gap-2">
+              {recentLeads.map((lead) => (
+                <Link key={lead.id} to={`/admin/leads?id=${lead.id}`} className="flex items-center gap-4 p-3 rounded-xl hover:bg-obsidian/40 transition-colors group">
+                  <div className="w-10 h-10 rounded-full bg-electric-blue/10 flex items-center justify-center shrink-0">
+                    <Users size={16} className="text-electric-blue" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-pure-white truncate">{lead.name}</p>
+                    <p className="text-xs text-chrome truncate">{lead.vehicle_interest || lead.subject || lead.type || 'General enquiry'}</p>
+                  </div>
+                  <span className={`text-xs font-medium px-2 py-1 rounded-md shrink-0 ${lead.status === 'New' || lead.status === 'new' ? 'bg-electric-blue/10 text-electric-blue' : lead.status === 'Closed' || lead.status === 'closed' || lead.status === 'sold' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'}`}>{lead.status}</span>
+                  <ChevronRight size={14} className="text-slate group-hover:text-electric-blue transition-colors shrink-0" />
+                </Link>
+              ))}
             </div>
           )}
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Recent Leads */}
-      <div className="glass rounded-xl overflow-hidden">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-[#33415C]/20">
-          <h2 className="text-sm font-semibold text-white font-[Space_Grotesk]">
-            Recent Leads
-          </h2>
-          <button
-            onClick={() => navigate('/admin/leads')}
-            className="text-xs text-[#0077B6] hover:text-[#00B4D8] transition-colors flex items-center gap-1"
-          >
-            View all
-            <ArrowUpRight className="w-3 h-3" />
-          </button>
-        </div>
-        <div className="divide-y divide-[#33415C]/20">
-          {recentLeads.map((lead) => (
-            <div
-              key={lead.id}
-              className="flex items-center gap-4 px-5 py-3 hover:bg-white/[0.02] transition-colors group cursor-pointer"
-              onClick={() => navigate(`/admin/leads?id=${lead.id}`)}
-            >
-              <div className="w-8 h-8 rounded-lg bg-[#0077B6]/10 flex items-center justify-center flex-shrink-0">
-                {getLeadIcon(lead.type || 'contact')}
+        <div className="flex flex-col gap-6">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }} className="glass rounded-2xl p-6">
+            <h2 className="font-display font-semibold text-lg text-pure-white mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {actions.map((action) => (
+                <Link key={action.label} to={action.href} className="flex flex-col items-center gap-2 p-4 rounded-xl bg-obsidian/40 hover:bg-obsidian/60 border border-slate/10 hover:border-electric-blue/30 transition-all duration-300">
+                  <div className={`w-10 h-10 rounded-xl ${action.color} flex items-center justify-center`}><action.icon size={18} /></div>
+                  <span className="text-xs font-medium text-frost">{action.label}</span>
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }} className="glass rounded-2xl p-6">
+            <h2 className="font-display font-semibold text-lg text-pure-white mb-4">Recent Activity</h2>
+            {recentActivity.length === 0 ? (
+              <p className="text-chrome text-sm text-center py-4">No recent activity</p>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {recentActivity.map((item, i) => (
+                  <div key={`${item.id}-${i}`} className="flex items-start gap-3">
+                    <div className="w-2 h-2 rounded-full bg-electric-blue mt-1.5 shrink-0" />
+                    <div>
+                      <p className="text-sm text-frost">{item.action} from <span className="text-pure-white font-medium">{item.target}</span></p>
+                      <p className="text-xs text-chrome mt-0.5">{new Date(item.time).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-white truncate">{lead.name}</p>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full border ${getStatusColor(lead.status)}`}
-                  >
-                    {getStatusLabel(lead.status)}
-                  </span>
+            )}
+          </motion.div>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }} className="glass rounded-2xl p-6">
+            <h2 className="font-display font-semibold text-lg text-pure-white mb-4">Performance</h2>
+            <div className="flex flex-col gap-4">
+              {[
+                { label: 'Response Time', value: summary.avgResponse, icon: Clock, color: 'text-success' },
+                { label: 'Customer Rating', value: '4.9/5', icon: Star, color: 'text-warning' },
+                { label: 'Top Source', value: summary.topSource, icon: ShoppingCart, color: 'text-electric-blue' },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2"><item.icon size={14} className="text-chrome" /><span className="text-sm text-chrome">{item.label}</span></div>
+                  <span className={`text-sm font-semibold ${item.color}`}>{item.value}</span>
                 </div>
-                <p className="text-xs text-[#5C677D] mt-0.5">
-                  {getLeadSubject(lead)}
-                </p>
-              </div>
-              <div className="text-right flex-shrink-0">
-                <p className="text-xs text-[#C8D3D9]">{formatDate(lead.date)}</p>
-                <p className="text-[10px] text-[#5C677D]">{formatTime(lead.date)}</p>
-              </div>
-              <button className="p-1.5 rounded-md opacity-0 group-hover:opacity-100 hover:bg-[#0077B6]/20 text-[#5C677D] hover:text-[#00B4D8] transition-all flex-shrink-0">
-                <Eye className="w-3.5 h-3.5" />
-              </button>
+              ))}
             </div>
-          ))}
-          {recentLeads.length === 0 && (
-            <div className="px-5 py-8 text-center text-[#5C677D] text-sm">
-              No leads found
-            </div>
-          )}
+          </motion.div>
         </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {[
-          {
-            label: 'View Analytics',
-            description: 'Detailed lead performance reports',
-            icon: TrendingUp,
-            action: () => navigate('/admin/analytics'),
-          },
-          {
-            label: 'Manage Leads',
-            description: 'Review and update all leads',
-            icon: CheckCircle2,
-            action: () => navigate('/admin/leads'),
-          },
-          {
-            label: 'Manage Vehicles',
-            description: 'Review and update inventory',
-            icon: Car,
-            action: () => navigate('/admin/vehicles'),
-          },
-        ].map((action) => (
-          <button
-            key={action.label}
-            onClick={action.action}
-            className="glass rounded-xl p-4 flex items-center gap-4 hover:border-[#0077B6]/30 transition-all text-left"
-          >
-            <div className="w-10 h-10 rounded-lg bg-[#0077B6]/10 flex items-center justify-center flex-shrink-0">
-              <action.icon className="w-5 h-5 text-[#00B4D8]" />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-white">{action.label}</p>
-              <p className="text-xs text-[#5C677D]">{action.description}</p>
-            </div>
-          </button>
-        ))}
       </div>
     </div>
-  );
+  )
 }
