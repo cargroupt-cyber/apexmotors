@@ -41,6 +41,7 @@ export function useSupabaseLeads() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  /* ── fetch all leads ── */
   const refresh = useCallback(async () => {
     setLoading(true)
     setError(null)
@@ -62,6 +63,7 @@ export function useSupabaseLeads() {
     refresh()
   }, [refresh])
 
+  /* ── add lead ── */
   const addLead = useCallback(async (lead: Omit<Lead, 'id' | 'created_at'>) => {
     const { data, error: err } = await supabase
       .from('leads')
@@ -77,6 +79,7 @@ export function useSupabaseLeads() {
     return data as Lead
   }, [])
 
+  /* ── update lead ── */
   const updateLead = useCallback(async (id: string, patch: Partial<Lead>) => {
     const { data, error: err } = await supabase
       .from('leads')
@@ -93,6 +96,7 @@ export function useSupabaseLeads() {
     return true
   }, [])
 
+  /* ── delete lead ── */
   const deleteLead = useCallback(async (id: string) => {
     const { error: err } = await supabase
       .from('leads')
@@ -107,6 +111,7 @@ export function useSupabaseLeads() {
     return true
   }, [])
 
+  /* ── bulk update status ── */
   const bulkUpdateStatus = useCallback(async (ids: string[], status: LeadStatus) => {
     const { error: err } = await supabase
       .from('leads')
@@ -121,6 +126,7 @@ export function useSupabaseLeads() {
     return true
   }, [])
 
+  /* ── bulk delete ── */
   const bulkDelete = useCallback(async (ids: string[]) => {
     const { error: err } = await supabase
       .from('leads')
@@ -135,6 +141,7 @@ export function useSupabaseLeads() {
     return true
   }, [])
 
+  /* ── search leads ── */
   const searchLeads = useCallback(async (query: string) => {
     setLoading(true)
     const { data, error: err } = await supabase
