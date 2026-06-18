@@ -6,7 +6,7 @@ import {
   Search, Filter, Mail, Phone, ChevronDown, ChevronLeft, ChevronRight,
   Eye, Edit2, Trash2, Check, X, Star, Download, MoreHorizontal, ArrowUpDown,
   MessageSquare, DollarSign, Car, Calendar, CreditCard,
-  ClipboardList, FileText, AlertTriangle,
+  ClipboardList, FileText, AlertTriangle, Clock,
 } from 'lucide-react'
 import { useSupabaseLeads, type Lead, type LeadStatus } from '@/hooks/useSupabaseLeads'
 
