@@ -29,21 +29,33 @@ export function useSupabaseAnalytics() {
   const [leads, setLeads] = useState<Lead[]>([])
   const [vehicleCount, setVehicleCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const refresh = useCallback(async () => {
     setLoading(true)
+    setError(null)
+
+    // Fetch leads
     const { data: leadsData, error: leadsErr } = await supabase
       .from('leads')
       .select('*')
       .order('date', { ascending: false })
 
-    if (!leadsErr) setLeads((leadsData as Lead[]) || [])
+    if (leadsErr) {
+      console.error('Analytics leads error:', leadsErr)
+      setError(leadsErr.message)
+      setLoading(false)
+      return
+    }
+    setLeads((leadsData as Lead[]) || [])
 
+    // Fetch vehicle count
     const { count: vCount, error: vErr } = await supabase
       .from('vehicles')
       .select('*', { count: 'exact', head: true })
 
     if (!vErr) setVehicleCount(vCount || 0)
+
     setLoading(false)
   }, [])
 
@@ -51,6 +63,7 @@ export function useSupabaseAnalytics() {
     refresh()
   }, [refresh])
 
+  /* ── Summary stats ── */
   const summary: AnalyticsSummary = useMemo(() => {
     const total = leads.length
     const newLeads = leads.filter(l => l.status === 'New' || l.status === 'new').length
@@ -70,6 +83,8 @@ export function useSupabaseAnalytics() {
     const thisMonth = leads.filter(l => new Date(l.date) >= monthAgo).length
 
     const conversionRate = total > 0 ? Math.round((closed / total) * 100) : 0
+
+    // Top source
     const sourceCounts: Record<string, number> = {}
     leads.forEach(l => { sourceCounts[l.source] = (sourceCounts[l.source] || 0) + 1 })
     const topSource = Object.entries(sourceCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Website'
@@ -93,12 +108,20 @@ export function useSupabaseAnalytics() {
     }
   }, [leads])
 
+  /* ── Chart: leads by status ── */
   const statusChart: ChartData = useMemo(() => {
     const statusMap: Record<string, number> = {}
-    leads.forEach(l => { const s = l.status || 'New'; statusMap[s] = (statusMap[s] || 0) + 1 })
-    return { labels: Object.keys(statusMap), datasets: [{ label: 'Leads', data: Object.values(statusMap), color: '#0077B6' }] }
+    leads.forEach(l => {
+      const s = l.status || 'New'
+      statusMap[s] = (statusMap[s] || 0) + 1
+    })
+    return {
+      labels: Object.keys(statusMap),
+      datasets: [{ label: 'Leads', data: Object.values(statusMap), color: '#0077B6' }],
+    }
   }, [leads])
 
+  /* ── Chart: leads over time (last 30 days) ── */
   const timeChart: ChartData = useMemo(() => {
     const days: Record<string, number> = {}
     const now = new Date()
@@ -106,23 +129,44 @@ export function useSupabaseAnalytics() {
       const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000)
       days[d.toISOString().split('T')[0]] = 0
     }
-    leads.forEach(l => { const date = l.date ? l.date.split('T')[0] : ''; if (date in days) days[date]++ })
-    return { labels: Object.keys(days), datasets: [{ label: 'Daily Leads', data: Object.values(days), color: '#0077B6' }] }
+    leads.forEach(l => {
+      const date = l.date ? l.date.split('T')[0] : ''
+      if (date in days) days[date]++
+    })
+    return {
+      labels: Object.keys(days),
+      datasets: [{ label: 'Daily Leads', data: Object.values(days), color: '#0077B6' }],
+    }
   }, [leads])
 
+  /* ── Chart: leads by source ── */
   const sourceChart: ChartData = useMemo(() => {
     const sourceMap: Record<string, number> = {}
-    leads.forEach(l => { const s = l.source || 'Website'; sourceMap[s] = (sourceMap[s] || 0) + 1 })
+    leads.forEach(l => {
+      const s = l.source || 'Website'
+      sourceMap[s] = (sourceMap[s] || 0) + 1
+    })
     const sorted = Object.entries(sourceMap).sort((a, b) => b[1] - a[1]).slice(0, 6)
-    return { labels: sorted.map(s => s[0]), datasets: [{ label: 'Source', data: sorted.map(s => s[1]), color: '#00C896' }] }
+    return {
+      labels: sorted.map(s => s[0]),
+      datasets: [{ label: 'Source', data: sorted.map(s => s[1]), color: '#00C896' }],
+    }
   }, [leads])
 
+  /* ── Chart: leads by type ── */
   const typeChart: ChartData = useMemo(() => {
     const typeMap: Record<string, number> = {}
-    leads.forEach(l => { const t = l.type || 'contact'; typeMap[t] = (typeMap[t] || 0) + 1 })
-    return { labels: Object.keys(typeMap), datasets: [{ label: 'Type', data: Object.values(typeMap), color: '#F59E0B' }] }
+    leads.forEach(l => {
+      const t = l.type || 'contact'
+      typeMap[t] = (typeMap[t] || 0) + 1
+    })
+    return {
+      labels: Object.keys(typeMap),
+      datasets: [{ label: 'Type', data: Object.values(typeMap), color: '#F59E0B' }],
+    }
   }, [leads])
 
+  /* ── Recent activity ── */
   const recentActivity = useMemo(() => {
     return leads.slice(0, 10).map(l => ({
       id: l.id,
@@ -142,6 +186,7 @@ export function useSupabaseAnalytics() {
     typeChart,
     recentActivity,
     loading,
+    error,
     refresh,
   }
 }
