@@ -28,18 +28,6 @@ export interface Vehicle {
   created_at?: string
 }
 
-function normalizeArray(value: any): string[] {
-  if (Array.isArray(value)) return value.filter(Boolean)
-  if (!value) return []
-  if (typeof value === 'string') {
-    const cleaned = value.replace(/^\{|\}$/g, '').split(',')
-      .map((s: string) => s.replace(/^"|"$/g, '').trim())
-      .filter((s: string) => s.length > 0 && s !== 'NULL' && s !== 'null')
-    return cleaned
-  }
-  return []
-}
-
 export function useSupabaseVehicles() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
@@ -59,6 +47,7 @@ export function useSupabaseVehicles() {
       setError(err.message)
       setVehicles([])
     } else {
+      // Normalize images from PostgreSQL text[] format
       const normalized = (data || []).map((v: any) => ({
         ...v,
         images: normalizeArray(v.images),
@@ -75,4 +64,16 @@ export function useSupabaseVehicles() {
   }, [refresh])
 
   return { vehicles, loading, error, refresh }
+}
+
+function normalizeArray(value: any): string[] {
+  if (Array.isArray(value)) return value.filter(Boolean)
+  if (!value) return []
+  if (typeof value === 'string') {
+    const cleaned = value.replace(/^\{|\}$/g, '').split(',')
+      .map((s: string) => s.replace(/^"|"$/g, '').trim())
+      .filter((s: string) => s.length > 0 && s !== 'NULL' && s !== 'null')
+    return cleaned
+  }
+  return []
 }
