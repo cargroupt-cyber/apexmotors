@@ -1,5 +1,5 @@
-import AdminLayout from '@/components/admin/AdminLayout'
-import AdminVehiclesContent from './admin/AdminVehicles'
+import AdminLayout from '@/components/AdminLayout'
+import AdminVehiclesContent from './AdminVehicles'
 
 export default function AdminVehicles() {
   return (
