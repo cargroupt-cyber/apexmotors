@@ -436,7 +436,7 @@ export default function Home() {
           variants={heroVariants}
           initial="hidden"
           animate="visible"
-          className="relative z-10 container-apex max-w-[640px] py-32"
+          className="relative z-10 container-THE UK CARS GROUPmax-w-[640px] py-32"
         >
           <motion.div
             variants={heroItem}
@@ -643,7 +643,7 @@ export default function Home() {
           SECTION 3: WHY CHOOSE APEX
           ═══════════════════════════════════════════ */}
       <section className="bg-midnight section-padding">
-        <div className="container-apex">
+        <div className="container-THE UK CARS GROUP>
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -697,7 +697,7 @@ export default function Home() {
           SECTION 4: BUDGET CALCULATOR
           ═══════════════════════════════════════════ */}
       <section className="bg-obsidian section-padding">
-        <div className="container-apex">
+        <div className="container-THE UK CARS GROUP>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -825,7 +825,7 @@ export default function Home() {
           SECTION 5: FEATURED VEHICLES (from Supabase)
           ═══════════════════════════════════════════ */}
       <section className="bg-midnight section-padding">
-        <div className="container-apex">
+        <div className="container-THE UK CARS GROUP>
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -879,7 +879,7 @@ export default function Home() {
           SECTION 6: TRUST & ACCREDITATION
           ═══════════════════════════════════════════ */}
       <section className="bg-obsidian section-padding" ref={statsRef}>
-        <div className="container-apex max-w-[1100px]">
+        <div className="container-THE UK CARS GROUPmax-w-[1100px]">
           {/* Accreditation Badges */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -967,7 +967,7 @@ export default function Home() {
           SECTION 7: TESTIMONIALS
           ═══════════════════════════════════════════ */}
       <section className="bg-midnight section-padding">
-        <div className="container-apex">
+        <div className="container-THE UK CARS GROUP>
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -983,7 +983,7 @@ export default function Home() {
               What Our Customers Say
             </h2>
             <p className="mt-4 text-base text-chrome">
-              Join over 45,000 happy drivers who found their perfect car with APEX.
+              Join over 45,000 happy drivers who found their perfect car with THE UK CARS GROUP.
             </p>
           </motion.div>
 
@@ -1002,7 +1002,7 @@ export default function Home() {
                 ))}
               </div>
               <p className="font-display text-lg md:text-xl text-pure-white leading-relaxed italic">
-                "I was nervous about buying a used car online, but APEX made the entire process effortless. The car arrived exactly as described — actually better than the photos. The RAC inspection gave me total confidence. I'll never buy a car anywhere else."
+                "I was nervous about buying a used car online, but The UK CARS GROUP made the entire process effortless. The car arrived exactly as described — actually better than the photos. The RAC inspection gave me total confidence. I'll never buy a car anywhere else."
               </p>
               <div className="mt-8 flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full gradient-accent flex items-center justify-center">
@@ -1063,7 +1063,7 @@ export default function Home() {
           SECTION 8: FAQ
           ═══════════════════════════════════════════ */}
       <section className="bg-obsidian section-padding">
-        <div className="container-apex max-w-[800px]">
+        <div className="container-max-w-[800px]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1078,7 +1078,7 @@ export default function Home() {
               Common Questions
             </h2>
             <p className="mt-4 text-lg text-frost">
-              Everything you need to know about buying with APEX.
+              Everything you need to know about buying with THE UK CARS GROUP.
             </p>
           </motion.div>
 
@@ -1126,7 +1126,7 @@ export default function Home() {
           SECTION 9: CONTACT CTA
           ═══════════════════════════════════════════ */}
       <section className="bg-midnight section-padding">
-        <div className="container-apex max-w-[800px]">
+        <div className="container-max-w-[800px]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1154,7 +1154,7 @@ export default function Home() {
           >
             {[
               { icon: Phone, label: 'Call Us', value: '0800 123 4567' },
-              { icon: Mail, label: 'Email Us', value: 'hello@apexauto.co.uk' },
+              { icon: Mail, label: 'Email Us', value: 'hello@THE UK CARS GROUPuto.co.uk' },
               { icon: MessageCircle, label: 'Live Chat', value: 'Available 9am-6pm' },
             ].map((contact) => (
               <div
