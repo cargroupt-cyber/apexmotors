@@ -96,11 +96,11 @@ const emptyVehicle: Vehicle = {
 }
 
 const statusColors: Record<VehicleStatus, string> = {
-  Available: 'bg-green-100 text-green-800 border-green-300',
-  Reserved: 'bg-amber-100 text-amber-800 border-amber-300',
-  Sold: 'bg-slate-200 text-slate-700 border-slate-300',
-  'Coming Soon': 'bg-sky-100 text-sky-800 border-sky-300',
-  'In Preparation': 'bg-purple-100 text-purple-800 border-purple-300',
+  Available: 'bg-[#00C896]/15 text-[#00C896] border-[#00C896]/30',
+  Reserved: 'bg-[#FFB703]/15 text-[#FFB703] border-[#FFB703]/30',
+  Sold: 'bg-[#FF4D6D]/15 text-[#FF4D6D] border-[#FF4D6D]/30',
+  'Coming Soon': 'bg-[#00B4D8]/15 text-[#00B4D8] border-[#00B4D8]/30',
+  'In Preparation': 'bg-[#FF8C42]/15 text-[#FF8C42] border-[#FF8C42]/30',
 }
 
 /* ─── Status Mapping ─── */
@@ -562,10 +562,10 @@ export default function AdminVehicles() {
       )}
 
       {/* ===== TABLE ===== */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="bg-[#001233] rounded-xl border border-[#33415C]/40 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-[#000814] border-b border-[#33415C]/40">
               <tr>
                 <th className="px-4 py-3 w-10">
                   <input
@@ -694,29 +694,29 @@ export default function AdminVehicles() {
             <button
               onClick={() => setPage(1)}
               disabled={safePage <= 1}
-              className="p-1.5 rounded-md border border-slate-300 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+              className="p-1.5 rounded-md border border-[#33415C]/40 bg-[#001233] text-[#C8D3D9] hover:bg-[#0077B6]/20 disabled:opacity-40 transition-colors"
             >
               <ChevronsLeft className="w-4 h-4" />
             </button>
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={safePage <= 1}
-              className="p-1.5 rounded-md border border-slate-300 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+              className="p-1.5 rounded-md border border-[#33415C]/40 bg-[#001233] text-[#C8D3D9] hover:bg-[#0077B6]/20 disabled:opacity-40 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="text-sm text-slate-600 px-2">{safePage} / {totalPages}</span>
+            <span className="text-sm text-[#8B9EB3] px-2">{safePage} / {totalPages}</span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={safePage >= totalPages}
-              className="p-1.5 rounded-md border border-slate-300 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+              className="p-1.5 rounded-md border border-[#33415C]/40 bg-[#001233] text-[#C8D3D9] hover:bg-[#0077B6]/20 disabled:opacity-40 transition-colors"
             >
               <ChevronRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => setPage(totalPages)}
               disabled={safePage >= totalPages}
-              className="p-1.5 rounded-md border border-slate-300 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-40"
+              className="p-1.5 rounded-md border border-[#33415C]/40 bg-[#001233] text-[#C8D3D9] hover:bg-[#0077B6]/20 disabled:opacity-40 transition-colors"
             >
               <ChevronsRight className="w-4 h-4" />
             </button>
@@ -728,31 +728,31 @@ export default function AdminVehicles() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setModalOpen(false)}>
           <div
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden"
+            className="bg-[#001233] rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden border border-[#33415C]/40"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
-              <h2 className="text-lg font-bold text-slate-900">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#33415C]/40 bg-[#000814]">
+              <h2 className="text-lg font-bold text-white">
                 {modalMode === 'add' && 'Add Vehicle'}
                 {modalMode === 'edit' && 'Edit Vehicle'}
                 {modalMode === 'duplicate' && 'Duplicate Vehicle'}
               </h2>
-              <button onClick={() => setModalOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-lg transition">
+              <button onClick={() => setModalOpen(false)} className="p-1.5 text-[#5C677D] hover:text-white hover:bg-white/10 rounded-lg transition">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-slate-200 bg-slate-50">
+            <div className="flex border-b border-[#33415C]/40 bg-[#000814]">
               {['details', 'pricing', 'features', 'media', 'seo'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-5 py-3 text-sm font-medium capitalize transition border-b-2 -mb-px ${
                     activeTab === tab
-                      ? 'border-blue-600 text-blue-600 bg-white'
-                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                      ? 'border-[#0077B6] text-[#00B4D8] bg-[#001233]'
+                      : 'border-transparent text-[#5C677D] hover:text-[#C8D3D9] hover:bg-[#001233]/50'
                   }`}
                 >
                   {tab}
@@ -886,16 +886,16 @@ export default function AdminVehicles() {
                           <button
                             key={feature}
                             onClick={() => toggleFeature(feature)}
-                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition border-b border-slate-100 last:border-0 ${
-                              checked ? 'bg-blue-50 text-blue-900' : 'hover:bg-slate-50 text-slate-700'
+                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm transition border-b border-[#33415C]/20 last:border-0 ${
+                              checked ? 'bg-[#0077B6]/15 text-[#00B4D8]' : 'hover:bg-white/5 text-[#C8D3D9]'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded border flex items-center justify-center flex-shrink-0 transition ${
-                              checked ? 'bg-blue-600 border-blue-600' : 'border-slate-300 bg-white'
+                              checked ? 'bg-[#0077B6] border-[#0077B6]' : 'border-[#33415C]/40 bg-[#000814]'
                             }`}>
                               {checked && <Check className="w-3.5 h-3.5 text-white" />}
                             </div>
-                            <GripVertical className="w-3.5 h-3.5 text-slate-300 flex-shrink-0" />
+                            <GripVertical className="w-3.5 h-3.5 text-[#33415C] flex-shrink-0" />
                             {feature}
                           </button>
                         )
@@ -1018,25 +1018,25 @@ export default function AdminVehicles() {
       {deleteTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" onClick={() => setDeleteTarget(null)}>
           <div
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+            className="bg-[#001233] rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-[#33415C]/40"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="px-6 py-5 flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
+              <div className="w-10 h-10 rounded-full bg-[#FF4D6D]/15 flex items-center justify-center flex-shrink-0">
+                <AlertTriangle className="w-5 h-5 text-[#FF4D6D]" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-900">Delete Vehicle</h3>
-                <p className="text-sm text-slate-500 mt-1">
-                  Are you sure you want to delete <strong>{deleteTarget.make} {deleteTarget.model}</strong> ({deleteTarget.year})?
+                <h3 className="text-lg font-bold text-white">Delete Vehicle</h3>
+                <p className="text-sm text-[#8B9EB3] mt-1">
+                  Are you sure you want to delete <strong className="text-white">{deleteTarget.make} {deleteTarget.model}</strong> ({deleteTarget.year})?
                 </p>
                 {deleteTarget.registration && (
-                  <p className="text-xs text-slate-400 mt-1">Registration: {deleteTarget.registration}</p>
+                  <p className="text-xs text-[#5C677D] mt-1">Registration: {deleteTarget.registration}</p>
                 )}
-                <p className="text-xs text-red-500 mt-2">This action cannot be undone.</p>
+                <p className="text-xs text-[#FF4D6D] mt-2">This action cannot be undone.</p>
               </div>
             </div>
-            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200 bg-slate-50">
+            <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#33415C]/40 bg-[#000814]">
               <button onClick={() => setDeleteTarget(null)} className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-lg transition">
                 Cancel
               </button>
