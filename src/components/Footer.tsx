@@ -51,7 +51,7 @@ export default function Footer() {
           <motion.div variants={itemVariants}>
             <Link to="/" className="inline-block">
               <span className="font-display text-2xl font-bold tracking-[-0.02em] text-pure-white">
-                Uk Cars Group<span className="text-electric-blue">.</span>
+                Uk Car Group<span className="text-electric-blue">.</span>
               </span>
             </Link>
             <p className="mt-4 text-sm text-chrome leading-relaxed max-w-[280px]">
