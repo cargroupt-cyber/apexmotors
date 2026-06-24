@@ -87,7 +87,7 @@ export default function Navbar() {
               className="flex items-center gap-2 font-mono text-xs text-electric-blue hover:text-blue-glow transition-colors"
             >
               <Phone size={14} />
-              0800 123 4567
+              07495892615
             </a>
             <Link
               to="/contact"
