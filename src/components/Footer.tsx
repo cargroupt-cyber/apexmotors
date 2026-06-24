@@ -51,7 +51,7 @@ export default function Footer() {
           <motion.div variants={itemVariants}>
             <Link to="/" className="inline-block">
               <span className="font-display text-2xl font-bold tracking-[-0.02em] text-pure-white">
-                APEX<span className="text-electric-blue">.</span>
+                Uk Cars Group<span className="text-electric-blue">.</span>
               </span>
             </Link>
             <p className="mt-4 text-sm text-chrome leading-relaxed max-w-[280px]">
@@ -111,7 +111,7 @@ export default function Footer() {
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="text-electric-blue mt-0.5 shrink-0" />
                 <span className="text-sm text-chrome">
-                  123 Motorway Lane, London, EC1A 1BB
+                  Based In London
                 </span>
               </li>
               <li className="flex items-center gap-3">
