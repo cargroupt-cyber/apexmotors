@@ -48,10 +48,10 @@ const contactMethods = [
   {
     icon: Phone,
     title: 'Call Us',
-    detail: '0800 123 4567',
+    detail: '07495892615',
     meta: 'Mon – Sat: 9am – 7pm',
     action: 'Call Now',
-    href: 'tel:08001234567',
+    href: 'tel:07495892615',
   },
   {
     icon: Mail,
