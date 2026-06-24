@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, MessageCircle } from 'lucide-react'
 
-const WHATSAPP_NUMBER = '447XXXXXXXXXX' // ← CHANGE THIS TO YOUR REAL UK NUMBER (e.g., 447712345678)
+const WHATSAPP_NUMBER = '447495892615' // ← CHANGE THIS TO YOUR REAL UK NUMBER (e.g., 447712345678)
 const WHATSAPP_MESSAGE = 'Hi, I\'m interested in a car on your website. Can you help me?'
 
 export default function WhatsAppButton() {
