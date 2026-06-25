@@ -48,7 +48,7 @@ const contactMethods = [
   {
     icon: Phone,
     title: 'Call Us',
-    detail: '07495892615',
+    detail: '02035676879',
     meta: 'Mon – Sat: 9am – 7pm',
     action: 'Call Now',
     href: 'tel:07495892615',
