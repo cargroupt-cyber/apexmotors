@@ -51,7 +51,7 @@ const contactMethods = [
     detail: '02035676879',
     meta: 'Mon – Sat: 9am – 7pm',
     action: 'Call Now',
-    href: 'tel:07495892615',
+    href: 'tel:07983183814',
   },
   {
     icon: Mail,
@@ -80,8 +80,8 @@ const openingHours = [
 
 const locations = [
   {
-    name: 'APEX London',
-    address: '123 Motor Lane, Croydon, CR0 1AB',
+    name: 'Uk Car Group Uk',
+    address: 'Based In London',
     phone: '020 8123 4567',
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-electric-blue/20 to-blue-glow/10',
