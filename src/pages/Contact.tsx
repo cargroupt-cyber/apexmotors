@@ -183,15 +183,42 @@ export default function Contact() {
     return Object.keys(e).length === 0
   }
 
-  const handleSubmit = (evt: React.FormEvent) => {
+  const WEB3FORMS_KEY = '407a7337-aeca-42b8-9b02-afe80238f322'
+
+  const handleSubmit = async (evt: React.FormEvent) => {
     evt.preventDefault()
     if (!validate()) return
     setIsSubmitting(true)
-    // Simulate submission
-    setTimeout(() => {
+    setErrors({})
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          from_name: `${formData.firstName} ${formData.lastName}`,
+          subject: `New Enquiry: ${formData.subject} - The UK Cars Group`,
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone || 'Not provided',
+          enquiry_type: formData.subject,
+          message: formData.message,
+          replyto: formData.email,
+        }),
+      })
+
+      const result = await response.json()
+      if (result.success) {
+        setIsSubmitted(true)
+      } else {
+        setErrors({ submit: 'Something went wrong. Please try again or call us.' })
+      }
+    } catch {
+      setErrors({ submit: 'Network error. Please try again or call us directly.' })
+    } finally {
       setIsSubmitting(false)
-      setIsSubmitted(true)
-    }, 1500)
+    }
   }
 
   const handleChange = (
@@ -544,7 +571,7 @@ export default function Contact() {
                     <span className="text-electric-blue hover:underline cursor-pointer">
                       Privacy Policy
                     </span>{' '}
-                    and consent to APEX Automotive contacting me regarding my
+                    and consent to The UK Cars Group contacting me regarding my
                     enquiry.
                   </span>
                 </label>
@@ -555,6 +582,14 @@ export default function Contact() {
                   </p>
                 )}
               </motion.div>
+
+              {/* Submit error */}
+              {errors.submit && (
+                <motion.div variants={staggerItem} className="mt-4 p-3 rounded-xl bg-error/10 border border-error/20 flex items-center gap-2 text-[0.8125rem] text-error">
+                  <AlertCircle size={16} />
+                  {errors.submit}
+                </motion.div>
+              )}
 
               {/* Submit */}
               <motion.div variants={staggerItem} className="mt-6">
