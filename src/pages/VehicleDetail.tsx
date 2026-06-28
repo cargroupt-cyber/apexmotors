@@ -115,8 +115,8 @@ export default function VehicleDetail() {
       <section className="bg-obsidian">
         {/* ── Full-width image slider (no text on top) ── */}
         <div
-          className="relative w-full overflow-hidden select-none"
-          style={{ height: 'clamp(300px, 55vw, 680px)' }}
+          className="relative w-full overflow-hidden select-none bg-[#0a0a0a]"
+          style={{ height: 'clamp(300px, 56.25vw, 700px)' }}
           onTouchStart={(e) => {
             const touch = e.touches[0];
             (e.currentTarget as any)._touchStartX = touch.clientX;
@@ -133,12 +133,12 @@ export default function VehicleDetail() {
         >
           <motion.img
             key={activeImage}
-            initial={{ opacity: 0, scale: 1.03 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
             src={vehicle.images[activeImage]}
             alt={`${vehicle.make} ${vehicle.model} — photo ${activeImage + 1}`}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-contain"
             draggable={false}
           />
 
