@@ -112,61 +112,80 @@ export default function VehicleDetail() {
   return (
     <div className="min-h-[100dvh] bg-obsidian">
       {/* ============ HERO GALLERY ============ */}
-      <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+      <section className="bg-obsidian">
+        {/* ── Full-width image slider (no text on top) ── */}
+        <div
+          className="relative w-full overflow-hidden select-none"
+          style={{ height: 'clamp(300px, 55vw, 680px)' }}
+          onTouchStart={(e) => {
+            const touch = e.touches[0];
+            (e.currentTarget as any)._touchStartX = touch.clientX;
+          }}
+          onTouchEnd={(e) => {
+            const startX = (e.currentTarget as any)._touchStartX ?? 0;
+            const endX = e.changedTouches[0].clientX;
+            const diff = startX - endX;
+            if (Math.abs(diff) > 40) {
+              if (diff > 0) setActiveImage(prev => prev < vehicle.images.length - 1 ? prev + 1 : 0);
+              else setActiveImage(prev => prev > 0 ? prev - 1 : vehicle.images.length - 1);
+            }
+          }}
+        >
           <motion.img
-            initial={{ scale: 1.05, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+            key={activeImage}
+            initial={{ opacity: 0, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
             src={vehicle.images[activeImage]}
-            alt={`${vehicle.make} ${vehicle.model}`}
-            className="w-full h-full object-cover"
+            alt={`${vehicle.make} ${vehicle.model} — photo ${activeImage + 1}`}
+            className="absolute inset-0 w-full h-full object-cover"
+            draggable={false}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/20 to-[rgba(0,8,20,0.3)]" />
-        </div>
 
-        {/* Navigation Arrows */}
-        <div className="absolute bottom-8 right-8 flex items-center gap-2 z-10">
+          {/* Left / Right arrows */}
           <button
             onClick={() => setActiveImage(prev => prev > 0 ? prev - 1 : vehicle.images.length - 1)}
-            className="w-12 h-12 rounded-full glass flex items-center justify-center text-pure-white hover:bg-pure-white/10 transition-colors"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full glass flex items-center justify-center text-pure-white hover:bg-pure-white/20 transition-colors"
+            aria-label="Previous image"
           >
             <ChevronLeft size={20} />
           </button>
-          <span className="font-mono text-sm text-frost px-2">
-            {activeImage + 1} / {vehicle.images.length}
-          </span>
           <button
             onClick={() => setActiveImage(prev => prev < vehicle.images.length - 1 ? prev + 1 : 0)}
-            className="w-12 h-12 rounded-full glass flex items-center justify-center text-pure-white hover:bg-pure-white/10 transition-colors"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full glass flex items-center justify-center text-pure-white hover:bg-pure-white/20 transition-colors"
+            aria-label="Next image"
           >
             <ChevronRight size={20} />
           </button>
+
+          {/* Counter badge */}
+          <span className="absolute top-4 right-4 z-10 font-mono text-xs text-pure-white bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-full">
+            {activeImage + 1} / {vehicle.images.length}
+          </span>
         </div>
 
-        {/* Thumbnail Strip */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-10">
+        {/* ── Thumbnail strip ── */}
+        <div className="flex items-center gap-2 overflow-x-auto px-4 py-3 bg-obsidian scrollbar-none">
           {vehicle.images.map((img, i) => (
             <button
               key={i}
               onClick={() => setActiveImage(i)}
-              className={`w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? 'border-electric-blue opacity-100' : 'border-transparent opacity-60 hover:opacity-80'}`}
+              className={`flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? 'border-electric-blue opacity-100' : 'border-transparent opacity-50 hover:opacity-75'}`}
             >
               <img src={img} alt="" className="w-full h-full object-cover" />
             </button>
           ))}
         </div>
 
-        {/* Content Overlay */}
-        <div className="absolute bottom-24 left-0 right-0 z-10 px-[clamp(1.5rem,5vw,4rem)]">
+        {/* ── Vehicle details below the gallery ── */}
+        <div className="px-[clamp(1.5rem,5vw,4rem)] pt-6 pb-10 bg-obsidian">
           <div className="max-w-[1400px] mx-auto">
             {/* Breadcrumb */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-sm text-chrome mb-4"
+              transition={{ delay: 0.2 }}
+              className="text-sm text-chrome mb-5"
             >
               <Link to="/" className="text-frost hover:text-pure-white transition-colors">Home</Link>
               <span className="mx-2 text-slate">/</span>
@@ -177,29 +196,29 @@ export default function VehicleDetail() {
               <span>{vehicle.model}</span>
             </motion.div>
 
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
               <div>
                 <motion.h1
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.2 }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.1 }}
                   className="font-display font-bold text-pure-white"
-                  style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}
+                  style={{ fontSize: 'clamp(1.75rem, 4vw, 3rem)' }}
                 >
                   {vehicle.make} {vehicle.model} {vehicle.variant}
                 </motion.h1>
                 <motion.p
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.3 }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
                   className="mt-2 font-mono text-sm text-chrome"
                 >
                   {vehicle.year} &middot; {vehicle.mileage.toLocaleString()} miles &middot; {vehicle.transmission} &middot; {vehicle.fuelType}
                 </motion.p>
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.4 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
                   className="flex items-baseline gap-4 mt-4"
                 >
                   <span className="font-display font-bold text-3xl text-pure-white">£{vehicle.price.toLocaleString()}</span>
@@ -207,9 +226,9 @@ export default function VehicleDetail() {
                   <span className="px-2 py-1 rounded-full text-xs font-medium bg-electric-blue/15 text-electric-blue">PCP</span>
                 </motion.div>
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.5 }}
+                  transition={{ duration: 0.6, delay: 0.4 }}
                   className="flex flex-wrap gap-2 mt-3"
                 >
                   <span className="px-3 py-1 rounded-full text-xs font-medium bg-success/20 text-success">RAC Approved</span>
@@ -220,17 +239,17 @@ export default function VehicleDetail() {
 
               {/* CTAs */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.5 }}
-                className="flex flex-col items-start lg:items-end gap-3"
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="flex flex-col items-start lg:items-end gap-3 lg:min-w-[220px]"
               >
-                <button className="px-8 py-3.5 bg-electric-blue text-pure-white font-semibold rounded-full hover:bg-blue-glow hover:shadow-glow transition-all duration-300 text-center">
+                <button className="w-full lg:w-auto px-8 py-3.5 bg-electric-blue text-pure-white font-semibold rounded-full hover:bg-blue-glow hover:shadow-glow transition-all duration-300 text-center">
                   Reserve This Car — £99
                 </button>
                 <Link
                   to="/contact"
-                  className="px-8 py-3 border-2 border-pure-white/30 text-pure-white font-semibold rounded-full hover:bg-pure-white/10 hover:border-electric-blue transition-all duration-300 text-center"
+                  className="w-full lg:w-auto px-8 py-3 border-2 border-pure-white/30 text-pure-white font-semibold rounded-full hover:bg-pure-white/10 hover:border-electric-blue transition-all duration-300 text-center"
                 >
                   Book Test Drive
                 </Link>
