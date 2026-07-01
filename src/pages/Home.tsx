@@ -924,15 +924,15 @@ export default function Home() {
               Trusted by Industry Leaders
             </h2>
             <p className="mt-4 text-base text-frost max-w-[600px] mx-auto leading-relaxed">
-              APEX is a fully accredited RAC Approved Dealer and a proud member of the Motor Ombudsman Code of Practice. Every car we sell meets the highest standards of quality, safety, and transparency.
+              CarZee is a fully accredited RAC Approved Dealer and a proud member of the Motor Ombudsman Code of Practice. Every car we sell meets the highest standards of quality, safety, and transparency.
             </p>
           </motion.div>
 
           {/* Stats Row */}
           <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { target: 45000, suffix: '+', label: 'Vehicles sold since 2010', prefix: '' },
-              { target: 38000, suffix: '+', label: 'Five-star reviews', prefix: '' },
+              { target: 978, suffix: '+', label: 'Vehicles sold since 2023', prefix: '' },
+              { target: 974, suffix: '+', label: 'Five-star reviews', prefix: '' },
               { target: 3, suffix: '', label: 'Nationwide showrooms', prefix: '' },
               { target: 98, suffix: '%', label: 'Customer satisfaction', prefix: '' },
             ].map((stat, i) => (
@@ -984,7 +984,7 @@ export default function Home() {
               What Our Customers Say
             </h2>
             <p className="mt-4 text-base text-chrome">
-              Join over 45,000 happy drivers who found their perfect car with APEX.
+              Join over 978 happy drivers who found their perfect car with CarZee.
             </p>
           </motion.div>
 
