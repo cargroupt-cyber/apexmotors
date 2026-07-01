@@ -191,7 +191,7 @@ export default function Contact() {
         body: JSON.stringify({
           access_key: WEB3FORMS_KEY,
           from_name: `${formData.firstName} ${formData.lastName}`,
-          subject: `New Enquiry: ${formData.subject} - The UK Cars Group`,
+          subject: `New Enquiry: ${formData.subject} - CarZee`,
           name: `${formData.firstName} ${formData.lastName}`,
           email: formData.email,
           phone: formData.phone || 'Not provided',
@@ -564,7 +564,7 @@ export default function Contact() {
                     <span className="text-electric-blue hover:underline cursor-pointer">
                       Privacy Policy
                     </span>{' '}
-                    and consent to The UK Cars Group contacting me regarding my
+                    and consent to CarZee contacting me regarding my
                     enquiry.
                   </span>
                 </label>

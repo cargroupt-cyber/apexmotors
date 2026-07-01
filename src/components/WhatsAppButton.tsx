@@ -82,7 +82,7 @@ export default function WhatsAppButton() {
                   <MessageCircle size={20} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">The UK Cars Group</p>
+                  <p className="text-sm font-semibold text-white">CarZee</p>
                   <p className="text-xs text-white/70">Typically replies within minutes</p>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export default function WhatsAppButton() {
                   style={{ backgroundColor: '#001233', border: '1px solid rgba(255,255,255,0.06)' }}
                 >
                   <p className="text-sm text-white">
-                    Hi there! 👋 Welcome to The UK Cars Group. How can we help you today?
+                    Hi there! 👋 Welcome to CarZee. How can we help you today?
                   </p>
                   <p className="text-[10px] mt-1.5" style={{ color: '#5C677D' }}>
                     {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
