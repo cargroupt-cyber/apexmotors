@@ -14,6 +14,8 @@ import AdminLeads from './pages/AdminLeads'
 import AdminAnalytics from './pages/AdminAnalytics'
 import AdminVehicles from './pages/AdminVehicles'
 import AdminSettings from './pages/AdminSettings'
+import AdminLogin from './pages/AdminLogin'
+import AdminRouteGuard from './components/admin/AdminRouteGuard'
 import WhatsAppButton from './components/WhatsAppButton'
 
 export default function App() {
@@ -31,11 +33,12 @@ export default function App() {
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
       </Route>
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/leads" element={<AdminLeads />} />
-      <Route path="/admin/analytics" element={<AdminAnalytics />} />
-      <Route path="/admin/vehicles" element={<AdminVehicles />} />
-      <Route path="/admin/settings" element={<AdminSettings />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminRouteGuard><AdminDashboard /></AdminRouteGuard>} />
+      <Route path="/admin/leads" element={<AdminRouteGuard><AdminLeads /></AdminRouteGuard>} />
+      <Route path="/admin/analytics" element={<AdminRouteGuard><AdminAnalytics /></AdminRouteGuard>} />
+      <Route path="/admin/vehicles" element={<AdminRouteGuard><AdminVehicles /></AdminRouteGuard>} />
+      <Route path="/admin/settings" element={<AdminRouteGuard><AdminSettings /></AdminRouteGuard>} />
     </Routes>
     <WhatsAppButton />
     </>

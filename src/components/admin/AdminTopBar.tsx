@@ -1,6 +1,8 @@
 import { Search, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import NotificationBell from './NotificationBell';
+import { useAuth } from '@/hooks/useAuth';
 
 interface AdminTopBarProps {
   sidebarCollapsed: boolean;
@@ -8,6 +10,13 @@ interface AdminTopBarProps {
 
 export default function AdminTopBar({ sidebarCollapsed }: AdminTopBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const { logout, user } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await logout()
+    navigate('/admin/login')
+  }
 
   return (
     <header
@@ -46,12 +55,12 @@ export default function AdminTopBar({ sidebarCollapsed }: AdminTopBarProps) {
             <User className="w-4 h-4 text-[#00B4D8]" />
           </div>
           <div className="hidden md:block">
-            <p className="text-sm text-white font-medium">Tom Bradley</p>
-            <p className="text-[10px] text-[#C8D3D9]/60">Sales Manager</p>
+            <p className="text-sm text-white font-medium">{user?.email || 'Admin'}</p>
+            <p className="text-[10px] text-[#C8D3D9]/60">Administrator</p>
           </div>
         </div>
 
-        <button className="p-2 rounded-lg hover:bg-white/5 transition-colors ml-2">
+        <button onClick={handleLogout} className="p-2 rounded-lg hover:bg-white/5 transition-colors ml-2" title="Sign out">
           <LogOut className="w-4 h-4 text-[#C8D3D9]/60" />
         </button>
       </div>
