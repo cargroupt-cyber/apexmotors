@@ -277,6 +277,8 @@ export default function AdminVehicles() {
 
   const [deleteTarget, setDeleteTarget] = useState<Vehicle | null>(null)
   const [featureSearch, setFeatureSearch] = useState('')
+  const [dragImageIndex, setDragImageIndex] = useState<number | null>(null)
+  const [dragOverImageIndex, setDragOverImageIndex] = useState<number | null>(null)
 
   /* ─── Derived: filtered + sorted + paginated ─── */
   const filtered = useMemo(() => {
@@ -431,6 +433,16 @@ export default function AdminVehicles() {
       ...prev,
       images: prev.images.filter((_, i) => i !== index),
     }))
+  }
+
+  function reorderImage(fromIndex: number, toIndex: number) {
+    if (fromIndex === toIndex) return
+    setForm((prev) => {
+      const next = [...prev.images]
+      const [moved] = next.splice(fromIndex, 1)
+      next.splice(toIndex, 0, moved)
+      return { ...prev, images: next }
+    })
   }
 
   function addImageUrl() {
@@ -937,8 +949,37 @@ export default function AdminVehicles() {
                   {form.images.length > 0 && (
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
                       {form.images.map((url, i) => (
-                        <div key={`${url}-${i}`} className="group relative aspect-square rounded-lg overflow-hidden border border-slate-200 bg-slate-100">
-                          <img src={url} alt={`Vehicle ${i + 1}`} className="w-full h-full object-cover" />
+                        <div
+                          key={`${url}-${i}`}
+                          draggable
+                          onDragStart={() => setDragImageIndex(i)}
+                          onDragOver={(e) => {
+                            e.preventDefault()
+                            setDragOverImageIndex(i)
+                          }}
+                          onDragLeave={() => setDragOverImageIndex(null)}
+                          onDrop={(e) => {
+                            e.preventDefault()
+                            if (dragImageIndex !== null) {
+                              reorderImage(dragImageIndex, i)
+                            }
+                            setDragImageIndex(null)
+                            setDragOverImageIndex(null)
+                          }}
+                          onDragEnd={() => {
+                            setDragImageIndex(null)
+                            setDragOverImageIndex(null)
+                          }}
+                          className={`group relative aspect-square rounded-lg overflow-hidden border bg-slate-100 cursor-move transition-all ${
+                            dragOverImageIndex === i && dragImageIndex !== i
+                              ? 'border-blue-500 ring-2 ring-blue-500 scale-105'
+                              : 'border-slate-200'
+                          } ${dragImageIndex === i ? 'opacity-50' : 'opacity-100'}`}
+                        >
+                          <img src={url} alt={`Vehicle ${i + 1}`} className="w-full h-full object-cover pointer-events-none" />
+                          <div className="absolute top-1.5 left-1.5 p-1 bg-black/40 text-white rounded-md opacity-0 group-hover:opacity-100 transition shadow-sm">
+                            <GripVertical className="w-3.5 h-3.5" />
+                          </div>
                           <button
                             onClick={() => removeImage(i)}
                             className="absolute top-1.5 right-1.5 p-1 bg-red-600 text-white rounded-md opacity-0 group-hover:opacity-100 transition shadow-sm"
