@@ -18,7 +18,7 @@ const LOGO_URL = `${SITE_URL}/assets/logo-apex.png`
 const DEFAULT_IMAGE = `${SITE_URL}/assets/og-default.jpg`
 
 const ORG_NAME = 'APEX Automotive'
-const ORG_PHONE = '+44-20-7946-0958'
+const ORG_PHONE = '+44-7983-183814'
 const ORG_EMAIL = 'info@apexautomotive.co.uk'
 
 const HEADQUARTERS = {
@@ -309,7 +309,7 @@ export function LocalBusinessSchema({
       addressLocality: 'London',
       addressRegion: 'England',
       postalCode: 'W1K 7AF',
-      telephone: '+44-20-7946-0958',
+      telephone: '+44-7983-183814',
       latitude: 51.5074,
       longitude: -0.1278,
       image: DEFAULT_IMAGE,
@@ -321,7 +321,7 @@ export function LocalBusinessSchema({
       addressLocality: 'London',
       addressRegion: 'England',
       postalCode: 'E14 5NY',
-      telephone: '+44-20-7946-0959',
+      telephone: '+44-7983-183814',
       latitude: 51.5055,
       longitude: -0.0195,
       openingHours: ['Mo-Fr 10:00-20:00', 'Sa 10:00-18:00', 'Su 11:00-17:00'],

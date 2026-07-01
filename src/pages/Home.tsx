@@ -1154,7 +1154,7 @@ export default function Home() {
             className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4"
           >
             {[
-              { icon: Phone, label: 'Call Us', value: '0800 123 4567' },
+              { icon: Phone, label: 'Call Us', value: '07983183814' },
               { icon: Mail, label: 'Email Us', value: 'hello@apexauto.co.uk' },
               { icon: MessageCircle, label: 'Live Chat', value: 'Available 9am-6pm' },
             ].map((contact) => (

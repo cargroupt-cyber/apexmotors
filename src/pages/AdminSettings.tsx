@@ -26,7 +26,7 @@ interface BusinessSettings {
 const DEFAULT_SETTINGS: BusinessSettings = {
   dealershipName: 'APEX Automotive',
   address: '123 Motorway Lane, London, EC1A 1BB',
-  phone: '0800 123 4567',
+  phone: '07983183814',
   email: 'hello@apexauto.co.uk',
   vatNumber: 'GB 123 4567 89',
   openingHours: [

@@ -83,11 +83,11 @@ export default function Navbar() {
           {/* Right side */}
           <div className="hidden lg:flex items-center gap-4">
             <a
-              href="tel:07495892615"
+              href="tel:07983183814"
               className="flex items-center gap-2 font-mono text-xs text-electric-blue hover:text-blue-glow transition-colors"
             >
               <Phone size={14} />
-              02076876789
+              07983183814
             </a>
             <Link
               to="/contact"

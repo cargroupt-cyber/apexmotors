@@ -48,7 +48,7 @@ const contactMethods = [
   {
     icon: Phone,
     title: 'Call Us',
-    detail: '02035676879',
+    detail: '07983183814',
     meta: 'Mon – Sat: 9am – 7pm',
     action: 'Call Now',
     href: 'tel:07983183814',
@@ -82,28 +82,28 @@ const locations = [
   {
     name: 'CarZee',
     address: 'Based In London',
-    phone: '020 8123 4567',
+    phone: '07983183814',
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-electric-blue/20 to-blue-glow/10',
   },
   {
     name: 'APEX Birmingham',
     address: '456 Carriageway Rd, B1 1AA',
-    phone: '0121 234 5678',
+    phone: '07983183814',
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-blue-glow/20 to-ice-blue/10',
   },
   {
     name: 'APEX Manchester',
     address: '789 Autobahn St, M1 1AA',
-    phone: '0161 234 5678',
+    phone: '07983183814',
     hours: 'Mon – Sat: 9am – 6pm',
     mapColor: 'from-ice-blue/20 to-electric-blue/10',
   },
   {
     name: 'APEX Edinburgh',
     address: '321 Highland Ave, EH1 1AA',
-    phone: '0131 234 5678',
+    phone: '07983183814',
     hours: 'Mon – Sat: 9am – 6pm',
     mapColor: 'from-electric-blue/20 to-charcoal/30',
   },
@@ -479,7 +479,7 @@ export default function Contact() {
                   value={formData.phone}
                   onChange={(e) => handleChange('phone', e.target.value)}
                   className="w-full glass-input rounded-xl px-4 py-3.5 text-pure-white font-body placeholder:text-slate/60"
-                  placeholder="0800 123 4567"
+                  placeholder="07983183814"
                 />
               </motion.div>
 
@@ -888,10 +888,10 @@ export default function Contact() {
                 For breakdown assistance and emergencies outside of opening
                 hours, please call our 24/7 support line on{' '}
                 <a
-                  href="tel:0800999888"
+                  href="tel:07983183814"
                   className="text-electric-blue hover:underline font-mono"
                 >
-                  0800 999 888
+                  07983183814
                 </a>
                 . For all other enquiries, we'll respond first thing the next
                 business day.
