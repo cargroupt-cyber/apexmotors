@@ -189,6 +189,9 @@ export default function Inventory() {
   const [activeSort, setActiveSort] = useState('Relevance')
 
   const filteredVehicles = allVehicles.filter((v) => {
+    // Hide sold vehicles from the public inventory
+    if (v.status && v.status.toLowerCase() === 'sold') return false
+
     const vehicleMakeModel = `${v.make} ${v.model}`
     if (activeMake !== 'All Makes' && !vehicleMakeModel.includes(activeMake)) return false
     if (activeFuel !== 'Any Fuel' && v.fuel_type !== activeFuel) return false

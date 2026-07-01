@@ -327,6 +327,7 @@ const reviews = [
    ═══════════════════════════════════════════ */
 export default function Home() {
   const { vehicles: dbVehicles } = useSupabaseVehicles()
+  const availableVehicles = dbVehicles.filter((v) => !v.status || v.status.toLowerCase() !== 'sold')
   const [activeBodyType, setActiveBodyType] = useState('SUV')
   const [monthlyPayment, setMonthlyPayment] = useState(350)
   const [deposit, setDeposit] = useState(2000)
@@ -443,7 +444,7 @@ export default function Home() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-electric-blue/10 border border-electric-blue/20 mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-[0.8125rem] font-medium text-electric-blue tracking-wide">{dbVehicles.length > 0 ? `${dbVehicles.length.toLocaleString()}+` : '6,000+'} RAC-Approved Vehicles</span>
+            <span className="text-[0.8125rem] font-medium text-electric-blue tracking-wide">{availableVehicles.length > 0 ? `${availableVehicles.length.toLocaleString()}+` : '6,000+'} RAC-Approved Vehicles</span>
           </motion.div>
 
           <motion.h1
@@ -617,7 +618,7 @@ export default function Home() {
             className="w-full mt-4 py-4 bg-electric-blue text-pure-white font-display font-semibold text-base rounded-xl flex items-center justify-center gap-3 hover:shadow-glow-lg hover:scale-[1.01] transition-all duration-300"
           >
             <Search size={20} />
-            Search {dbVehicles.length > 0 ? `${dbVehicles.length.toLocaleString()}+` : '6,000+'} Cars
+            Search {availableVehicles.length > 0 ? `${availableVehicles.length.toLocaleString()}+` : '6,000+'} Cars
           </motion.button>
 
           {/* Quick Links */}
@@ -847,14 +848,14 @@ export default function Home() {
               to="/inventory"
               className="group flex items-center gap-2 text-sm font-semibold text-electric-blue hover:text-blue-glow transition-colors shrink-0"
             >
-              View All {dbVehicles.length > 0 ? dbVehicles.length.toLocaleString() : '6,000+'} Cars
+              View All {availableVehicles.length > 0 ? availableVehicles.length.toLocaleString() : '6,000+'} Cars
               <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
 
           {/* Vehicle Grid — from Supabase */}
           <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {dbVehicles.slice(0, 8).map((vehicle, i) => (
+            {availableVehicles.slice(0, 8).map((vehicle, i) => (
               <motion.div
                 key={vehicle.id}
                 initial={{ opacity: 0, y: 50 }}
