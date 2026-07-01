@@ -56,10 +56,10 @@ const contactMethods = [
   {
     icon: Mail,
     title: 'Email Us',
-    detail: 'hello@apexautomotive.co.uk',
+    detail: 'sales.carzee@gmail.com',
     meta: 'We reply within 30 minutes',
     action: 'Send Email',
-    href: 'mailto:hello@apexautomotive.co.uk',
+    href: 'mailto:sales.carzee@gmail.com',
   },
   {
     icon: MessageCircle,

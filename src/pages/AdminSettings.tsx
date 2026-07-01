@@ -27,7 +27,7 @@ const DEFAULT_SETTINGS: BusinessSettings = {
   dealershipName: 'APEX Automotive',
   address: '123 Motorway Lane, London, EC1A 1BB',
   phone: '07983183814',
-  email: 'hello@apexauto.co.uk',
+  email: 'sales.carzee@gmail.com',
   vatNumber: 'GB 123 4567 89',
   openingHours: [
     { day: 'Monday', open: '09:00', close: '18:00', closed: false },

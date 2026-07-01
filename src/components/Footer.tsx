@@ -122,8 +122,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={16} className="text-electric-blue shrink-0" />
-                <a href="mailto:hello@apexautomotive.co.uk" className="text-sm text-chrome hover:text-electric-blue transition-colors">
-                  hello@apexautomotive.co.uk
+                <a href="mailto:sales.carzee@gmail.com" className="text-sm text-chrome hover:text-electric-blue transition-colors">
+                  sales.carzee@gmail.com
                 </a>
               </li>
               <li className="flex items-center gap-3">

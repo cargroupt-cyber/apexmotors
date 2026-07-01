@@ -19,7 +19,7 @@ const DEFAULT_IMAGE = `${SITE_URL}/assets/og-default.jpg`
 
 const ORG_NAME = 'APEX Automotive'
 const ORG_PHONE = '+44-7983-183814'
-const ORG_EMAIL = 'info@apexautomotive.co.uk'
+const ORG_EMAIL = 'sales.carzee@gmail.com'
 
 const HEADQUARTERS = {
   '@type': 'PostalAddress' as const,

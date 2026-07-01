@@ -1155,7 +1155,7 @@ export default function Home() {
           >
             {[
               { icon: Phone, label: 'Call Us', value: '07983183814' },
-              { icon: Mail, label: 'Email Us', value: 'hello@apexauto.co.uk' },
+              { icon: Mail, label: 'Email Us', value: 'sales.carzee@gmail.com' },
               { icon: MessageCircle, label: 'Live Chat', value: 'Available 9am-6pm' },
             ].map((contact) => (
               <div

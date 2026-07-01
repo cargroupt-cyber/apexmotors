@@ -912,7 +912,7 @@ export default function Finance() {
               <Phone size={16} /> Call Us
             </a>
             <a
-              href="mailto:finance@apexautomotive.co.uk"
+              href="mailto:sales.carzee@gmail.com"
               className="inline-flex items-center gap-2 px-8 py-3.5 text-chrome font-medium rounded-full hover:text-pure-white hover:underline transition-all duration-300"
             >
               <Mail size={16} /> Email Us

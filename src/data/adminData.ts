@@ -667,7 +667,7 @@ export const leads: Lead[] = [
 
 export const userProfile: UserProfile = {
   name: "James Wilson",
-  email: "james@apexautomotive.co.uk",
+  email: "sales.carzee@gmail.com",
   phone: "07983183814",
   role: "Sales Manager",
   avatar: "JW",
@@ -679,7 +679,7 @@ export const businessSettings: BusinessSettings = {
   dealershipName: "APEX Automotive",
   address: "123 Prestige Lane, Manchester M1 1AA",
   phone: "07983183814",
-  email: "info@apexautomotive.co.uk",
+  email: "sales.carzee@gmail.com",
   vatNumber: "GB 123 4567 89",
   openingHours: [
     { day: "Monday", open: "09:00", close: "18:00", closed: false },
