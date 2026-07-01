@@ -55,7 +55,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="mt-4 text-sm text-chrome leading-relaxed max-w-[280px]">
-              Redefining the pre-owned experience. Over 6,000 RAC-approved vehicles, inspected, certified, and ready to drive away.
+              Redefining the pre-owned experience. Over 400+ RAC-approved vehicles, inspected, certified, and ready to drive away.
             </p>
             <div className="flex items-center gap-3 mt-6">
               {[Facebook, Instagram, Twitter, Linkedin].map((Icon, i) => (
