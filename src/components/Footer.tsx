@@ -142,7 +142,7 @@ export default function Footer() {
           className="mt-16 pt-8 border-t border-slate/20 flex flex-col sm:flex-row items-center justify-between gap-4"
         >
           <p className="text-xs text-slate">
-            &copy; {new Date().getFullYear()} APEX Automotive. All rights reserved.
+            &copy; {new Date().getFullYear()} CarZee. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <span className="text-xs text-slate hover:text-frost cursor-pointer transition-colors">Privacy Policy</span>
