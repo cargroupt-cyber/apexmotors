@@ -4,6 +4,18 @@ import { motion } from 'framer-motion'
 import { LogIn, Shield, AlertCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
+const hasFallbackAdmin = !!(import.meta.env.VITE_ADMIN_EMAIL && import.meta.env.VITE_ADMIN_PASSWORD)
+
+function getLoginErrorMessage(error: any): string {
+  if (!error) return 'Login failed. Please try again.'
+  const msg = error.message || String(error)
+  if (msg.includes('Invalid login credentials')) return 'Invalid email or password.'
+  if (msg.includes('Email not confirmed')) return 'Email not confirmed. Please check your inbox.'
+  if (msg.includes('network') || msg.includes('fetch')) return 'Network error. Please check your internet connection.'
+  return msg
+}
+
 export default function AdminLogin() {
   const navigate = useNavigate()
   const { login, isAdmin } = useAuth()
@@ -25,10 +37,7 @@ export default function AdminLogin() {
     const { error } = await login(email, password)
 
     if (error) {
-      setError(error.message === 'Invalid login credentials'
-        ? 'Invalid email or password'
-        : 'Login failed. Please try again.'
-      )
+      setError(getLoginErrorMessage(error))
       setLoading(false)
       return
     }
@@ -48,7 +57,7 @@ export default function AdminLogin() {
           <div className="w-16 h-16 rounded-2xl bg-electric-blue/10 border border-electric-blue/20 flex items-center justify-center mx-auto mb-4">
             <Shield size={28} className="text-electric-blue" />
           </div>
-          <h1 className="text-2xl font-bold text-pure-white">APEX Admin</h1>
+          <h1 className="text-2xl font-bold text-pure-white">CarZee Admin</h1>
           <p className="text-chrome mt-1">Sign in to manage your inventory</p>
         </div>
 
@@ -57,6 +66,15 @@ export default function AdminLogin() {
             <div className="mb-5 flex items-center gap-3 px-4 py-3 rounded-lg bg-error/10 border border-error/20">
               <AlertCircle size={18} className="text-error flex-shrink-0" />
               <p className="text-sm text-error">{error}</p>
+            </div>
+          )}
+
+          {!supabaseUrl && !hasFallbackAdmin && (
+            <div className="mb-5 flex items-start gap-3 px-4 py-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+              <AlertCircle size={18} className="text-amber-500 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-amber-500">
+                Supabase is not configured. Add <code className="bg-amber-500/20 px-1 rounded">VITE_SUPABASE_URL</code> and <code className="bg-amber-500/20 px-1 rounded">VITE_SUPABASE_ANON_KEY</code> environment variables, or set <code className="bg-amber-500/20 px-1 rounded">VITE_ADMIN_EMAIL</code> and <code className="bg-amber-500/20 px-1 rounded">VITE_ADMIN_PASSWORD</code> for fallback login.
+              </p>
             </div>
           )}
 
