@@ -80,7 +80,7 @@ const openingHours = [
 
 const locations = [
   {
-    name: 'CarZee',
+    name: 'CarZee London',
     address: 'Based In London',
     phone: '07983183814',
     hours: 'Mon – Sat: 9am – 7pm',
@@ -99,13 +99,6 @@ const locations = [
     phone: '07983183814',
     hours: 'Mon – Sat: 9am – 6pm',
     mapColor: 'from-ice-blue/20 to-electric-blue/10',
-  },
-  {
-    name: 'APEX Edinburgh',
-    address: '321 Highland Ave, EH1 1AA',
-    phone: '07983183814',
-    hours: 'Mon – Sat: 9am – 6pm',
-    mapColor: 'from-electric-blue/20 to-charcoal/30',
   },
 ]
 
@@ -703,7 +696,7 @@ export default function Contact() {
               Our Locations
             </h2>
             <p className="mt-2 text-[0.9375rem] text-chrome">
-              15 showrooms across the UK
+              3 showrooms across the UK
             </p>
           </motion.div>
 
@@ -711,7 +704,7 @@ export default function Contact() {
             variants={staggerContainer}
             initial="hidden"
             animate={locationsInView ? 'visible' : 'hidden'}
-            className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             {locations.map((loc) => (
               <motion.div
@@ -833,7 +826,6 @@ export default function Contact() {
             { left: '25%', top: '55%' },
             { left: '42%', top: '48%' },
             { left: '48%', top: '35%' },
-            { left: '38%', top: '22%' },
           ].map((pos, i) => (
             <div
               key={i}
@@ -854,7 +846,7 @@ export default function Contact() {
             <div className="glass px-5 py-2.5 rounded-full flex items-center gap-2">
               <MapPin size={16} className="text-electric-blue" />
               <span className="text-[0.875rem] font-medium text-pure-white">
-                15 Locations Nationwide
+                3 Locations Nationwide
               </span>
             </div>
           </div>

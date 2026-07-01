@@ -241,7 +241,7 @@ const features = [
   { icon: Handshake, title: 'Hassle & Haggle-Free', desc: 'Our lowest price, always. No negotiation needed, no hidden mark-ups, no pressure. Just fair, transparent pricing.' },
   { icon: Shield, title: '3-Month Warranty', desc: 'Every car comes with our comprehensive warranty \u2014 \u00a30 excess, covering all mechanical and electrical components.' },
   { icon: Award, title: 'RAC 200-Point Inspection', desc: 'Every vehicle undergoes a rigorous RAC-approved 200-point inspection before it reaches our forecourt.' },
-  { icon: MapPin, title: '15 Locations Nationwide', desc: "With showrooms across the UK, there's an APEX near you. Browse online, visit in person." },
+  { icon: MapPin, title: '3 Locations Nationwide', desc: "With showrooms across the UK, there's an APEX near you. Browse online, visit in person." },
 ]
 
 /* ═══════════════════════════════════════════
@@ -933,7 +933,7 @@ export default function Home() {
             {[
               { target: 45000, suffix: '+', label: 'Vehicles sold since 2010', prefix: '' },
               { target: 38000, suffix: '+', label: 'Five-star reviews', prefix: '' },
-              { target: 15, suffix: '', label: 'Nationwide showrooms', prefix: '' },
+              { target: 3, suffix: '', label: 'Nationwide showrooms', prefix: '' },
               { target: 98, suffix: '%', label: 'Customer satisfaction', prefix: '' },
             ].map((stat, i) => (
               <motion.div

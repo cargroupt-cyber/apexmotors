@@ -304,11 +304,11 @@ interface LocalBusinessSchemaProps {
 export function LocalBusinessSchema({
   locations = [
     {
-      name: 'APEX Automotive — Park Lane Showroom',
-      streetAddress: '120 Park Lane',
+      name: 'CarZee London',
+      streetAddress: '123 Motorway Lane',
       addressLocality: 'London',
       addressRegion: 'England',
-      postalCode: 'W1K 7AF',
+      postalCode: 'EC1A 1BB',
       telephone: '+44-7983-183814',
       latitude: 51.5074,
       longitude: -0.1278,
@@ -316,15 +316,26 @@ export function LocalBusinessSchema({
       openingHours: OPENING_HOURS,
     },
     {
-      name: 'APEX Automotive — Canary Wharf',
-      streetAddress: '45 Bank Street',
-      addressLocality: 'London',
+      name: 'APEX Birmingham',
+      streetAddress: '456 Carriageway Rd',
+      addressLocality: 'Birmingham',
       addressRegion: 'England',
-      postalCode: 'E14 5NY',
+      postalCode: 'B1 1AA',
       telephone: '+44-7983-183814',
-      latitude: 51.5055,
-      longitude: -0.0195,
-      openingHours: ['Mo-Fr 10:00-20:00', 'Sa 10:00-18:00', 'Su 11:00-17:00'],
+      latitude: 52.4862,
+      longitude: -1.8904,
+      openingHours: OPENING_HOURS,
+    },
+    {
+      name: 'APEX Manchester',
+      streetAddress: '789 Autobahn St',
+      addressLocality: 'Manchester',
+      addressRegion: 'England',
+      postalCode: 'M1 1AA',
+      telephone: '+44-7983-183814',
+      latitude: 53.4808,
+      longitude: -2.2426,
+      openingHours: OPENING_HOURS,
     },
   ],
   render = false,
@@ -397,7 +408,7 @@ export function LocalBusinessSchema({
       <SEO
         schema={schema}
         title="Contact APEX Automotive | Our Dealership Locations"
-        description="Visit APEX Automotive in London. Two premium showrooms in Mayfair and Canary Wharf. Open 7 days a week."
+        description="Visit CarZee and APEX Automotive showrooms in London, Birmingham and Manchester. Open 7 days a week."
         canonical="/contact"
       />
     )
