@@ -29,7 +29,7 @@ function LoadingFallback() {
           className="text-sm tracking-wide"
           style={{ color: '#C8D3D9', fontFamily: 'Inter, sans-serif' }}
         >
-          Loading APEX Automotive...
+          Loading CarZee...
         </p>
       </div>
     </div>
@@ -52,7 +52,7 @@ class ErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('APEX Automotive Error Boundary caught an error:', error, errorInfo)
+    console.error('CarZee Error Boundary caught an error:', error, errorInfo)
   }
 
   render() {

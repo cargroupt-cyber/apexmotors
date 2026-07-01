@@ -87,14 +87,14 @@ const locations = [
     mapColor: 'from-electric-blue/20 to-blue-glow/10',
   },
   {
-    name: 'APEX Birmingham',
+    name: 'CarZee Birmingham',
     address: '456 Carriageway Rd, B1 1AA',
     phone: '07983183814',
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-blue-glow/20 to-ice-blue/10',
   },
   {
-    name: 'APEX Manchester',
+    name: 'CarZee Manchester',
     address: '789 Autobahn St, M1 1AA',
     phone: '07983183814',
     hours: 'Mon – Sat: 9am – 6pm',

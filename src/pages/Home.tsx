@@ -241,7 +241,7 @@ const features = [
   { icon: Handshake, title: 'Hassle & Haggle-Free', desc: 'Our lowest price, always. No negotiation needed, no hidden mark-ups, no pressure. Just fair, transparent pricing.' },
   { icon: Shield, title: '3-Month Warranty', desc: 'Every car comes with our comprehensive warranty \u2014 \u00a30 excess, covering all mechanical and electrical components.' },
   { icon: Award, title: 'RAC 200-Point Inspection', desc: 'Every vehicle undergoes a rigorous RAC-approved 200-point inspection before it reaches our forecourt.' },
-  { icon: MapPin, title: '3 Locations Nationwide', desc: "With showrooms across the UK, there's an APEX near you. Browse online, visit in person." },
+  { icon: MapPin, title: '3 Locations Nationwide', desc: "With showrooms across the UK, there's a CarZee near you. Browse online, visit in person." },
 ]
 
 /* ═══════════════════════════════════════════
@@ -641,7 +641,7 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          SECTION 3: WHY CHOOSE APEX
+          SECTION 3: WHY CHOOSE CarZee
           ═══════════════════════════════════════════ */}
       <section className="bg-midnight section-padding">
         <div className="container-apex">
@@ -660,7 +660,7 @@ export default function Home() {
               Built Different.<br />Built for You.
             </h2>
             <p className="mt-5 text-lg text-frost leading-relaxed">
-              Six reasons why thousands of drivers choose APEX for their next car.
+              Six reasons why thousands of drivers choose CarZee for their next car.
             </p>
           </motion.div>
 
@@ -1003,7 +1003,7 @@ export default function Home() {
                 ))}
               </div>
               <p className="font-display text-lg md:text-xl text-pure-white leading-relaxed italic">
-                "I was nervous about buying a used car online, but APEX made the entire process effortless. The car arrived exactly as described — actually better than the photos. The RAC inspection gave me total confidence. I'll never buy a car anywhere else."
+                "I was nervous about buying a used car online, but CarZee made the entire process effortless. The car arrived exactly as described — actually better than the photos. The RAC inspection gave me total confidence. I'll never buy a car anywhere else."
               </p>
               <div className="mt-8 flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full gradient-accent flex items-center justify-center">
@@ -1079,7 +1079,7 @@ export default function Home() {
               Common Questions
             </h2>
             <p className="mt-4 text-lg text-frost">
-              Everything you need to know about buying with APEX.
+              Everything you need to know about buying with CarZee.
             </p>
           </motion.div>
 

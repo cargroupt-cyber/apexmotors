@@ -109,7 +109,7 @@ export default function AdminDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
           <h1 className="font-display font-bold text-2xl text-pure-white">Dashboard</h1>
-          <p className="text-chrome text-sm mt-1">Welcome back to APEX Automotive Admin</p>
+          <p className="text-chrome text-sm mt-1">Welcome back to CarZee Admin</p>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-xs text-chrome bg-obsidian/60 px-3 py-1.5 rounded-lg border border-slate/15">

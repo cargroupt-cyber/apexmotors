@@ -24,7 +24,7 @@ interface BusinessSettings {
 }
 
 const DEFAULT_SETTINGS: BusinessSettings = {
-  dealershipName: 'APEX Automotive',
+  dealershipName: 'CarZee',
   address: '123 Motorway Lane, London, EC1A 1BB',
   phone: '07983183814',
   email: 'sales.carzee@gmail.com',
@@ -39,7 +39,7 @@ const DEFAULT_SETTINGS: BusinessSettings = {
     { day: 'Sunday', open: '10:00', close: '16:00', closed: false },
   ],
   socialMedia: { facebook: '', instagram: '', twitter: '', youtube: '', linkedin: '' },
-  seoDefaults: { metaTitle: 'APEX Automotive | Premium Used Cars UK', metaDescription: 'Find your perfect car at APEX Automotive. RAC-approved vehicles, best price guarantee, same-day drive away.' },
+  seoDefaults: { metaTitle: 'CarZee | Premium Used Cars UK', metaDescription: 'Find your perfect car at CarZee. RAC-approved vehicles, best price guarantee, same-day drive away.' },
 }
 
 /* ═══════════════════════════════════════════

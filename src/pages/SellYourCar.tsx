@@ -280,7 +280,7 @@ export default function SellYourCar() {
             className="font-display font-bold text-pure-white leading-[0.95] tracking-[-0.03em]"
             style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)' }}
           >
-            Sell Your Car<br />the APEX Way
+            Sell Your Car<br />the CarZee Way
           </motion.h1>
 
           <motion.p
@@ -643,7 +643,7 @@ export default function SellYourCar() {
                     </div>
 
                     <p className="text-xs text-chrome mb-6 bg-midnight/50 p-3 rounded-xl">
-                      You can also bring your car to any APEX showroom for professional photography during your inspection.
+                      You can also bring your car to any CarZee showroom for professional photography during your inspection.
                     </p>
 
                     <div className="flex gap-3">
@@ -877,7 +877,7 @@ export default function SellYourCar() {
                     />
                   </div>
                   <p className="text-xs text-success mt-2 font-medium">
-                    APEX Offer &middot; Valid for 7 days
+                    CarZee Offer &middot; Valid for 7 days
                   </p>
                 </div>
 
@@ -921,7 +921,7 @@ export default function SellYourCar() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-[1000px] mx-auto">
             {[
               { num: '01', title: 'Get Your Valuation', desc: 'Enter your registration for an instant, data-driven valuation based on market trends.' },
-              { num: '02', title: 'Book an Appointment', desc: 'Bring your car to any APEX showroom for a free, no-obligation inspection.' },
+              { num: '02', title: 'Book an Appointment', desc: 'Bring your car to any CarZee showroom for a free, no-obligation inspection.' },
               { num: '03', title: 'Final Offer', desc: 'After inspection, we confirm our offer. No haggling, no hidden deductions.' },
               { num: '04', title: 'Get Paid', desc: 'Accept our offer and receive same-day payment directly to your bank account.' },
             ].map((s, i) => (

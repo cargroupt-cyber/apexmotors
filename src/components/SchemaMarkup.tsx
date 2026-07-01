@@ -1,5 +1,5 @@
 /**
- * SchemaMarkup — Structured Data Components for APEX Automotive
+ * SchemaMarkup — Structured Data Components for CarZee
  *
  * Provides JSON-LD schema.org markup for:
  * - Organization / AutoDealer
@@ -13,11 +13,11 @@ import SEO from './SEO'
 
 /* ─────────────────────── constants ─────────────────────── */
 
-const SITE_URL = 'https://apexautomotive.co.uk'
+const SITE_URL = 'https://carzee.co.uk'
 const LOGO_URL = `${SITE_URL}/assets/logo-apex.png`
 const DEFAULT_IMAGE = `${SITE_URL}/assets/og-default.jpg`
 
-const ORG_NAME = 'APEX Automotive'
+const ORG_NAME = 'CarZee'
 const ORG_PHONE = '+44-7983-183814'
 const ORG_EMAIL = 'sales.carzee@gmail.com'
 
@@ -37,11 +37,11 @@ const OPENING_HOURS = [
 ]
 
 const SOCIAL_LINKS = [
-  'https://facebook.com/apexautomotive',
-  'https://instagram.com/apexautomotive',
-  'https://twitter.com/apexautomotive',
-  'https://linkedin.com/company/apexautomotive',
-  'https://youtube.com/@apexautomotive',
+  'https://facebook.com/carzee',
+  'https://instagram.com/carzee',
+  'https://twitter.com/carzee',
+  'https://linkedin.com/company/carzee',
+  'https://youtube.com/@carzee',
 ]
 
 /* ─────────────────────── helpers ─────────────────────── */
@@ -153,7 +153,7 @@ export function VehicleSchema({
   const vehicleName = `${year} ${make} ${model}`
   const vehicleDesc =
     description ||
-    `${vehicleName} — ${condition} ${bodyType} with ${mileage.toLocaleString()} ${mileageUnit}. ${fuelType}, ${transmission}. Available now at APEX Automotive London.`
+    `${vehicleName} — ${condition} ${bodyType} with ${mileage.toLocaleString()} ${mileageUnit}. ${fuelType}, ${transmission}. Available now at CarZee London.`
 
   const schema = buildSchema({
     '@type': 'Vehicle',
@@ -200,7 +200,7 @@ export function VehicleSchema({
   if (render) {
     return (
       <SEO
-        title={`${vehicleName} for Sale | APEX Automotive London`}
+        title={`${vehicleName} for Sale | CarZee London`}
         description={vehicleDesc}
         canonical={vehicleUrl.replace(SITE_URL, '')}
         ogImage={image}
@@ -272,8 +272,8 @@ export function FAQPageSchema({ faqs, render = false }: FAQPageSchemaProps) {
     return (
       <SEO
         schema={schema}
-        title="Frequently Asked Questions | APEX Automotive"
-        description="Find answers to common questions about buying, selling, and financing vehicles at APEX Automotive London."
+        title="Frequently Asked Questions | CarZee"
+        description="Find answers to common questions about buying, selling, and financing vehicles at CarZee London."
       />
     )
   }
@@ -316,7 +316,7 @@ export function LocalBusinessSchema({
       openingHours: OPENING_HOURS,
     },
     {
-      name: 'APEX Birmingham',
+      name: 'CarZee Birmingham',
       streetAddress: '456 Carriageway Rd',
       addressLocality: 'Birmingham',
       addressRegion: 'England',
@@ -327,7 +327,7 @@ export function LocalBusinessSchema({
       openingHours: OPENING_HOURS,
     },
     {
-      name: 'APEX Manchester',
+      name: 'CarZee Manchester',
       streetAddress: '789 Autobahn St',
       addressLocality: 'Manchester',
       addressRegion: 'England',
@@ -407,8 +407,8 @@ export function LocalBusinessSchema({
     return (
       <SEO
         schema={schema}
-        title="Contact APEX Automotive | Our Dealership Locations"
-        description="Visit CarZee and APEX Automotive showrooms in London, Birmingham and Manchester. Open 7 days a week."
+        title="Contact CarZee | Our Dealership Locations"
+        description="Visit CarZee showrooms in London, Birmingham and Manchester. Open 7 days a week."
         canonical="/contact"
       />
     )
@@ -466,7 +466,7 @@ export function BlogPostingSchema({
   description,
   slug,
   image = DEFAULT_IMAGE,
-  authorName = 'APEX Automotive Editorial',
+  authorName = 'CarZee Editorial',
   authorRole = 'Editorial Team',
   publishedDate,
   modifiedDate,
@@ -509,7 +509,7 @@ export function BlogPostingSchema({
   if (render) {
     return (
       <SEO
-        title={`${headline} | APEX Automotive Blog`}
+        title={`${headline} | CarZee Blog`}
         description={description}
         canonical={`/blog/${slug}`}
         ogImage={image}
@@ -560,5 +560,5 @@ export default function SchemaMarkup({ type, data = {} }: SchemaMarkupProps) {
       return null
   }
 
-  return <SEO schema={schema || undefined} title="APEX Automotive" />
+  return <SEO schema={schema || undefined} title="CarZee" />
 }

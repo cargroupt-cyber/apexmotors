@@ -16,11 +16,11 @@ interface SEOProps {
   modifiedTime?: string
 }
 
-const SITE_NAME = 'APEX Automotive'
+const SITE_NAME = 'CarZee'
 const DEFAULT_DESCRIPTION =
-  'APEX Automotive — London\'s premier destination for premium pre-owned vehicles. Explore our curated collection of luxury cars, from Mercedes-Benz and BMW to Porsche and Tesla. Finance available, part exchange welcome.'
-const DEFAULT_OG_IMAGE = 'https://apexautomotive.co.uk/assets/og-default.jpg'
-const SITE_URL = 'https://apexautomotive.co.uk'
+  'CarZee — London\'s premier destination for premium pre-owned vehicles. Explore our curated collection of luxury cars, from Mercedes-Benz and BMW to Porsche and Tesla. Finance available, part exchange welcome.'
+const DEFAULT_OG_IMAGE = 'https://carzee.co.uk/assets/og-default.jpg'
+const SITE_URL = 'https://carzee.co.uk'
 
 export default function SEO({
   title,
@@ -33,7 +33,7 @@ export default function SEO({
   noindex = false,
   nofollow = false,
   keywords,
-  author = 'APEX Automotive',
+  author = 'CarZee',
   publishedTime,
   modifiedTime,
 }: SEOProps) {
@@ -98,8 +98,8 @@ export default function SEO({
     setMeta('name', 'twitter:title', fullTitle)
     setMeta('name', 'twitter:description', description)
     setMeta('name', 'twitter:image', ogImage)
-    setMeta('name', 'twitter:site', '@apexautomotive')
-    setMeta('name', 'twitter:creator', '@apexautomotive')
+    setMeta('name', 'twitter:site', '@carzee')
+    setMeta('name', 'twitter:creator', '@carzee')
 
     // Canonical link
     let canonicalEl = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null

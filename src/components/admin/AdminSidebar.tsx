@@ -61,7 +61,7 @@ export default function AdminSidebar({ onCollapseChange }: AdminSidebarProps) {
         {!collapsed && (
           <div className="overflow-hidden">
             <h1 className="text-sm font-bold text-white tracking-wide whitespace-nowrap font-[Space_Grotesk]">
-              APEX CRM
+              CarZee CRM
             </h1>
             <p className="text-[10px] text-[#C8D3D9]/60 whitespace-nowrap">Lead Management</p>
           </div>
