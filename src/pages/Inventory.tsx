@@ -83,7 +83,8 @@ function VehicleCard({ vehicle, index }: { vehicle: UnifiedVehicle; index: numbe
   const vehiclePrice = typeof vehicle.price === 'number' ? `£${vehicle.price.toLocaleString()}` : vehicle.price
   const vehicleMonthly = typeof vehicle.monthly_payment === 'number' ? `£${vehicle.monthly_payment}` : vehicle.monthly_payment
   const hasDiscount = (vehicle.discount_amount || 0) > 0
-  const computedBadge = vehicle.badge || (hasDiscount ? 'SALE' : null)
+  const isSold = vehicle.status && vehicle.status.toLowerCase() === 'sold'
+  const computedBadge = !isSold && (vehicle.badge || (hasDiscount ? 'SALE' : null))
 
   return (
     <motion.div
@@ -103,6 +104,9 @@ function VehicleCard({ vehicle, index }: { vehicle: UnifiedVehicle; index: numbe
             <img src={vehicleImage} alt={vehicleName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-midnight/80 via-transparent to-transparent" />
             <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+              {isSold && (
+                <span className="px-2.5 py-1 rounded-md text-[0.6875rem] font-bold bg-error text-pure-white shadow-lg">SOLD</span>
+              )}
               {hasDiscount && (
                 <span className="px-2.5 py-1 rounded-md text-[0.6875rem] font-bold bg-error text-pure-white shadow-lg">SAVE £{vehicle.discount_amount?.toLocaleString()}</span>
               )}
@@ -189,9 +193,6 @@ export default function Inventory() {
   const [activeSort, setActiveSort] = useState('Relevance')
 
   const filteredVehicles = allVehicles.filter((v) => {
-    // Hide sold vehicles from the public inventory
-    if (v.status && v.status.toLowerCase() === 'sold') return false
-
     const vehicleMakeModel = `${v.make} ${v.model}`
     if (activeMake !== 'All Makes' && !vehicleMakeModel.includes(activeMake)) return false
     if (activeFuel !== 'Any Fuel' && v.fuel_type !== activeFuel) return false
@@ -313,6 +314,7 @@ export default function Inventory() {
                     const vPrice = typeof vehicle.price === 'number' ? `£${vehicle.price.toLocaleString()}` : vehicle.price
                     const vMonthly = typeof vehicle.monthly_payment === 'number' ? `£${vehicle.monthly_payment}` : vehicle.monthly_payment
                     const vHasDiscount = (vehicle.discount_amount || 0) > 0
+                    const vIsSold = vehicle.status && vehicle.status.toLowerCase() === 'sold'
                     return (
                       <motion.div key={vehicle.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: (i % 5) * 0.06 }}>
                         <Link to={`/vehicle/${vehicle.id}`}>
@@ -320,8 +322,11 @@ export default function Inventory() {
                             <div className="relative w-full sm:w-[240px] h-[160px] sm:h-[140px] rounded-xl overflow-hidden shrink-0">
                               <img src={vImage} alt={vName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                               <div className="absolute inset-0 bg-gradient-to-t from-midnight/50 to-transparent" />
-                              {vHasDiscount && <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[0.625rem] font-bold bg-error text-pure-white">SAVE £{vehicle.discount_amount?.toLocaleString()}</span>}
-                              {vehicle.badge && <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[0.625rem] font-bold bg-success text-pure-white">{vehicle.badge}</span>}
+                              <div className="absolute top-2 left-2 flex flex-col gap-1">
+                                {vIsSold && <span className="px-2 py-0.5 rounded text-[0.625rem] font-bold bg-error text-pure-white">SOLD</span>}
+                                {vHasDiscount && !vIsSold && <span className="px-2 py-0.5 rounded text-[0.625rem] font-bold bg-error text-pure-white">SAVE £{vehicle.discount_amount?.toLocaleString()}</span>}
+                                {vehicle.badge && !vIsSold && <span className="px-2 py-0.5 rounded text-[0.625rem] font-bold bg-success text-pure-white">{vehicle.badge}</span>}
+                              </div>
                             </div>
                             <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-4">
                               <div className="flex-1">
