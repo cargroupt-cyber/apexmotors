@@ -59,7 +59,7 @@ export default function Navbar() {
             <span
               className="font-display text-2xl font-bold tracking-[-0.02em] text-white"
             >
-              Uk Car Group
+              CarZee
               <span className="text-electric-blue">.</span>
             </span>
           </Link>

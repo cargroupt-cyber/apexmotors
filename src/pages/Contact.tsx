@@ -80,7 +80,7 @@ const openingHours = [
 
 const locations = [
   {
-    name: 'Uk Car Group Uk',
+    name: 'CarZee',
     address: 'Based In London',
     phone: '020 8123 4567',
     hours: 'Mon – Sat: 9am – 7pm',
