@@ -247,7 +247,7 @@ export default function Inventory() {
             <p className="mt-3 text-base text-chrome max-w-[500px]">Browse {vehicleCount.toLocaleString()}+ RAC-approved vehicles. All inspected, certified, and ready to drive away.</p>
           </motion.div>
           <div className="mt-8 flex flex-wrap gap-4">
-            {[{ label: 'Vehicles', value: vehicleCount.toLocaleString(), icon: Gauge }, { label: 'Locations', value: '15', icon: MapPin }, { label: 'Avg. Rating', value: '4.9/5', icon: Star }].map((stat, i) => (
+            {[{ label: 'Vehicles', value: vehicleCount.toLocaleString(), icon: Gauge }, { label: 'Locations', value: '3', icon: MapPin }, { label: 'Avg. Rating', value: '4.9/5', icon: Star }].map((stat, i) => (
               <motion.div key={stat.label} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 + i * 0.08 }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-obsidian/50 border border-slate/15">
                 <stat.icon size={14} className="text-electric-blue" />
                 <span className="text-sm font-semibold text-pure-white">{stat.value}</span>
