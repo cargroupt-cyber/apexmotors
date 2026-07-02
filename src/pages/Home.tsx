@@ -401,7 +401,7 @@ export default function Home() {
         title="CarZee — Premium Used Cars London & UK"
         description="Find RAC-approved premium used cars at CarZee. Finance available, part exchange welcome, same-day drive away. Browse Mercedes, BMW, Audi, Porsche and more."
         canonical="/"
-        ogImage="https://carzee.co.uk/luxury-sedan-hero.jpg"
+        ogImage="https://www.carzee.co.uk/luxury-sedan-hero.jpg"
         schema={homeSchema}
       />
       {/* ═══════════════════════════════════════════

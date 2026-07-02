@@ -19,8 +19,8 @@ interface SEOProps {
 const SITE_NAME = 'CarZee'
 const DEFAULT_DESCRIPTION =
   'CarZee — London\'s premier destination for premium pre-owned vehicles. Explore our curated collection of luxury cars, from Mercedes-Benz and BMW to Porsche and Tesla. Finance available, part exchange welcome.'
-const DEFAULT_OG_IMAGE = 'https://carzee.co.uk/assets/og-default.jpg'
-const SITE_URL = 'https://carzee.co.uk'
+const DEFAULT_OG_IMAGE = 'https://www.carzee.co.uk/assets/og-default.jpg'
+const SITE_URL = 'https://www.carzee.co.uk'
 
 export default function SEO({
   title,

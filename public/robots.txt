@@ -1,5 +1,5 @@
 # robots.txt — CarZee
-# https://carzee.co.uk
+# https://www.carzee.co.uk
 
 User-agent: *
 Allow: /
@@ -31,4 +31,4 @@ User-agent: SemrushBot
 Crawl-delay: 1
 
 # Sitemap
-Sitemap: https://carzee.co.uk/sitemap.xml
+Sitemap: https://www.carzee.co.uk/sitemap.xml

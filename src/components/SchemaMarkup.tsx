@@ -13,7 +13,7 @@ import SEO from './SEO'
 
 /* ─────────────────────── constants ─────────────────────── */
 
-const SITE_URL = 'https://carzee.co.uk'
+const SITE_URL = 'https://www.carzee.co.uk'
 const LOGO_URL = `${SITE_URL}/assets/logo-carzee.png`
 const DEFAULT_IMAGE = `${SITE_URL}/assets/og-default.jpg`
 

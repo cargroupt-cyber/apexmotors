@@ -12,7 +12,7 @@ import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles';
 import SEO from '@/components/SEO';
 import { VehicleSchema, BreadcrumbListSchema } from '@/components/SchemaMarkup';
 
-const SITE_URL = 'https://carzee.co.uk';
+const SITE_URL = 'https://www.carzee.co.uk';
 
 export default function VehicleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -117,7 +117,7 @@ export default function VehicleDetail() {
   const vehicleTitle = `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant} for Sale | CarZee`;
   const vehicleDescription = `Used ${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant} with ${vehicle.mileage.toLocaleString()} miles. ${vehicle.fuelType}, ${vehicle.transmission}. View price, photos and finance options at CarZee.`;
   const vehicleUrl = `${SITE_URL}/vehicle/${id}`;
-  const vehicleImage = vehicle.images?.[0] || 'https://carzee.co.uk/vehicle-thumb-01.jpg';
+  const vehicleImage = vehicle.images?.[0] || 'https://www.carzee.co.uk/vehicle-thumb-01.jpg';
 
   const vehicleSchema = VehicleSchema({
     make: vehicle.make,

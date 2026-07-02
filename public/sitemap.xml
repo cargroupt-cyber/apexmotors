@@ -6,7 +6,7 @@
 
   <!-- Home Page -->
   <url>
-    <loc>https://carzee.co.uk/</loc>
+    <loc>https://www.carzee.co.uk/</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
@@ -14,7 +14,7 @@
 
   <!-- Inventory Listing Page -->
   <url>
-    <loc>https://carzee.co.uk/inventory</loc>
+    <loc>https://www.carzee.co.uk/inventory</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
@@ -22,37 +22,37 @@
 
   <!-- Vehicle Detail Pages -->
   <url>
-    <loc>https://carzee.co.uk/vehicle/mercedes-benz-c-class-2024</loc>
+    <loc>https://www.carzee.co.uk/vehicle/mercedes-benz-c-class-2024</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/vehicle/bmw-3-series-2023</loc>
+    <loc>https://www.carzee.co.uk/vehicle/bmw-3-series-2023</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/vehicle/audi-a4-2024</loc>
+    <loc>https://www.carzee.co.uk/vehicle/audi-a4-2024</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/vehicle/range-rover-sport-2023</loc>
+    <loc>https://www.carzee.co.uk/vehicle/range-rover-sport-2023</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/vehicle/porsche-cayenne-2024</loc>
+    <loc>https://www.carzee.co.uk/vehicle/porsche-cayenne-2024</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/vehicle/tesla-model-3-2024</loc>
+    <loc>https://www.carzee.co.uk/vehicle/tesla-model-3-2024</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -60,7 +60,7 @@
 
   <!-- Sell Your Car Page -->
   <url>
-    <loc>https://carzee.co.uk/sell-your-car</loc>
+    <loc>https://www.carzee.co.uk/sell-your-car</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -68,7 +68,7 @@
 
   <!-- Finance Page -->
   <url>
-    <loc>https://carzee.co.uk/finance</loc>
+    <loc>https://www.carzee.co.uk/finance</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
@@ -76,7 +76,7 @@
 
   <!-- About Page -->
   <url>
-    <loc>https://carzee.co.uk/about</loc>
+    <loc>https://www.carzee.co.uk/about</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -84,7 +84,7 @@
 
   <!-- Contact Page -->
   <url>
-    <loc>https://carzee.co.uk/contact</loc>
+    <loc>https://www.carzee.co.uk/contact</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -92,7 +92,7 @@
 
   <!-- Blog Listing Page -->
   <url>
-    <loc>https://carzee.co.uk/blog</loc>
+    <loc>https://www.carzee.co.uk/blog</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
@@ -100,31 +100,31 @@
 
   <!-- Blog Post Pages -->
   <url>
-    <loc>https://carzee.co.uk/blog/complete-guide-buying-used-car-2026</loc>
+    <loc>https://www.carzee.co.uk/blog/complete-guide-buying-used-car-2026</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/blog/electric-vs-hybrid-which-right-you</loc>
+    <loc>https://www.carzee.co.uk/blog/electric-vs-hybrid-which-right-you</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/blog/car-maintenance-tips-keep-vehicle-pristine</loc>
+    <loc>https://www.carzee.co.uk/blog/car-maintenance-tips-keep-vehicle-pristine</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/blog/understanding-car-finance-options-guide</loc>
+    <loc>https://www.carzee.co.uk/blog/understanding-car-finance-options-guide</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://carzee.co.uk/blog/top-10-luxury-suvs-2026-ranked</loc>
+    <loc>https://www.carzee.co.uk/blog/top-10-luxury-suvs-2026-ranked</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
