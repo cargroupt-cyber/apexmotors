@@ -38,6 +38,8 @@ export default function VehicleDetail() {
       bodyType: v.body_type || '',
       description: v.description || '',
       status: v.status || 'available',
+      metaTitle: v.meta_title || '',
+      metaDescription: v.meta_description || '',
       images: v.images || [],
       features: v.features || [],
       monthlyPayment: v.monthly_payment || Math.round((v.price || 0) * 0.018),
@@ -114,8 +116,10 @@ export default function VehicleDetail() {
   const staggerContainer = { initial: {}, whileInView: { transition: { staggerChildren: 0.06 } } };
   const staggerItem = { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } };
 
-  const vehicleTitle = `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant} for Sale | CarZee`;
-  const vehicleDescription = `Used ${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant} with ${vehicle.mileage.toLocaleString()} miles. ${vehicle.fuelType}, ${vehicle.transmission}. View price, photos and finance options at CarZee.`;
+  const generatedTitle = `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant} for Sale | CarZee`;
+  const generatedDescription = `Used ${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant} with ${vehicle.mileage.toLocaleString()} miles. ${vehicle.fuelType}, ${vehicle.transmission}. View price, photos and finance options at CarZee.`;
+  const vehicleTitle = vehicle.metaTitle || generatedTitle;
+  const vehicleDescription = vehicle.metaDescription || generatedDescription;
   const vehicleUrl = `${SITE_URL}/vehicle/${id}`;
   const vehicleImage = vehicle.images?.[0] || 'https://www.carzee.co.uk/vehicle-thumb-01.jpg';
 

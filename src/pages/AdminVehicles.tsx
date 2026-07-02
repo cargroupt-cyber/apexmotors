@@ -143,6 +143,8 @@ function toSupabase(v: Vehicle): any {
     images: v.images,
     features: v.features,
     monthly_payment: v.monthlyPayment || undefined,
+    meta_title: v.metaTitle || undefined,
+    meta_description: v.metaDescription || undefined,
   }
 }
 
@@ -190,8 +192,8 @@ function fromSupabase(v: any): Vehicle {
     description: v.description ?? '',
     status: statusFromSupabase[v.status] || 'Available',
     images: parseArr(v.images),
-    metaTitle: '',
-    metaDescription: '',
+    metaTitle: v.meta_title ?? '',
+    metaDescription: v.meta_description ?? '',
     dateAdded: v.created_at ?? new Date().toISOString().split('T')[0],
   }
 }

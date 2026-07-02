@@ -25,6 +25,8 @@ export interface Vehicle {
   registration?: string
   status?: string
   description?: string
+  meta_title?: string
+  meta_description?: string
   created_at?: string
 }
 
