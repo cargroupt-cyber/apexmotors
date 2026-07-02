@@ -263,7 +263,7 @@ const faqs = [
    ═══════════════════════════════════════════ */
 const bodyTypes = ['Hatchback', 'SUV', 'Saloon', 'Estate', 'Coupe', 'Convertible', 'MPV', '4x4']
 const searchBodyTypes = ['Any Body', 'Hatchback', 'SUV', 'Saloon', 'Estate', 'Coupe', 'Convertible', 'MPV', '4x4']
-const makes = ['Any Make', 'Mercedes-Benz', 'BMW', 'Audi', 'Range Rover', 'Porsche', 'Tesla', 'Jaguar', 'Lexus']
+const makes = ['Any Make', 'Mercedes-Benz', 'BMW', 'Audi', 'Range Rover', 'Land Rover', 'Porsche', 'Tesla', 'Jaguar', 'Lexus', 'Ford', 'Volkswagen', 'Toyota', 'Honda', 'Nissan', 'Hyundai', 'Kia', 'Volvo', 'Mazda', 'Subaru', 'Mini', 'Peugeot', 'Renault', 'Citroën', 'Seat', 'Skoda', 'Vauxhall', 'Fiat', 'Abarth', 'Alfa Romeo', 'Aston Martin', 'Bentley', 'Maserati', 'McLaren', 'Rolls-Royce']
 const priceRanges = ['Any Price', 'Under £20k', '£20k - £30k', '£30k - £40k', '£40k - £50k', '£50k+']
 const fuelTypes = ['Any Fuel', 'Petrol', 'Diesel', 'Hybrid', 'Electric']
 

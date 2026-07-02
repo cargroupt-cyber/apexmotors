@@ -47,7 +47,7 @@ const fallbackVehicles: UnifiedVehicle[] = [
   { id: '8', images: ['/vehicle-thumb-08.jpg'], make: 'Lexus', model: 'RX 450h', variant: 'F Sport Premium', year: 2023, mileage: 31200, fuel_type: 'Hybrid', transmission: 'Auto', price: 36990, monthly_payment: 495, badge: null, discount_amount: 1800, features: ['Premium Nav', 'Mark Levinson', 'HUD', 'Camera'], location: 'Sheffield', engine_size: '3.5L', body_type: 'SUV', colour: 'Grey', doors: 5, seats: 5, registration: 'SF23 STU', status: 'available', featured: false, description: 'Luxurious Lexus RX 450h hybrid with Mark Levinson audio.' },
 ]
 
-const makes = ['All Makes', 'Mercedes-Benz', 'BMW', 'Audi', 'Range Rover', 'Porsche', 'Tesla', 'Jaguar', 'Lexus']
+const makes = ['All Makes', 'Mercedes-Benz', 'BMW', 'Audi', 'Range Rover', 'Land Rover', 'Porsche', 'Tesla', 'Jaguar', 'Lexus', 'Ford', 'Volkswagen', 'Toyota', 'Honda', 'Nissan', 'Hyundai', 'Kia', 'Volvo', 'Mazda', 'Subaru', 'Mini', 'Peugeot', 'Renault', 'Citroën', 'Seat', 'Skoda', 'Vauxhall', 'Fiat', 'Abarth', 'Alfa Romeo', 'Aston Martin', 'Bentley', 'Maserati', 'McLaren', 'Rolls-Royce']
 const priceRanges = ['Any Price', 'Under £20k', '£20k - £30k', '£30k - £40k', '£40k - £50k', '£50k+']
 const fuelTypes = ['Any Fuel', 'Petrol', 'Diesel', 'Hybrid', 'Electric']
 const bodyTypes = ['Any Body', 'Hatchback', 'SUV', 'Saloon', 'Estate', 'Coupe', 'Convertible', 'MPV', '4x4']
