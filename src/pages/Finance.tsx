@@ -23,6 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import SEO from '@/components/SEO'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -420,6 +421,11 @@ export default function Finance() {
 
   return (
     <div className="min-h-[100dvh]">
+      <SEO
+        title="Car Finance | PCP & HP Car Finance at CarZee"
+        description="Get approved for car finance at CarZee. PCP and HP options, competitive APR, zero deposit available, bad credit considered. Apply online in minutes."
+        canonical="/finance"
+      />
       {/* ============================================================ */}
       {/*  SECTION 1: Page Header                                       */}
       {/* ============================================================ */}

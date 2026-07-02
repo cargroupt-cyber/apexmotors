@@ -22,6 +22,8 @@ import {
   Send,
 } from 'lucide-react'
 import { useSupabaseLeads } from '@/hooks/useSupabaseLeads'
+import SEO from '@/components/SEO'
+import { FAQPageSchema } from '@/components/SchemaMarkup'
 import {
   VEHICLE_DATABASE,
   MAKES,
@@ -331,6 +333,12 @@ export default function SellYourCar() {
 
   return (
     <div className="min-h-[100dvh]">
+      <SEO
+        title="Sell Your Car | Free Instant Valuation | CarZee"
+        description="Sell your car the CarZee way. Get a free instant valuation, best price guarantee and same-day payment. Part exchange also available."
+        canonical="/sell-your-car"
+        schema={FAQPageSchema({ faqs: faqs.map(f => ({ question: f.q, answer: f.a })), render: false })}
+      />
       {/* ============================================================ */}
       {/*  SECTION 1: Page Header                                       */}
       {/* ============================================================ */}

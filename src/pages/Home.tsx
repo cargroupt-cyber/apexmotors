@@ -11,6 +11,8 @@ import {
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles'
+import SEO from '@/components/SEO'
+import { OrganizationSchema, WebSiteSchema } from '@/components/SchemaMarkup'
 
 gsap.registerPlugin()
 
@@ -388,8 +390,20 @@ export default function Home() {
     },
   }
 
+  const homeSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [OrganizationSchema(), WebSiteSchema()],
+  }
+
   return (
     <div>
+      <SEO
+        title="CarZee — Premium Used Cars London & UK"
+        description="Find RAC-approved premium used cars at CarZee. Finance available, part exchange welcome, same-day drive away. Browse Mercedes, BMW, Audi, Porsche and more."
+        canonical="/"
+        ogImage="https://carzee.co.uk/luxury-sedan-hero.jpg"
+        schema={homeSchema}
+      />
       {/* ═══════════════════════════════════════════
           SECTION 1: HERO
           ═══════════════════════════════════════════ */}

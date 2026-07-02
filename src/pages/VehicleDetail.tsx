@@ -9,6 +9,10 @@ import {
   MapPin, Cog, ArrowRight
 } from 'lucide-react';
 import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles';
+import SEO from '@/components/SEO';
+import { VehicleSchema, BreadcrumbListSchema } from '@/components/SchemaMarkup';
+
+const SITE_URL = 'https://carzee.co.uk';
 
 export default function VehicleDetail() {
   const { id } = useParams<{ id: string }>();
@@ -105,12 +109,59 @@ export default function VehicleDetail() {
     );
   }
 
+
   const fadeUp = { initial: { opacity: 0, y: 30 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } };
   const staggerContainer = { initial: {}, whileInView: { transition: { staggerChildren: 0.06 } } };
   const staggerItem = { initial: { opacity: 0, y: 20 }, whileInView: { opacity: 1, y: 0 }, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } };
 
+  const vehicleTitle = `${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant} for Sale | CarZee`;
+  const vehicleDescription = `Used ${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.variant} with ${vehicle.mileage.toLocaleString()} miles. ${vehicle.fuelType}, ${vehicle.transmission}. View price, photos and finance options at CarZee.`;
+  const vehicleUrl = `${SITE_URL}/vehicle/${id}`;
+  const vehicleImage = vehicle.images?.[0] || 'https://carzee.co.uk/vehicle-thumb-01.jpg';
+
+  const vehicleSchema = VehicleSchema({
+    make: vehicle.make,
+    model: vehicle.model,
+    year: vehicle.year,
+    mileage: vehicle.mileage,
+    mileageUnit: 'MI',
+    fuelType: vehicle.fuelType,
+    price: vehicle.price,
+    priceCurrency: 'GBP',
+    availability: vehicle.status?.toLowerCase() === 'sold' ? 'OutOfStock' : 'InStock',
+    condition: 'Used',
+    bodyType: vehicle.bodyType || 'Sedan',
+    color: vehicle.colour,
+    transmission: vehicle.transmission,
+    engineSize: vehicle.engineSize,
+    description: vehicle.description,
+    image: vehicleImage,
+    url: vehicleUrl,
+  });
+
+  const breadcrumbSchema = BreadcrumbListSchema({
+    items: [
+      { name: 'Home', path: '/' },
+      { name: 'Used Cars', path: '/inventory' },
+      { name: `${vehicle.make} ${vehicle.model}`, path: `/vehicle/${id}` },
+    ],
+  });
+
+  const detailSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [vehicleSchema, breadcrumbSchema],
+  };
+
   return (
     <div className="min-h-[100dvh] bg-obsidian">
+      <SEO
+        title={vehicleTitle}
+        description={vehicleDescription}
+        canonical={`/vehicle/${id}`}
+        ogImage={vehicleImage}
+        ogType="product"
+        schema={detailSchema}
+      />
       {/* ============ HERO GALLERY ============ */}
       <section className="bg-obsidian">
         {/* ── Full-width image slider (no text on top) ── */}

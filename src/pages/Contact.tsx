@@ -2,6 +2,8 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
+import SEO from '@/components/SEO'
+import { LocalBusinessSchema } from '@/components/SchemaMarkup'
 import {
   Phone,
   Mail,
@@ -234,6 +236,12 @@ export default function Contact() {
 
   return (
     <div>
+      <SEO
+        title="Contact CarZee | London, Birmingham & Manchester Showrooms"
+        description="Get in touch with CarZee. Call 07983 183814, email sales.carzee@gmail.com or visit our showrooms in London, Birmingham and Manchester."
+        canonical="/contact"
+        schema={LocalBusinessSchema({ render: false })}
+      />
       {/* ═══════════════════ SECTION 1: HERO ═══════════════════ */}
       <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
         <div

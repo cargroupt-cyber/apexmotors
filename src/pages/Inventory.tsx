@@ -6,6 +6,7 @@ import {
   Heart, MapPin, Star, Fuel, Gauge, Settings, ArrowUpDown, Car
 } from 'lucide-react'
 import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles'
+import SEO from '@/components/SEO'
 
 interface UnifiedVehicle {
   id: string
@@ -226,6 +227,11 @@ export default function Inventory() {
 
   return (
     <div className="min-h-screen bg-obsidian">
+      <SEO
+        title="Used Cars for Sale | CarZee London & UK"
+        description="Browse RAC-approved used cars for sale at CarZee. Filter by make, model, price, fuel type and location. Finance and part exchange available."
+        canonical="/inventory"
+      />
       {/* ═══════════════════════════════════════════
           HERO HEADER — with background image
           ═══════════════════════════════════════════ */}
