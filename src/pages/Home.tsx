@@ -892,7 +892,7 @@ export default function Home() {
             {[
               { icon: Shield, label: 'RAC Approved', sub: '200-Point Inspection' },
               { icon: Award, label: 'Motor Ombudsman', sub: 'Code of Practice' },
-              { icon: Star, label: '5-Star Rated', sub: '38,000+ Reviews' },
+              { icon: Star, label: '5-Star Rated', sub: '800+ Reviews' },
             ].map((item) => (
               <div key={item.label} className="flex flex-col items-center gap-3">
                 <div className="w-16 h-16 rounded-2xl bg-electric-blue/10 border border-electric-blue/20 flex items-center justify-center">
