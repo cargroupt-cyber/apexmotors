@@ -19,7 +19,14 @@ import {
   Headphones,
   ChevronDown,
   CheckCircle2,
+  Send,
 } from 'lucide-react'
+import { useSupabaseLeads } from '@/hooks/useSupabaseLeads'
+import {
+  VEHICLE_DATABASE,
+  MAKES,
+  YEARS,
+} from '@/data/vehicleMakesModels'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -51,16 +58,27 @@ interface WizardData {
 /*  Mock vehicle lookup database                                       */
 /* ------------------------------------------------------------------ */
 
+/* helpers for cascading make / model / variant selects */
+const getModels = (make: string): string[] => {
+  if (!make || !VEHICLE_DATABASE[make]) return []
+  return Object.keys(VEHICLE_DATABASE[make]).sort()
+}
+
+const getVariants = (make: string, model: string): string[] => {
+  if (!make || !model || !VEHICLE_DATABASE[make] || !VEHICLE_DATABASE[make][model]) return []
+  return VEHICLE_DATABASE[make][model].variants
+}
+
 const mockVehicleDB: Record<string, { make: string; model: string; year: string; variant: string }> = {
   'AB12 CDE': { make: 'BMW', model: '3 Series', year: '2021', variant: 'M Sport' },
   'FG34 HIJ': { make: 'Mercedes-Benz', model: 'C-Class', year: '2022', variant: 'AMG Line' },
   'KL56 MNO': { make: 'Audi', model: 'A4', year: '2020', variant: 'S Line' },
   'PQ78 RST': { make: 'Porsche', model: 'Cayenne', year: '2023', variant: 'S' },
-  'UV90 WXY': { make: 'Range Rover', model: 'Sport', year: '2022', variant: 'HSE' },
+  'UV90 WXY': { make: 'Land Rover', model: 'Range Rover Sport', year: '2022', variant: 'HSE' },
+  'YD23 ABC': { make: 'Ford', model: 'Focus', year: '2023', variant: 'ST-Line' },
+  'LM19 XYZ': { make: 'Volkswagen', model: 'Golf', year: '2019', variant: 'GTI' },
+  'NA69 DEF': { make: 'Toyota', model: 'Yaris', year: '2019', variant: 'Hybrid' },
 }
-
-const MAKES = ['BMW', 'Mercedes-Benz', 'Audi', 'Porsche', 'Range Rover', 'Jaguar', 'Lexus', 'Tesla']
-const YEARS = Array.from({ length: 16 }, (_, i) => String(2025 - i))
 
 const FEATURES_LIST = [
   'Satellite Navigation',
@@ -171,11 +189,17 @@ const initialData: WizardData = {
 }
 
 export default function SellYourCar() {
+  const { addLead } = useSupabaseLeads()
   const [step, setStep] = useState(1)
   const [data, setData] = useState<WizardData>(initialData)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showResult, setShowResult] = useState(false)
   const [animatedPrice, setAnimatedPrice] = useState(0)
+  const [offerSubmitting, setOfferSubmitting] = useState(false)
+  const [offerSubmitted, setOfferSubmitted] = useState(false)
+  const [offerError, setOfferError] = useState('')
+
+  const WEB3FORMS_KEY = '407a7337-aeca-42b8-9b02-afe80238f322'
 
   /* ---- helpers ---- */
   const update = useCallback((patch: Partial<WizardData>) => {
@@ -235,6 +259,72 @@ export default function SellYourCar() {
   const valuationAmount = 18750
   const valuationLow = 16000
   const valuationHigh = 21000
+
+  const handleAcceptOffer = useCallback(async () => {
+    if (!data.email || !data.phone || !data.firstName || !data.lastName) {
+      setOfferError('Please complete your contact details before accepting the offer.')
+      return
+    }
+    if (!data.consent) {
+      setOfferError('You must agree to be contacted to accept the offer.')
+      return
+    }
+
+    setOfferSubmitting(true)
+    setOfferError('')
+
+    const fullName = `${data.firstName} ${data.lastName}`
+    const vehicleDesc = `${data.year} ${data.make} ${data.model} ${data.variant}`
+
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          from_name: fullName,
+          subject: `Sell My Car Offer Accepted - CarZee`,
+          name: fullName,
+          email: data.email,
+          phone: data.phone,
+          postcode: data.postcode || 'Not provided',
+          enquiry_type: data.sellType === 'part-exchange' ? 'Part Exchange' : 'Sell Outright',
+          vehicle: vehicleDesc,
+          registration: data.reg || 'Not provided',
+          mileage: data.mileage,
+          condition: data.condition,
+          service_history: data.serviceHistory,
+          features: data.features.join(', '),
+          estimated_value: `£${valuationAmount.toLocaleString()}`,
+          interested_vehicle: data.interestedVehicle || 'N/A',
+          message: data.additionalDetails || 'No additional details',
+          replyto: data.email,
+        }),
+      })
+
+      await addLead({
+        name: fullName,
+        email: data.email,
+        phone: data.phone,
+        vehicle_interest: vehicleDesc,
+        status: 'new',
+        source: 'Sell Your Car',
+        date: new Date().toISOString(),
+        notes: `Offer accepted. Valuation: £${valuationAmount.toLocaleString()}. Reg: ${data.reg || 'N/A'}. Mileage: ${data.mileage}. Condition: ${data.condition}. Service history: ${data.serviceHistory}. ${data.additionalDetails || ''}`,
+        type: data.sellType === 'part-exchange' ? 'part-exchange' : 'sell-my-car',
+        registration: data.reg,
+        mileage: Number(data.mileage) || 0,
+        condition: data.condition,
+        estimated_value: valuationAmount,
+      })
+
+      setOfferSubmitted(true)
+    } catch {
+      setOfferError('Something went wrong. Please call us or try again.')
+    } finally {
+      setOfferSubmitting(false)
+    }
+  }, [data, addLead])
 
   /* ---- derived photo slots ---- */
   const photoSlots = Array.from({ length: 6 }, (_, i) => data.photos[i] || null)
@@ -403,7 +493,7 @@ export default function SellYourCar() {
                         <label className="block text-sm text-chrome mb-1.5">Make</label>
                         <select
                           value={data.make}
-                          onChange={e => { update({ make: e.target.value, model: '' }); clearError('make') }}
+                          onChange={e => { update({ make: e.target.value, model: '', variant: '' }); clearError('make') }}
                           className={`w-full px-4 py-3.5 rounded-xl bg-[rgba(0,8,20,0.6)] border text-pure-white outline-none transition-all duration-300 ${
                             errors.make ? 'border-error/60' : 'border-charcoal/40 focus:border-electric-blue'
                           }`}
@@ -415,15 +505,21 @@ export default function SellYourCar() {
                       </div>
                       <div>
                         <label className="block text-sm text-chrome mb-1.5">Model</label>
-                        <input
-                          type="text"
-                          placeholder="Enter model"
+                        <select
                           value={data.model}
-                          onChange={e => { update({ model: e.target.value }); clearError('model') }}
-                          className={`w-full px-4 py-3.5 rounded-xl bg-[rgba(0,8,20,0.6)] border text-pure-white placeholder-slate outline-none transition-all duration-300 ${
+                          onChange={e => { update({ model: e.target.value, variant: '' }); clearError('model') }}
+                          disabled={!data.make}
+                          className={`w-full px-4 py-3.5 rounded-xl bg-[rgba(0,8,20,0.6)] border text-pure-white outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed ${
                             errors.model ? 'border-error/60' : 'border-charcoal/40 focus:border-electric-blue'
                           }`}
-                        />
+                        >
+                          <option value="" className="bg-midnight">
+                            {data.make ? 'Select model' : 'Select make first'}
+                          </option>
+                          {getModels(data.make).map(m => (
+                            <option key={m} value={m} className="bg-midnight">{m}</option>
+                          ))}
+                        </select>
                         {errors.model && <p className="mt-1 text-xs text-error">{errors.model}</p>}
                       </div>
                       <div>
@@ -442,13 +538,19 @@ export default function SellYourCar() {
                       </div>
                       <div>
                         <label className="block text-sm text-chrome mb-1.5">Variant</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. M Sport"
+                        <select
                           value={data.variant}
                           onChange={e => update({ variant: e.target.value })}
-                          className="w-full px-4 py-3.5 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white placeholder-slate outline-none focus:border-electric-blue transition-all duration-300"
-                        />
+                          disabled={!data.model}
+                          className="w-full px-4 py-3.5 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <option value="" className="bg-midnight">
+                            {data.model ? 'Select variant' : 'Select model first'}
+                          </option>
+                          {getVariants(data.make, data.model).map(v => (
+                            <option key={v} value={v} className="bg-midnight">{v}</option>
+                          ))}
+                        </select>
                       </div>
                     </div>
 
@@ -882,20 +984,56 @@ export default function SellYourCar() {
                 </div>
 
                 {/* CTA Row */}
-                <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                  <button className="px-8 py-3.5 bg-electric-blue text-pure-white font-semibold rounded-full hover:bg-blue-glow hover:shadow-glow transition-all duration-300">
-                    Accept Offer
-                  </button>
-                  <button className="px-8 py-3.5 border-2 border-white/20 text-pure-white font-medium rounded-full hover:bg-white/5 hover:border-electric-blue transition-all duration-300">
-                    Part Exchange
-                  </button>
-                  <button
-                    onClick={() => { setShowResult(false); setStep(1); setAnimatedPrice(0) }}
-                    className="px-6 py-3.5 text-chrome font-medium rounded-full hover:text-pure-white transition-colors duration-300"
+                {offerSubmitted ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="mt-8 glass rounded-2xl p-6 border border-success/30"
                   >
-                    Reassess
-                  </button>
-                </div>
+                    <div className="w-12 h-12 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-3">
+                      <CheckCircle2 size={24} className="text-success" />
+                    </div>
+                    <h3 className="font-display font-semibold text-pure-white mb-1">
+                      Offer Accepted
+                    </h3>
+                    <p className="text-sm text-frost">
+                      Thank you. We&apos;ve received your details and will contact you within 24 hours to arrange collection.
+                    </p>
+                  </motion.div>
+                ) : (
+                  <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                    <button
+                      onClick={handleAcceptOffer}
+                      disabled={offerSubmitting}
+                      className="px-8 py-3.5 bg-electric-blue text-pure-white font-semibold rounded-full hover:bg-blue-glow hover:shadow-glow transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {offerSubmitting ? 'Submitting...' : <><Send size={16} /> Accept Offer</>}
+                    </button>
+                    <button
+                      onClick={() => {
+                        update({ sellType: 'part-exchange' })
+                        setShowResult(false)
+                        setStep(4)
+                        setAnimatedPrice(0)
+                      }}
+                      className="px-8 py-3.5 border-2 border-white/20 text-pure-white font-medium rounded-full hover:bg-white/5 hover:border-electric-blue transition-all duration-300"
+                    >
+                      Part Exchange
+                    </button>
+                    <button
+                      onClick={() => { setShowResult(false); setStep(1); setAnimatedPrice(0) }}
+                      className="px-6 py-3.5 text-chrome font-medium rounded-full hover:text-pure-white transition-colors duration-300"
+                    >
+                      Reassess
+                    </button>
+                  </div>
+                )}
+
+                {offerError && (
+                  <p className="mt-4 text-sm text-error flex items-center justify-center gap-1">
+                    <AlertCircle size={16} /> {offerError}
+                  </p>
+                )}
               </motion.div>
             </div>
           </motion.section>
