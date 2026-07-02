@@ -444,7 +444,7 @@ export default function Home() {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-electric-blue/10 border border-electric-blue/20 mb-6"
           >
             <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-            <span className="text-[0.8125rem] font-medium text-electric-blue tracking-wide">{availableVehicles.length > 0 ? `${availableVehicles.length.toLocaleString()}+` : '6,000+'} RAC-Approved Vehicles</span>
+            <span className="text-[0.8125rem] font-medium text-electric-blue tracking-wide">{availableVehicles.length > 0 ? `${availableVehicles.length.toLocaleString()}+` : '400+'} RAC-Approved Vehicles</span>
           </motion.div>
 
           <motion.h1
@@ -892,7 +892,7 @@ export default function Home() {
             {[
               { icon: Shield, label: 'RAC Approved', sub: '200-Point Inspection' },
               { icon: Award, label: 'Motor Ombudsman', sub: 'Code of Practice' },
-              { icon: Star, label: '5-Star Rated', sub: '38,000+ Reviews' },
+              { icon: Star, label: '5-Star Rated', sub: '800+ Reviews' },
             ].map((item) => (
               <div key={item.label} className="flex flex-col items-center gap-3">
                 <div className="w-16 h-16 rounded-2xl bg-electric-blue/10 border border-electric-blue/20 flex items-center justify-center">
