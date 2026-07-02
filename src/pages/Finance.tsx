@@ -11,7 +11,18 @@ import {
   Calculator,
   TrendingUp,
   ShieldCheck,
+  X,
+  Send,
+  CheckCircle,
+  AlertCircle,
 } from 'lucide-react'
+import { useSupabaseLeads } from '@/hooks/useSupabaseLeads'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -258,6 +269,117 @@ export default function Finance() {
   const [eligIncome, setEligIncome] = useState('')
   const [eligMissed, setEligMissed] = useState('')
   const [eligibilityResult, setEligibilityResult] = useState<'success' | 'caution' | null>(null)
+
+  /* ---- Application Modal State ---- */
+  const { addLead } = useSupabaseLeads()
+  const [showApplyModal, setShowApplyModal] = useState(false)
+  const [applyForm, setApplyForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    employmentStatus: '',
+    monthlyIncome: '',
+    vehicleInterest: '',
+    message: '',
+    privacy: false,
+  })
+  const [applyErrors, setApplyErrors] = useState<Record<string, string>>({})
+  const [applySubmitting, setApplySubmitting] = useState(false)
+  const [applySubmitted, setApplySubmitted] = useState(false)
+
+  const WEB3FORMS_KEY = '407a7337-aeca-42b8-9b02-afe80238f322'
+
+  const validateApplyForm = (): boolean => {
+    const e: Record<string, string> = {}
+    if (!applyForm.firstName.trim()) e.firstName = 'First name is required'
+    if (!applyForm.lastName.trim()) e.lastName = 'Last name is required'
+    if (!applyForm.email.trim()) {
+      e.email = 'Email is required'
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(applyForm.email)) {
+      e.email = 'Please enter a valid email'
+    }
+    if (!applyForm.phone.trim()) e.phone = 'Phone number is required'
+    if (!applyForm.employmentStatus) e.employmentStatus = 'Employment status is required'
+    if (!applyForm.monthlyIncome) e.monthlyIncome = 'Income range is required'
+    if (!applyForm.privacy) e.privacy = 'You must agree to the privacy policy'
+    setApplyErrors(e)
+    return Object.keys(e).length === 0
+  }
+
+  const resetApplyForm = () => {
+    setApplyForm({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      employmentStatus: '',
+      monthlyIncome: '',
+      vehicleInterest: '',
+      message: '',
+      privacy: false,
+    })
+    setApplyErrors({})
+    setApplySubmitted(false)
+  }
+
+  const handleApplySubmit = async (evt: React.FormEvent) => {
+    evt.preventDefault()
+    if (!validateApplyForm()) return
+
+    setApplySubmitting(true)
+    setApplyErrors({})
+
+    const fullName = `${applyForm.firstName} ${applyForm.lastName}`
+    const financeDetails = `Vehicle Price: ${formatCurrency(vehiclePrice)} | Deposit: ${formatCurrency(deposit)} | Term: ${termMonths} months | Finance Type: ${financeType.toUpperCase()} | Estimated Monthly: ${formatCurrency(result.monthlyPayment)} | APR: ${result.apr}%`
+
+    try {
+      // Send email via web3forms
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          from_name: fullName,
+          subject: `New Finance Application - CarZee`,
+          name: fullName,
+          email: applyForm.email,
+          phone: applyForm.phone,
+          enquiry_type: 'Finance Application',
+          employment_status: applyForm.employmentStatus,
+          monthly_income: applyForm.monthlyIncome,
+          vehicle_interest: applyForm.vehicleInterest || 'Not specified',
+          finance_details: financeDetails,
+          message: applyForm.message || 'No additional message',
+          replyto: applyForm.email,
+        }),
+      })
+
+      // Save lead to admin dashboard (Supabase if configured, otherwise localStorage)
+      await addLead({
+        name: fullName,
+        email: applyForm.email,
+        phone: applyForm.phone,
+        vehicle_interest: applyForm.vehicleInterest || 'Not specified',
+        status: 'new',
+        source: 'Finance Page',
+        date: new Date().toISOString(),
+        notes: `Finance application. ${financeDetails}. Employment: ${applyForm.employmentStatus}, Income: ${applyForm.monthlyIncome}. ${applyForm.message || ''}`,
+        type: 'finance',
+        amount: result.amountFinanced,
+        term: termMonths,
+        employment_status: applyForm.employmentStatus,
+        income: parseInt(applyForm.monthlyIncome.replace(/\D/g, ''), 10) || 0,
+        credit_rating: creditRating,
+      })
+
+      setApplySubmitted(true)
+    } catch {
+      setApplyErrors({ submit: 'Something went wrong. Please try again or call us.' })
+    } finally {
+      setApplySubmitting(false)
+    }
+  }
 
   /* ---- Calculations ---- */
   const result = useMemo(
@@ -591,7 +713,13 @@ export default function Finance() {
                 </div>
 
                 {/* CTA */}
-                <button className="w-full mt-6 py-4 bg-electric-blue text-pure-white font-semibold rounded-2xl hover:bg-blue-glow hover:shadow-glow transition-all duration-300">
+                <button
+                  onClick={() => {
+                    resetApplyForm()
+                    setShowApplyModal(true)
+                  }}
+                  className="w-full mt-6 py-4 bg-electric-blue text-pure-white font-semibold rounded-2xl hover:bg-blue-glow hover:shadow-glow transition-all duration-300"
+                >
                   Apply Now
                 </button>
                 <p className="text-center text-xs text-slate mt-3">
@@ -835,7 +963,13 @@ export default function Finance() {
                       <p className="font-display font-semibold text-pure-white">
                         Great news! Based on your answers, you&apos;re likely to be approved.
                       </p>
-                      <button className="mt-4 px-8 py-3 bg-electric-blue text-pure-white font-semibold rounded-full hover:bg-blue-glow hover:shadow-glow transition-all duration-300">
+                      <button
+                        onClick={() => {
+                          resetApplyForm()
+                          setShowApplyModal(true)
+                        }}
+                        className="mt-4 px-8 py-3 bg-electric-blue text-pure-white font-semibold rounded-full hover:bg-blue-glow hover:shadow-glow transition-all duration-300"
+                      >
                         Apply Now
                       </button>
                     </div>
@@ -920,6 +1054,232 @@ export default function Finance() {
           </div>
         </motion.div>
       </section>
+
+      {/* ============================================================ */}
+      {/*  Finance Application Modal                                      */}
+      {/* ============================================================ */}
+      <Dialog open={showApplyModal} onOpenChange={setShowApplyModal}>
+        <DialogContent className="bg-midnight border-white/10 text-pure-white max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display text-2xl text-pure-white">
+              Apply for Finance
+            </DialogTitle>
+          </DialogHeader>
+
+          {applySubmitted ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="py-8 text-center"
+            >
+              <div className="w-16 h-16 rounded-full bg-success/20 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle size={32} className="text-success" />
+              </div>
+              <h3 className="font-display text-xl font-semibold text-pure-white mb-2">
+                Application Submitted
+              </h3>
+              <p className="text-frost text-sm mb-6">
+                Thank you, {applyForm.firstName}. Our finance team will review your
+                application and contact you within 24 hours.
+              </p>
+              <button
+                onClick={() => setShowApplyModal(false)}
+                className="px-8 py-3 bg-electric-blue text-pure-white font-semibold rounded-full hover:bg-blue-glow hover:shadow-glow transition-all duration-300"
+              >
+                Close
+              </button>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleApplySubmit} className="space-y-4 mt-2">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm text-chrome mb-1.5">First Name</label>
+                  <input
+                    type="text"
+                    value={applyForm.firstName}
+                    onChange={e => setApplyForm(prev => ({ ...prev, firstName: e.target.value }))}
+                    className="w-full px-4 py-3 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300"
+                    placeholder="John"
+                  />
+                  {applyErrors.firstName && (
+                    <p className="text-xs text-error mt-1 flex items-center gap-1">
+                      <AlertCircle size={12} /> {applyErrors.firstName}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm text-chrome mb-1.5">Last Name</label>
+                  <input
+                    type="text"
+                    value={applyForm.lastName}
+                    onChange={e => setApplyForm(prev => ({ ...prev, lastName: e.target.value }))}
+                    className="w-full px-4 py-3 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300"
+                    placeholder="Smith"
+                  />
+                  {applyErrors.lastName && (
+                    <p className="text-xs text-error mt-1 flex items-center gap-1">
+                      <AlertCircle size={12} /> {applyErrors.lastName}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-chrome mb-1.5">Email</label>
+                <input
+                  type="email"
+                  value={applyForm.email}
+                  onChange={e => setApplyForm(prev => ({ ...prev, email: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300"
+                  placeholder="john@example.com"
+                />
+                {applyErrors.email && (
+                  <p className="text-xs text-error mt-1 flex items-center gap-1">
+                    <AlertCircle size={12} /> {applyErrors.email}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm text-chrome mb-1.5">Phone</label>
+                <input
+                  type="tel"
+                  value={applyForm.phone}
+                  onChange={e => setApplyForm(prev => ({ ...prev, phone: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300"
+                  placeholder="07xxx xxxxxx"
+                />
+                {applyErrors.phone && (
+                  <p className="text-xs text-error mt-1 flex items-center gap-1">
+                    <AlertCircle size={12} /> {applyErrors.phone}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm text-chrome mb-1.5">Employment Status</label>
+                <select
+                  value={applyForm.employmentStatus}
+                  onChange={e => setApplyForm(prev => ({ ...prev, employmentStatus: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300"
+                >
+                  <option value="" className="bg-midnight text-chrome">Select status</option>
+                  <option value="employed" className="bg-midnight">Employed</option>
+                  <option value="self-employed" className="bg-midnight">Self-Employed</option>
+                  <option value="retired" className="bg-midnight">Retired</option>
+                  <option value="other" className="bg-midnight">Other</option>
+                </select>
+                {applyErrors.employmentStatus && (
+                  <p className="text-xs text-error mt-1 flex items-center gap-1">
+                    <AlertCircle size={12} /> {applyErrors.employmentStatus}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm text-chrome mb-1.5">Monthly Income</label>
+                <select
+                  value={applyForm.monthlyIncome}
+                  onChange={e => setApplyForm(prev => ({ ...prev, monthlyIncome: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300"
+                >
+                  <option value="" className="bg-midnight text-chrome">Select income range</option>
+                  <option value="Under £1,500" className="bg-midnight">Under £1,500</option>
+                  <option value="£1,500 - £2,500" className="bg-midnight">£1,500 - £2,500</option>
+                  <option value="£2,500 - £4,000" className="bg-midnight">£2,500 - £4,000</option>
+                  <option value="£4,000+" className="bg-midnight">£4,000+</option>
+                </select>
+                {applyErrors.monthlyIncome && (
+                  <p className="text-xs text-error mt-1 flex items-center gap-1">
+                    <AlertCircle size={12} /> {applyErrors.monthlyIncome}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm text-chrome mb-1.5">
+                  Vehicle of Interest <span className="text-slate">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={applyForm.vehicleInterest}
+                  onChange={e => setApplyForm(prev => ({ ...prev, vehicleInterest: e.target.value }))}
+                  className="w-full px-4 py-3 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300"
+                  placeholder="e.g. 2022 BMW M3"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-chrome mb-1.5">
+                  Message <span className="text-slate">(optional)</span>
+                </label>
+                <textarea
+                  value={applyForm.message}
+                  onChange={e => setApplyForm(prev => ({ ...prev, message: e.target.value }))}
+                  rows={3}
+                  className="w-full px-4 py-3 rounded-xl bg-[rgba(0,8,20,0.6)] border border-charcoal/40 text-pure-white outline-none focus:border-electric-blue transition-all duration-300 resize-none"
+                  placeholder="Any additional details..."
+                />
+              </div>
+
+              <div className="flex items-start gap-3">
+                <button
+                  type="button"
+                  onClick={() => setApplyForm(prev => ({ ...prev, privacy: !prev.privacy }))}
+                  className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center transition-colors ${
+                    applyForm.privacy
+                      ? 'bg-electric-blue border-electric-blue'
+                      : 'border-charcoal/40 bg-transparent'
+                  }`}
+                >
+                  {applyForm.privacy && <Check size={14} className="text-pure-white" />}
+                </button>
+                <span className="text-xs text-frost leading-relaxed">
+                  I agree to the{' '}
+                  <Link to="/about" className="text-electric-blue hover:underline">
+                    Privacy Policy
+                  </Link>{' '}
+                  and consent to CarZee contacting me regarding my finance application.
+                </span>
+              </div>
+              {applyErrors.privacy && (
+                <p className="text-xs text-error -mt-2 flex items-center gap-1">
+                  <AlertCircle size={12} /> {applyErrors.privacy}
+                </p>
+              )}
+
+              {applyErrors.submit && (
+                <p className="text-sm text-error text-center flex items-center justify-center gap-1">
+                  <AlertCircle size={16} /> {applyErrors.submit}
+                </p>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowApplyModal(false)}
+                  className="flex-1 py-3 border border-white/20 text-pure-white font-medium rounded-xl hover:bg-white/5 transition-all duration-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={applySubmitting}
+                  className="flex-1 py-3 bg-electric-blue text-pure-white font-semibold rounded-xl hover:bg-blue-glow hover:shadow-glow transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                >
+                  {applySubmitting ? (
+                    'Submitting...'
+                  ) : (
+                    <>
+                      <Send size={16} /> Submit Application
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
