@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
 import {
   Grid3X3, List, ChevronDown,
-  Heart, MapPin, Star, Fuel, Gauge, Settings, ArrowUpDown, Car
+  Heart, MapPin, Star, Fuel, Gauge, Settings, ArrowUpDown, Car, Search, X
 } from 'lucide-react'
 import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles'
 import SEO from '@/components/SEO'
@@ -182,7 +182,7 @@ function FilterDropdown({ label, options, value, onChange, icon: Icon }: {
 }
 
 export default function Inventory() {
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { vehicles: dbVehicles, loading } = useSupabaseVehicles()
   const allVehicles: UnifiedVehicle[] = dbVehicles.length > 0 ? dbVehicles as UnifiedVehicle[] : fallbackVehicles
 
@@ -192,21 +192,51 @@ export default function Inventory() {
   const [activeFuel, setActiveFuel] = useState(searchParams.get('fuel') || 'Any Fuel')
   const [activeBody, setActiveBody] = useState(searchParams.get('body') || 'Any Body')
   const [activeSort, setActiveSort] = useState('Relevance')
+  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
 
-  const filteredVehicles = allVehicles.filter((v) => {
-    const vehicleMakeModel = `${v.make} ${v.model}`
-    if (activeMake !== 'All Makes' && !vehicleMakeModel.includes(activeMake)) return false
-    if (activeFuel !== 'Any Fuel' && v.fuel_type !== activeFuel) return false
-    if (activeBody !== 'Any Body' && v.body_type !== activeBody) return false
-    if (activePrice !== 'Any Price') {
-      if (activePrice === 'Under £20k' && v.price >= 20000) return false
-      if (activePrice === '£20k - £30k' && (v.price < 20000 || v.price >= 30000)) return false
-      if (activePrice === '£30k - £40k' && (v.price < 30000 || v.price >= 40000)) return false
-      if (activePrice === '£40k - £50k' && (v.price < 40000 || v.price >= 50000)) return false
-      if (activePrice === '£50k+' && v.price < 50000) return false
+  // Sync search term back to URL query param
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams)
+    const trimmed = searchQuery.trim()
+    if (trimmed) {
+      params.set('search', trimmed)
+    } else {
+      params.delete('search')
     }
-    return true
-  })
+    setSearchParams(params, { replace: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery])
+
+  const filteredVehicles = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    return allVehicles.filter((v) => {
+      const vehicleMakeModel = `${v.make} ${v.model}`.toLowerCase()
+      const variant = (v.variant || '').toLowerCase()
+      const bodyType = (v.body_type || '').toLowerCase()
+      const fuelType = (v.fuel_type || '').toLowerCase()
+      const description = (v.description || '').toLowerCase()
+      const location = (v.location || '').toLowerCase()
+
+      if (activeMake !== 'All Makes') {
+        const makeLower = activeMake.toLowerCase()
+        if (!vehicleMakeModel.includes(makeLower) && !variant.includes(makeLower)) return false
+      }
+      if (activeFuel !== 'Any Fuel' && fuelType !== activeFuel.toLowerCase()) return false
+      if (activeBody !== 'Any Body' && bodyType !== activeBody.toLowerCase()) return false
+      if (activePrice !== 'Any Price') {
+        if (activePrice === 'Under £20k' && v.price >= 20000) return false
+        if (activePrice === '£20k - £30k' && (v.price < 20000 || v.price >= 30000)) return false
+        if (activePrice === '£30k - £40k' && (v.price < 30000 || v.price >= 40000)) return false
+        if (activePrice === '£40k - £50k' && (v.price < 40000 || v.price >= 50000)) return false
+        if (activePrice === '£50k+' && v.price < 50000) return false
+      }
+      if (query) {
+        const searchable = `${vehicleMakeModel} ${variant} ${bodyType} ${fuelType} ${description} ${location}`
+        if (!searchable.includes(query)) return false
+      }
+      return true
+    })
+  }, [allVehicles, activeMake, activeFuel, activeBody, activePrice, searchQuery])
 
   const sortedVehicles = [...filteredVehicles].sort((a, b) => {
     if (activeSort === 'Price: Low to High') return a.price - b.price
@@ -221,6 +251,7 @@ export default function Inventory() {
     activePrice !== 'Any Price',
     activeFuel !== 'Any Fuel',
     activeBody !== 'Any Body',
+    searchQuery.trim().length > 0,
   ].filter(Boolean).length
 
   const vehicleCount = allVehicles.length
@@ -267,7 +298,27 @@ export default function Inventory() {
       <section className="sticky top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-4">
         <div className="container-apex">
           <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-            <div className="flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5">
+              <div className="relative sm:col-span-2 lg:col-span-2">
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate">
+                  <Search size={16} />
+                </div>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search make, model, keyword..."
+                  className="w-full glass-input rounded-xl pl-10 pr-10 py-3 text-[0.875rem] text-frost placeholder:text-slate/60 outline-none focus:border-electric-blue transition-colors"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate hover:text-frost"
+                  >
+                    <X size={16} />
+                  </button>
+                )}
+              </div>
               <FilterDropdown label="All Makes" options={makes} value={activeMake} onChange={setActiveMake} icon={Settings} />
               <FilterDropdown label="Any Price" options={priceRanges} value={activePrice} onChange={setActivePrice} icon={Gauge} />
               <FilterDropdown label="Any Fuel" options={fuelTypes} value={activeFuel} onChange={setActiveFuel} icon={Fuel} />
@@ -285,11 +336,12 @@ export default function Inventory() {
           </div>
           {activeFilterCount > 0 && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="flex flex-wrap gap-2 mt-3">
+              {searchQuery.trim() && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">Search: {searchQuery.trim()} <button onClick={() => setSearchQuery('')} className="hover:text-pure-white">&times;</button></span>}
               {activeMake !== 'All Makes' && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">{activeMake} <button onClick={() => setActiveMake('All Makes')} className="hover:text-pure-white">&times;</button></span>}
               {activePrice !== 'Any Price' && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">{activePrice} <button onClick={() => setActivePrice('Any Price')} className="hover:text-pure-white">&times;</button></span>}
               {activeFuel !== 'Any Fuel' && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">{activeFuel} <button onClick={() => setActiveFuel('Any Fuel')} className="hover:text-pure-white">&times;</button></span>}
               {activeBody !== 'Any Body' && <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-electric-blue/10 text-electric-blue border border-electric-blue/20">{activeBody} <button onClick={() => setActiveBody('Any Body')} className="hover:text-pure-white">&times;</button></span>}
-              <button onClick={() => { setActiveMake('All Makes'); setActivePrice('Any Price'); setActiveFuel('Any Fuel'); setActiveBody('Any Body') }} className="text-xs text-chrome hover:text-frost underline underline-offset-2">Clear all</button>
+              <button onClick={() => { setSearchQuery(''); setActiveMake('All Makes'); setActivePrice('Any Price'); setActiveFuel('Any Fuel'); setActiveBody('Any Body') }} className="text-xs text-chrome hover:text-frost underline underline-offset-2">Clear all</button>
             </motion.div>
           )}
         </div>
@@ -366,7 +418,7 @@ export default function Inventory() {
                   <Car size={48} className="text-slate/30 mx-auto mb-4" />
                   <h3 className="font-display font-semibold text-xl text-pure-white">No vehicles found</h3>
                   <p className="mt-2 text-chrome">Try adjusting your filters to see more results.</p>
-                  <button onClick={() => { setActiveMake('All Makes'); setActivePrice('Any Price'); setActiveFuel('Any Fuel'); setActiveBody('Any Body') }} className="mt-6 px-6 py-3 bg-electric-blue text-pure-white rounded-full text-sm font-semibold hover:bg-blue-glow transition-colors">Clear All Filters</button>
+                  <button onClick={() => { setSearchQuery(''); setActiveMake('All Makes'); setActivePrice('Any Price'); setActiveFuel('Any Fuel'); setActiveBody('Any Body') }} className="mt-6 px-6 py-3 bg-electric-blue text-pure-white rounded-full text-sm font-semibold hover:bg-blue-glow transition-colors">Clear All Filters</button>
                 </div>
               )}
               {sortedVehicles.length > 0 && (
