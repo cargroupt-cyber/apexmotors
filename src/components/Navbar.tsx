@@ -61,7 +61,7 @@ export default function Navbar() {
             <img
               src="/logo.png"
               alt="CarZee"
-              className="h-10 md:h-11 w-auto object-contain"
+              className="h-12 md:h-14 w-auto object-contain"
             />
           </Link>
 
