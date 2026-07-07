@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
 import {
@@ -162,7 +162,7 @@ function FilterDropdown({ label, options, value, onChange, icon: Icon }: {
   const [open, setOpen] = useState(false)
   return (
     <div className="relative">
-      <button onClick={() => setOpen(!open)} className="glass-input rounded-xl px-4 py-3 flex items-center gap-2.5 cursor-pointer hover:border-slate/50 transition-colors w-full">
+      <button onClick={() => setOpen(!open)} className="glass-input rounded-xl px-4 py-2.5 lg:py-3 flex items-center gap-2.5 cursor-pointer hover:border-slate/50 transition-colors w-full">
         {Icon && <Icon size={16} className="text-slate shrink-0" />}
         <span className="text-[0.875rem] text-frost truncate">{value || label}</span>
         <ChevronDown size={14} className="text-slate ml-auto shrink-0" />
@@ -193,6 +193,8 @@ export default function Inventory() {
   const [activeBody, setActiveBody] = useState(searchParams.get('body') || 'Any Body')
   const [activeSort, setActiveSort] = useState('Relevance')
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
+  const [filterBarVisible, setFilterBarVisible] = useState(true)
+  const lastScrollY = useRef(0)
 
   // Sync search term back to URL query param
   useEffect(() => {
@@ -206,6 +208,26 @@ export default function Inventory() {
     setSearchParams(params, { replace: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery])
+
+  // Hide sticky filter bar on scroll down, show on scroll up (mobile-friendly)
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY
+      const delta = currentY - lastScrollY.current
+      // Only toggle after scrolling past the hero section and beyond a small threshold
+      if (currentY < 300) {
+        setFilterBarVisible(true)
+      } else if (delta > 10) {
+        setFilterBarVisible(false)
+      } else if (delta < -10) {
+        setFilterBarVisible(true)
+      }
+      lastScrollY.current = currentY
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   const filteredVehicles = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -295,10 +317,12 @@ export default function Inventory() {
         </div>
       </section>
 
-      <section className="sticky top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-4">
+      <section
+        className={`sticky top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-3 lg:py-4 transition-transform duration-300 ${filterBarVisible ? 'translate-y-0' : '-translate-y-full'}`}
+      >
         <div className="container-apex">
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2.5">
+          <div className="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-4">
+            <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-2">
               <div className="relative sm:col-span-2 lg:col-span-2">
                 <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate">
                   <Search size={16} />
@@ -308,7 +332,7 @@ export default function Inventory() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search make, model, keyword..."
-                  className="w-full glass-input rounded-xl pl-10 pr-10 py-3 text-[0.875rem] text-frost placeholder:text-slate/60 outline-none focus:border-electric-blue transition-colors"
+                  className="w-full glass-input rounded-xl pl-10 pr-10 py-2.5 lg:py-3 text-[0.875rem] text-frost placeholder:text-slate/60 outline-none focus:border-electric-blue transition-colors"
                 />
                 {searchQuery && (
                   <button
