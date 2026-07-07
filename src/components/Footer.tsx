@@ -50,9 +50,11 @@ export default function Footer() {
           {/* Brand Column */}
           <motion.div variants={itemVariants}>
             <Link to="/" className="inline-block">
-              <span className="font-display text-2xl font-bold tracking-[-0.02em] text-pure-white">
-                CarZee<span className="text-electric-blue">.</span>
-              </span>
+              <img
+                src="/logo.png"
+                alt="CarZee"
+                className="h-12 w-auto object-contain"
+              />
             </Link>
             <p className="mt-4 text-sm text-chrome leading-relaxed max-w-[280px]">
               Redefining the pre-owned experience. Over 400+ RAC-approved vehicles, inspected, certified, and ready to drive away.
