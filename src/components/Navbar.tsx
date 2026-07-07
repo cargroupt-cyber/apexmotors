@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Phone } from 'lucide-react'
+import { Menu, X, Phone, Car } from 'lucide-react'
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -27,6 +27,8 @@ export default function Navbar() {
   }, [])
 
   useEffect(() => {
+    // Close mobile menu when the route changes
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMobileOpen(false)
   }, [location.pathname])
 
@@ -55,13 +57,19 @@ export default function Navbar() {
       >
         <div className="container-apex flex items-center justify-between h-[72px] md:h-[72px]">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-0 shrink-0">
-            <span
-              className="font-display text-2xl font-bold tracking-[-0.02em] text-white"
-            >
-              CarZee
-              <span className="text-electric-blue">.</span>
-            </span>
+          <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="relative w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-electric-blue via-blue-glow to-ice-blue shadow-lg shadow-electric-blue/20 overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.25)_0%,transparent_50%)]" />
+              <Car size={20} className="relative text-pure-white" strokeWidth={2} />
+            </div>
+            <div className="flex flex-col leading-none">
+              <span className="font-display text-lg md:text-xl font-bold tracking-[0.08em] text-pure-white uppercase group-hover:text-electric-blue transition-colors duration-300">
+                CarZee
+              </span>
+              <span className="text-[0.55rem] md:text-[0.6rem] tracking-[0.22em] text-chrome uppercase mt-0.5">
+                Premium Motors
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Nav Links */}
