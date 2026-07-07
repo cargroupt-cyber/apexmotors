@@ -49,11 +49,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {/* Brand Column */}
           <motion.div variants={itemVariants}>
-            <Link to="/" className="inline-block">
+            <Link to="/" className="inline-block" draggable={false}>
               <img
                 src="/logo.png"
                 alt="CarZee"
-                className="h-12 w-auto object-contain"
+                draggable={false}
+                className="h-12 w-auto object-contain select-none"
               />
             </Link>
             <p className="mt-4 text-sm text-chrome leading-relaxed max-w-[280px]">

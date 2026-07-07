@@ -57,11 +57,12 @@ export default function Navbar() {
       >
         <div className="container-apex flex items-center justify-between h-[72px] md:h-[72px]">
           {/* Logo */}
-          <Link to="/" className="shrink-0">
+          <Link to="/" className="inline-block shrink-0" draggable={false}>
             <img
               src="/logo.png"
               alt="CarZee"
-              className="h-12 md:h-14 w-auto object-contain"
+              draggable={false}
+              className="h-12 md:h-14 w-auto object-contain select-none"
             />
           </Link>
 
