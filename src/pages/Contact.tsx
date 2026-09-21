@@ -89,20 +89,6 @@ const locations = [
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-electric-blue/20 to-blue-glow/10',
   },
-  {
-    name: 'CarZee Birmingham',
-    address: '456 Carriageway Rd, B1 1AA',
-    phone: '',
-    hours: 'Mon – Sat: 9am – 7pm',
-    mapColor: 'from-blue-glow/20 to-ice-blue/10',
-  },
-  {
-    name: 'CarZee Manchester',
-    address: '789 Autobahn St, M1 1AA',
-    phone: '',
-    hours: 'Mon – Sat: 9am – 6pm',
-    mapColor: 'from-ice-blue/20 to-electric-blue/10',
-  },
 ]
 
 const subjectOptions = [
@@ -239,8 +225,8 @@ export default function Contact() {
   return (
     <div>
       <SEO
-        title="Contact CarZee | London, Birmingham & Manchester Showrooms"
-        description={`Get in touch with CarZee. Call ${phone}, email sales.carzee@gmail.com or visit our showrooms in London, Birmingham and Manchester.`}
+        title="Contact CarZee | London Showroom"
+        description={`Get in touch with CarZee. Call ${phone}, email sales.carzee@gmail.com or visit our showroom in London.`}
         canonical="/contact"
         schema={LocalBusinessSchema({ render: false })}
       />
@@ -707,7 +693,7 @@ export default function Contact() {
               Our Locations
             </h2>
             <p className="mt-2 text-[0.9375rem] text-chrome">
-              3 showrooms across the UK
+              Visit our showroom
             </p>
           </motion.div>
 
@@ -835,9 +821,7 @@ export default function Contact() {
           {/* Location pins */}
           {[
             { left: '25%', top: '55%' },
-            { left: '42%', top: '48%' },
-            { left: '48%', top: '35%' },
-          ].map((pos, i) => (
+                                  ].map((pos, i) => (
             <div
               key={i}
               className="absolute flex items-center justify-center"
@@ -851,16 +835,6 @@ export default function Contact() {
               </div>
             </div>
           ))}
-
-          {/* Overlay label */}
-          <div className="absolute top-6 left-6 z-10">
-            <div className="glass px-5 py-2.5 rounded-full flex items-center gap-2">
-              <MapPin size={16} className="text-electric-blue" />
-              <span className="text-[0.875rem] font-medium text-pure-white">
-                3 Locations Nationwide
-              </span>
-            </div>
-          </div>
 
           {/* Bottom gradient fade */}
           <div
