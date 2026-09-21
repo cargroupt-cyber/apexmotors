@@ -593,7 +593,7 @@ const DEFAULT_LEADS: Lead[] = [
 const DEFAULT_SETTINGS: BusinessSettings = {
   dealershipName: 'CarZee',
   address: '123 Prestige Lane, Manchester M1 1AA',
-  phone: '07983183814',
+  phone: '07522332210',
   email: 'sales.carzee@gmail.com',
   vatNumber: 'GB 123 4567 89',
   openingHours: [
@@ -621,7 +621,7 @@ const DEFAULT_SETTINGS: BusinessSettings = {
 const DEFAULT_PROFILE: UserProfile = {
   name: 'James Wilson',
   email: 'sales.carzee@gmail.com',
-  phone: '07983183814',
+  phone: '07522332210',
   role: 'Sales Manager',
   avatar: 'JW',
 }

@@ -18,7 +18,7 @@ const LOGO_URL = `${SITE_URL}/assets/logo-carzee.png`
 const DEFAULT_IMAGE = `${SITE_URL}/assets/og-default.jpg`
 
 const ORG_NAME = 'CarZee'
-const ORG_PHONE = '+44-7983-183814'
+const ORG_PHONE = '+44-7522-332210'
 const ORG_EMAIL = 'sales.carzee@gmail.com'
 
 const HEADQUARTERS = {
@@ -309,7 +309,7 @@ export function LocalBusinessSchema({
       addressLocality: 'London',
       addressRegion: 'England',
       postalCode: 'EC1A 1BB',
-      telephone: '+44-7983-183814',
+      telephone: '+44-7522-332210',
       latitude: 51.5074,
       longitude: -0.1278,
       image: DEFAULT_IMAGE,
@@ -321,7 +321,7 @@ export function LocalBusinessSchema({
       addressLocality: 'Birmingham',
       addressRegion: 'England',
       postalCode: 'B1 1AA',
-      telephone: '+44-7983-183814',
+      telephone: '+44-7522-332210',
       latitude: 52.4862,
       longitude: -1.8904,
       openingHours: OPENING_HOURS,
@@ -332,7 +332,7 @@ export function LocalBusinessSchema({
       addressLocality: 'Manchester',
       addressRegion: 'England',
       postalCode: 'M1 1AA',
-      telephone: '+44-7983-183814',
+      telephone: '+44-7522-332210',
       latitude: 53.4808,
       longitude: -2.2426,
       openingHours: OPENING_HOURS,

@@ -50,10 +50,10 @@ const contactMethods = [
   {
     icon: Phone,
     title: 'Call Us',
-    detail: '07983183814',
+    detail: '07522332210',
     meta: 'Mon – Sat: 9am – 7pm',
     action: 'Call Now',
-    href: 'tel:07983183814',
+    href: 'tel:07522332210',
   },
   {
     icon: Mail,
@@ -84,21 +84,21 @@ const locations = [
   {
     name: 'CarZee London',
     address: 'Based In London',
-    phone: '07983183814',
+    phone: '07522332210',
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-electric-blue/20 to-blue-glow/10',
   },
   {
     name: 'CarZee Birmingham',
     address: '456 Carriageway Rd, B1 1AA',
-    phone: '07983183814',
+    phone: '07522332210',
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-blue-glow/20 to-ice-blue/10',
   },
   {
     name: 'CarZee Manchester',
     address: '789 Autobahn St, M1 1AA',
-    phone: '07983183814',
+    phone: '07522332210',
     hours: 'Mon – Sat: 9am – 6pm',
     mapColor: 'from-ice-blue/20 to-electric-blue/10',
   },
@@ -238,7 +238,7 @@ export default function Contact() {
     <div>
       <SEO
         title="Contact CarZee | London, Birmingham & Manchester Showrooms"
-        description="Get in touch with CarZee. Call 07983 183814, email sales.carzee@gmail.com or visit our showrooms in London, Birmingham and Manchester."
+        description="Get in touch with CarZee. Call 07522 332210, email sales.carzee@gmail.com or visit our showrooms in London, Birmingham and Manchester."
         canonical="/contact"
         schema={LocalBusinessSchema({ render: false })}
       />
@@ -480,7 +480,7 @@ export default function Contact() {
                   value={formData.phone}
                   onChange={(e) => handleChange('phone', e.target.value)}
                   className="w-full glass-input rounded-xl px-4 py-3.5 text-pure-white font-body placeholder:text-slate/60"
-                  placeholder="07983183814"
+                  placeholder="07522332210"
                 />
               </motion.div>
 
@@ -888,10 +888,10 @@ export default function Contact() {
                 For breakdown assistance and emergencies outside of opening
                 hours, please call our 24/7 support line on{' '}
                 <a
-                  href="tel:07983183814"
+                  href="tel:07522332210"
                   className="text-electric-blue hover:underline font-mono"
                 >
-                  07983183814
+                  07522332210
                 </a>
                 . For all other enquiries, we'll respond first thing the next
                 business day.

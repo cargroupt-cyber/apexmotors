@@ -26,7 +26,7 @@ interface BusinessSettings {
 const DEFAULT_SETTINGS: BusinessSettings = {
   dealershipName: 'CarZee',
   address: '123 Motorway Lane, London, EC1A 1BB',
-  phone: '07983183814',
+  phone: '07522332210',
   email: 'sales.carzee@gmail.com',
   vatNumber: 'GB 123 4567 89',
   openingHours: [

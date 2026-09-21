@@ -1168,7 +1168,7 @@ export default function Home() {
             className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4"
           >
             {[
-              { icon: Phone, label: 'Call Us', value: '07983183814' },
+              { icon: Phone, label: 'Call Us', value: '07522332210' },
               { icon: Mail, label: 'Email Us', value: 'sales.carzee@gmail.com' },
               { icon: MessageCircle, label: 'Live Chat', value: 'Available 9am-6pm' },
             ].map((contact) => (
