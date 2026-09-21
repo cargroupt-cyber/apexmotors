@@ -9,6 +9,7 @@
  * - LocalBusiness
  */
 
+import { getSitePhone } from '@/hooks/useSitePhone'
 import SEO from './SEO'
 
 /* ─────────────────────── constants ─────────────────────── */
@@ -18,7 +19,6 @@ const LOGO_URL = `${SITE_URL}/assets/logo-carzee.png`
 const DEFAULT_IMAGE = `${SITE_URL}/assets/og-default.jpg`
 
 const ORG_NAME = 'CarZee'
-const ORG_PHONE = '+44-7522-332210'
 const ORG_EMAIL = 'sales.carzee@gmail.com'
 
 const HEADQUARTERS = {
@@ -72,7 +72,7 @@ export function OrganizationSchema({ render = false }: OrganizationSchemaProps =
       height: 512,
     },
     image: DEFAULT_IMAGE,
-    telephone: ORG_PHONE,
+    telephone: getSitePhone().schema,
     email: ORG_EMAIL,
     address: HEADQUARTERS,
     openingHours: OPENING_HOURS,
@@ -191,7 +191,7 @@ export function VehicleSchema({
       seller: {
         '@type': 'AutoDealer',
         name: ORG_NAME,
-        telephone: ORG_PHONE,
+        telephone: getSitePhone().schema,
         address: HEADQUARTERS,
       },
     },
@@ -309,7 +309,7 @@ export function LocalBusinessSchema({
       addressLocality: 'London',
       addressRegion: 'England',
       postalCode: 'EC1A 1BB',
-      telephone: '+44-7522-332210',
+      telephone: getSitePhone().schema,
       latitude: 51.5074,
       longitude: -0.1278,
       image: DEFAULT_IMAGE,
@@ -321,7 +321,7 @@ export function LocalBusinessSchema({
       addressLocality: 'Birmingham',
       addressRegion: 'England',
       postalCode: 'B1 1AA',
-      telephone: '+44-7522-332210',
+      telephone: getSitePhone().schema,
       latitude: 52.4862,
       longitude: -1.8904,
       openingHours: OPENING_HOURS,
@@ -332,7 +332,7 @@ export function LocalBusinessSchema({
       addressLocality: 'Manchester',
       addressRegion: 'England',
       postalCode: 'M1 1AA',
-      telephone: '+44-7522-332210',
+      telephone: getSitePhone().schema,
       latitude: 53.4808,
       longitude: -2.2426,
       openingHours: OPENING_HOURS,
@@ -347,7 +347,7 @@ export function LocalBusinessSchema({
     url: SITE_URL,
     logo: LOGO_URL,
     image: DEFAULT_IMAGE,
-    telephone: ORG_PHONE,
+    telephone: getSitePhone().schema,
     email: ORG_EMAIL,
     priceRange: '£££',
     paymentAccepted: 'Cash, Credit Card, Finance, Bank Transfer',

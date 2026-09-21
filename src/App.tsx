@@ -1,5 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
+import { prefetchVehicles } from './hooks/useSupabaseVehicles'
+
+prefetchVehicles()
 import Home from './pages/Home'
 import Inventory from './pages/Inventory'
 import VehicleDetail from './pages/VehicleDetail'

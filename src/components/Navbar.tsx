@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Phone } from 'lucide-react'
+import { useSitePhone } from '@/hooks/useSitePhone'
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -14,6 +15,7 @@ const navLinks = [
 ]
 
 export default function Navbar() {
+  const { phone, tel } = useSitePhone()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
@@ -85,11 +87,11 @@ export default function Navbar() {
           {/* Right side */}
           <div className="hidden lg:flex items-center gap-4">
             <a
-              href="tel:07522332210"
+              href={tel}
               className="flex items-center gap-2 font-mono text-xs text-electric-blue hover:text-blue-glow transition-colors"
             >
               <Phone size={14} />
-              07522332210
+              {phone}
             </a>
             <Link
               to="/contact"

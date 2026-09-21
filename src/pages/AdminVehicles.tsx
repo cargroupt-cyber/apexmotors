@@ -227,6 +227,25 @@ function SortIcon({ dir }: { dir: SortDir }) {
 /* ═══════════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════ */
+// Shrink photos to max 1280px JPEG before saving; raw phone photos are 3-8MB each and make the site slow.
+function compressImage(file: File): Promise<string> {
+  return new Promise((resolve) => {
+    const fallback = () => { const r = new FileReader(); r.onloadend = () => resolve(r.result as string); r.readAsDataURL(file) }
+    const img = new Image()
+    const url = URL.createObjectURL(file)
+    img.onload = () => {
+      const scale = Math.min(1, 1280 / Math.max(img.width, img.height))
+      const c = document.createElement('canvas')
+      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale)
+      c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height)
+      URL.revokeObjectURL(url)
+      resolve(c.toDataURL('image/jpeg', 0.75))
+    }
+    img.onerror = () => { URL.revokeObjectURL(url); fallback() }
+    img.src = url
+  })
+}
+
 export default function AdminVehicles() {
   /* ─── Data ─── */
   const { vehicles: rawVehicles, loading, error, refresh } = useSupabaseVehicles()
@@ -463,14 +482,7 @@ export default function AdminVehicles() {
     const files = e.dataTransfer.files
     if (files.length) {
       Array.from(files).forEach((file) => {
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          const result = reader.result as string
-          if (result) {
-            setForm((prev) => ({ ...prev, images: [...prev.images, result] }))
-          }
-        }
-        reader.readAsDataURL(file)
+        compressImage(file).then((result) => setForm((prev) => ({ ...prev, images: [...prev.images, result] })))
       })
     }
   }
@@ -479,14 +491,7 @@ export default function AdminVehicles() {
     const files = e.target.files
     if (!files) return
     Array.from(files).forEach((file) => {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const result = reader.result as string
-        if (result) {
-          setForm((prev) => ({ ...prev, images: [...prev.images, result] }))
-        }
-      }
-      reader.readAsDataURL(file)
+      compressImage(file).then((result) => setForm((prev) => ({ ...prev, images: [...prev.images, result] })))
     })
     e.target.value = ''
   }

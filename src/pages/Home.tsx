@@ -13,6 +13,7 @@ import * as THREE from 'three'
 import { useSupabaseVehicles } from '@/hooks/useSupabaseVehicles'
 import SEO from '@/components/SEO'
 import { OrganizationSchema, WebSiteSchema } from '@/components/SchemaMarkup'
+import { useSitePhone } from '@/hooks/useSitePhone'
 
 gsap.registerPlugin()
 
@@ -328,6 +329,7 @@ const reviews = [
    MAIN: Home Page Component
    ═══════════════════════════════════════════ */
 export default function Home() {
+  const { phone } = useSitePhone()
   const { vehicles: dbVehicles } = useSupabaseVehicles()
   const availableVehicles = dbVehicles.filter((v) => !v.status || v.status.toLowerCase() !== 'sold')
   const [activeBodyType, setActiveBodyType] = useState('SUV')
@@ -1168,7 +1170,7 @@ export default function Home() {
             className="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4"
           >
             {[
-              { icon: Phone, label: 'Call Us', value: '07522332210' },
+              { icon: Phone, label: 'Call Us', value: phone },
               { icon: Mail, label: 'Email Us', value: 'sales.carzee@gmail.com' },
               { icon: MessageCircle, label: 'Live Chat', value: 'Available 9am-6pm' },
             ].map((contact) => (

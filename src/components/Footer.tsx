@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Phone, Mail, MapPin, Clock, Facebook, Instagram, Twitter, Linkedin } from 'lucide-react'
+import { useSitePhone } from '@/hooks/useSitePhone'
 
 const quickLinks = [
   { label: 'Inventory', path: '/inventory' },
@@ -37,6 +38,7 @@ const itemVariants = {
 }
 
 export default function Footer() {
+  const { phone, tel } = useSitePhone()
   return (
     <footer className="bg-obsidian border-t border-slate/20">
       <motion.div
@@ -119,8 +121,8 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={16} className="text-electric-blue shrink-0" />
-                <a href="tel:07522332210" className="text-sm font-mono text-chrome hover:text-electric-blue transition-colors">
-                  07522332210
+                <a href={tel} className="text-sm font-mono text-chrome hover:text-electric-blue transition-colors">
+                  {phone}
                 </a>
               </li>
               <li className="flex items-center gap-3">

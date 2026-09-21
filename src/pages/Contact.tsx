@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
 import SEO from '@/components/SEO'
 import { LocalBusinessSchema } from '@/components/SchemaMarkup'
+import { useSitePhone } from '@/hooks/useSitePhone'
 import {
   Phone,
   Mail,
@@ -50,10 +51,10 @@ const contactMethods = [
   {
     icon: Phone,
     title: 'Call Us',
-    detail: '07522332210',
+    detail: '',
     meta: 'Mon – Sat: 9am – 7pm',
     action: 'Call Now',
-    href: 'tel:07522332210',
+    href: '',
   },
   {
     icon: Mail,
@@ -84,21 +85,21 @@ const locations = [
   {
     name: 'CarZee London',
     address: 'Based In London',
-    phone: '07522332210',
+    phone: '',
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-electric-blue/20 to-blue-glow/10',
   },
   {
     name: 'CarZee Birmingham',
     address: '456 Carriageway Rd, B1 1AA',
-    phone: '07522332210',
+    phone: '',
     hours: 'Mon – Sat: 9am – 7pm',
     mapColor: 'from-blue-glow/20 to-ice-blue/10',
   },
   {
     name: 'CarZee Manchester',
     address: '789 Autobahn St, M1 1AA',
-    phone: '07522332210',
+    phone: '',
     hours: 'Mon – Sat: 9am – 6pm',
     mapColor: 'from-ice-blue/20 to-electric-blue/10',
   },
@@ -134,6 +135,7 @@ function isCurrentlyOpen(): boolean {
 /* ───────────────────── component ───────────────────── */
 
 export default function Contact() {
+  const { phone, tel } = useSitePhone()
   const heroRef = useRef(null)
   const methodsRef = useRef(null)
   const formSectionRef = useRef(null)
@@ -238,7 +240,7 @@ export default function Contact() {
     <div>
       <SEO
         title="Contact CarZee | London, Birmingham & Manchester Showrooms"
-        description="Get in touch with CarZee. Call 07522 332210, email sales.carzee@gmail.com or visit our showrooms in London, Birmingham and Manchester."
+        description={`Get in touch with CarZee. Call ${phone}, email sales.carzee@gmail.com or visit our showrooms in London, Birmingham and Manchester.`}
         canonical="/contact"
         schema={LocalBusinessSchema({ render: false })}
       />
@@ -303,7 +305,8 @@ export default function Contact() {
             animate={methodsInView ? 'visible' : 'hidden'}
             className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
-            {contactMethods.map((method) => {
+            {contactMethods.map((m) => {
+              const method = m.title === 'Call Us' ? { ...m, detail: phone, href: tel } : m
               const Icon = method.icon
               return (
                 <motion.div
@@ -480,7 +483,7 @@ export default function Contact() {
                   value={formData.phone}
                   onChange={(e) => handleChange('phone', e.target.value)}
                   className="w-full glass-input rounded-xl px-4 py-3.5 text-pure-white font-body placeholder:text-slate/60"
-                  placeholder="07522332210"
+                  placeholder={phone}
                 />
               </motion.div>
 
@@ -714,7 +717,7 @@ export default function Contact() {
             animate={locationsInView ? 'visible' : 'hidden'}
             className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
           >
-            {locations.map((loc) => (
+            {locations.map((l) => ({ ...l, phone })).map((loc) => (
               <motion.div
                 key={loc.name}
                 variants={staggerItem}
@@ -888,10 +891,10 @@ export default function Contact() {
                 For breakdown assistance and emergencies outside of opening
                 hours, please call our 24/7 support line on{' '}
                 <a
-                  href="tel:07522332210"
+                  href={tel}
                   className="text-electric-blue hover:underline font-mono"
                 >
-                  07522332210
+                  {phone}
                 </a>
                 . For all other enquiries, we'll respond first thing the next
                 business day.

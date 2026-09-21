@@ -24,6 +24,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import SEO from '@/components/SEO'
+import { useSitePhone } from '@/hooks/useSitePhone'
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -256,6 +257,7 @@ function Slider({
 /* ------------------------------------------------------------------ */
 
 export default function Finance() {
+  const { phone, tel } = useSitePhone()
   /* ---- Calculator State ---- */
   const [financeType, setFinanceType] = useState<FinanceType>('pcp')
   const [vehiclePrice, setVehiclePrice] = useState(25000)
@@ -1046,7 +1048,7 @@ export default function Finance() {
           </p>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
             <a
-              href="tel:07522332210"
+              href={tel}
               className="inline-flex items-center gap-2 px-8 py-3.5 border-2 border-white/20 text-pure-white font-medium rounded-full hover:bg-white/5 hover:border-electric-blue transition-all duration-300"
             >
               <Phone size={16} /> Call Us

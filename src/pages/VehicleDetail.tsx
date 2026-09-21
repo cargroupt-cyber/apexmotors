@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import SEO from '@/components/SEO';
 import { VehicleSchema, BreadcrumbListSchema } from '@/components/SchemaMarkup';
+import { useSitePhone } from '@/hooks/useSitePhone'
 
 const SITE_URL = 'https://www.carzee.co.uk';
 const WEB3FORMS_KEY = '407a7337-aeca-42b8-9b02-afe80238f322';
@@ -35,6 +36,7 @@ function formatCurrency(n: number): string {
 }
 
 export default function VehicleDetail() {
+  const { tel } = useSitePhone()
   const { id } = useParams<{ id: string }>();
   const { vehicles: rawVehicles, loading } = useSupabaseVehicles();
   const { addLead } = useSupabaseLeads();
@@ -1676,7 +1678,7 @@ export default function VehicleDetail() {
                 Reserve Now — £99
               </button>
               <a
-                href="tel:07522332210"
+                href={tel}
                 className="flex items-center gap-2 px-8 py-3.5 border-2 border-pure-white/30 text-pure-white font-semibold rounded-full hover:bg-pure-white/10 hover:border-electric-blue transition-all"
               >
                 <Phone size={16} /> Call Us

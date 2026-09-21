@@ -30,39 +30,46 @@ export interface Vehicle {
   created_at?: string
 }
 
+// Module-level cache: prefetched at app start so /inventory opens instantly and revisits don't refetch.
+let cache: Vehicle[] | null = null
+let inflight: Promise<Vehicle[]> | null = null
+
+async function fetchVehicles(): Promise<Vehicle[]> {
+  const { data, error: err } = await supabase
+    .from('vehicles')
+    .select('*')
+    .order('created_at', { ascending: false })
+  if (err) throw err
+  cache = (data || []).map((v: any) => ({ ...v, images: normalizeArray(v.images), features: normalizeArray(v.features) }))
+  return cache
+}
+
+export function prefetchVehicles() {
+  if (!cache && !inflight) inflight = fetchVehicles().catch(() => []).finally(() => { inflight = null })
+}
+
 export function useSupabaseVehicles() {
-  const [vehicles, setVehicles] = useState<Vehicle[]>([])
-  const [loading, setLoading] = useState(true)
+  const [vehicles, setVehicles] = useState<Vehicle[]>(cache || [])
+  const [loading, setLoading] = useState(!cache)
   const [error, setError] = useState<string | null>(null)
 
-  const refresh = useCallback(async () => {
-    setLoading(true)
+  const refresh = useCallback(async (force = true) => {
+    if (!force && cache) { setVehicles(cache); setLoading(false); return }
+    setLoading(!cache)
     setError(null)
-
-    const { data, error: err } = await supabase
-      .from('vehicles')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (err) {
+    try {
+      setVehicles(await (inflight && !force ? inflight : fetchVehicles()))
+    } catch (err: any) {
       console.error('Supabase vehicles error:', err)
       setError(err.message)
       setVehicles([])
-    } else {
-      // Normalize images from PostgreSQL text[] format
-      const normalized = (data || []).map((v: any) => ({
-        ...v,
-        images: normalizeArray(v.images),
-        features: normalizeArray(v.features),
-      }))
-      setVehicles(normalized)
     }
-
     setLoading(false)
   }, [])
 
   useEffect(() => {
-    refresh()
+    refresh(false) // background refresh keeps the cached list fresh
+    if (cache) fetchVehicles().then(setVehicles).catch(() => {})
   }, [refresh])
 
   return { vehicles, loading, error, refresh }
