@@ -228,9 +228,18 @@ function SortIcon({ dir }: { dir: SortDir }) {
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════ */
 // Shrink photos to max 1280px JPEG before saving; raw phone photos are 3-8MB each and make the site slow.
-function compressImage(file: File): Promise<string> {
+// Uploads to the vehicle-images bucket and returns the public URL ('' on failure). Never stores base64 in the DB row.
+async function compressImage(file: File): Promise<string> {
+  const blob = await shrinkToBlob(file)
+  const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`
+  const { error } = await supabase.storage.from('vehicle-images').upload(name, blob, { contentType: blob.type || 'image/jpeg' })
+  if (error) { console.error('Image upload failed', error); return '' }
+  return supabase.storage.from('vehicle-images').getPublicUrl(name).data.publicUrl
+}
+
+function shrinkToBlob(file: File): Promise<Blob> {
   return new Promise((resolve) => {
-    const fallback = () => { const r = new FileReader(); r.onloadend = () => resolve(r.result as string); r.readAsDataURL(file) }
+    const fallback = () => resolve(file)
     const img = new Image()
     const url = URL.createObjectURL(file)
     img.onload = () => {
@@ -239,7 +248,7 @@ function compressImage(file: File): Promise<string> {
       c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale)
       c.getContext('2d')!.drawImage(img, 0, 0, c.width, c.height)
       URL.revokeObjectURL(url)
-      resolve(c.toDataURL('image/jpeg', 0.75))
+      c.toBlob((b) => (b ? resolve(b) : fallback()), 'image/jpeg', 0.75)
     }
     img.onerror = () => { URL.revokeObjectURL(url); fallback() }
     img.src = url
@@ -482,7 +491,7 @@ export default function AdminVehicles() {
     const files = e.dataTransfer.files
     if (files.length) {
       Array.from(files).forEach((file) => {
-        compressImage(file).then((result) => setForm((prev) => ({ ...prev, images: [...prev.images, result] })))
+        compressImage(file).then((result) => result && setForm((prev) => ({ ...prev, images: [...prev.images, result] })))
       })
     }
   }
@@ -491,7 +500,7 @@ export default function AdminVehicles() {
     const files = e.target.files
     if (!files) return
     Array.from(files).forEach((file) => {
-      compressImage(file).then((result) => setForm((prev) => ({ ...prev, images: [...prev.images, result] })))
+      compressImage(file).then((result) => result && setForm((prev) => ({ ...prev, images: [...prev.images, result] })))
     })
     e.target.value = ''
   }

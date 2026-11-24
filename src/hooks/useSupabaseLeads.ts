@@ -147,18 +147,16 @@ export function useSupabaseLeads() {
       return fresh[0] || null
     }
 
-    const { data, error: err } = await supabase
-      .from('leads')
-      .insert([{ ...lead, date: lead.date || new Date().toISOString() }])
-      .select()
-      .single()
+    // No .select(): visitors may insert leads but RLS doesn't let them read rows back, so build the row client-side.
+    const row = { ...lead, id: crypto.randomUUID(), date: lead.date || new Date().toISOString() }
+    const { error: err } = await supabase.from('leads').insert([row])
 
     if (err) {
       console.error('Add lead error:', err)
       return null
     }
-    setLeads(prev => [data as Lead, ...prev])
-    return data as Lead
+    setLeads(prev => [row as Lead, ...prev])
+    return row as Lead
   }, [])
 
   /* ── update lead ── */
