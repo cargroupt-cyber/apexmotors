@@ -15,8 +15,8 @@ import SEO from './SEO'
 /* ─────────────────────── constants ─────────────────────── */
 
 const SITE_URL = 'https://www.carzee.co.uk'
-const LOGO_URL = `${SITE_URL}/assets/logo-carzee.png`
-const DEFAULT_IMAGE = `${SITE_URL}/assets/og-default.jpg`
+const LOGO_URL = `${SITE_URL}/favicon-512.png`
+const DEFAULT_IMAGE = `${SITE_URL}/og-default.jpg`
 
 const ORG_NAME = 'CarZee'
 const ORG_EMAIL = 'sales.carzee@gmail.com'
@@ -85,13 +85,6 @@ export function OrganizationSchema({ render = false }: OrganizationSchemaProps =
       '@type': 'GeoCoordinates',
       latitude: 51.5074,
       longitude: -0.1278,
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      reviewCount: '347',
-      bestRating: '5',
-      worstRating: '1',
     },
   })
 
