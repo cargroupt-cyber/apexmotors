@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from 'react'
+import { thumb } from '@/lib/utils'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
 import {
@@ -102,7 +103,7 @@ function VehicleCard({ vehicle, index }: { vehicle: UnifiedVehicle; index: numbe
           transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number] }}
         >
           <div className="relative h-[200px] overflow-hidden">
-            <img src={vehicleImage} alt={vehicleName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            <img src={thumb(vehicleImage)} loading="lazy" decoding="async" alt={vehicleName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-midnight/80 via-transparent to-transparent" />
             <div className="absolute top-3 left-3 flex flex-col gap-1.5">
               {isSold && (
@@ -402,7 +403,7 @@ export default function Inventory() {
                         <Link to={`/vehicle/${vehicle.id}`}>
                           <div className="flex flex-col sm:flex-row gap-5 rounded-2xl p-4 bg-midnight/60 border border-slate/20 hover:border-electric-blue/30 transition-all duration-300 group" style={{ backdropFilter: 'blur(16px)', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
                             <div className="relative w-full sm:w-[240px] h-[160px] sm:h-[140px] rounded-xl overflow-hidden shrink-0">
-                              <img src={vImage} alt={vName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                              <img src={thumb(vImage)} loading="lazy" decoding="async" alt={vName} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                               <div className="absolute inset-0 bg-gradient-to-t from-midnight/50 to-transparent" />
                               <div className="absolute top-2 left-2 flex flex-col gap-1">
                                 {vIsSold && <span className="px-2 py-0.5 rounded text-[0.625rem] font-bold bg-error text-pure-white">SOLD</span>}

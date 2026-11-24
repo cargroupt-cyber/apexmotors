@@ -1,29 +1,15 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 
-const FALLBACK_ADMIN_KEY = 'carzee_admin_session'
-
+// Signups are disabled in Supabase, so every account that can sign in is an admin.
+// Real Supabase sessions only: the old env-var fallback login had no session, so database writes were rejected.
 export function useAuth() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        setUser(session.user)
-        setLoading(false)
-        return
-      }
-
-      // Restore fallback admin session if present
-      const fallback = localStorage.getItem(FALLBACK_ADMIN_KEY)
-      if (fallback) {
-        try {
-          setUser(JSON.parse(fallback))
-        } catch {
-          localStorage.removeItem(FALLBACK_ADMIN_KEY)
-        }
-      }
+      setUser(session?.user ?? null)
       setLoading(false)
     })
 
@@ -34,38 +20,16 @@ export function useAuth() {
   }, [])
 
   const login = useCallback(async (email: string, password: string) => {
-    // Try Supabase Auth first
     const result = await supabase.auth.signInWithPassword({ email, password })
-    if (!result.error) {
-      setUser(result.data.user)
-      localStorage.removeItem(FALLBACK_ADMIN_KEY)
-      return { error: null }
-    }
-
-    // Fallback admin login via env vars (works even when Supabase Auth is not set up)
-    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || ''
-    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || ''
-    if (adminEmail && adminPassword && email === adminEmail && password === adminPassword) {
-      const fallbackUser = {
-        id: 'fallback-admin',
-        email: adminEmail,
-        user_metadata: { role: 'admin' },
-      }
-      localStorage.setItem(FALLBACK_ADMIN_KEY, JSON.stringify(fallbackUser))
-      setUser(fallbackUser)
-      return { error: null }
-    }
-
-    return { error: result.error }
+    if (result.error) return { error: result.error }
+    setUser(result.data.user)
+    return { error: null }
   }, [])
 
   const logout = useCallback(async () => {
     await supabase.auth.signOut()
-    localStorage.removeItem(FALLBACK_ADMIN_KEY)
     setUser(null)
   }, [])
 
-  const isAdmin = user?.user_metadata?.role === 'admin' || user?.email?.includes('@apex') || false
-
-  return { user, loading, isAdmin, login, logout }
+  return { user, loading, isAdmin: !!user, login, logout }
 }

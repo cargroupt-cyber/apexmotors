@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
+import { thumb } from '@/lib/utils'
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -911,7 +912,7 @@ export default function VehicleDetail() {
               onClick={() => setActiveImage(i)}
               className={`flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden border-2 transition-all ${i === activeImage ? 'border-electric-blue opacity-100' : 'border-transparent opacity-50 hover:opacity-75'}`}
             >
-              <img src={img} alt="" className="w-full h-full object-cover" />
+              <img src={thumb(img, 160)} loading="lazy" decoding="async" alt="" className="w-full h-full object-cover" />
             </button>
           ))}
         </div>
@@ -1633,7 +1634,7 @@ export default function VehicleDetail() {
                 <Link to={`/vehicle/${v.id}`} className="block group">
                   <div className="rounded-2xl overflow-hidden bg-[rgba(0,18,51,0.5)] backdrop-blur-16 border border-slate/25 shadow-card transition-all duration-400 group-hover:shadow-card-hover group-hover:-translate-y-2">
                     <div className="relative aspect-[4/3] overflow-hidden">
-                      <img src={v.images?.[0] || '/vehicle-thumb-01.jpg'} alt={`${v.make} ${v.model}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img src={thumb(v.images?.[0] || '/vehicle-thumb-01.jpg')} loading="lazy" decoding="async" alt={`${v.make} ${v.model}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 to-transparent" />
                     </div>
                     <div className="p-5">

@@ -5,7 +5,6 @@ import { LogIn, Shield, AlertCircle } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
-const hasFallbackAdmin = !!(import.meta.env.VITE_ADMIN_EMAIL && import.meta.env.VITE_ADMIN_PASSWORD)
 
 function getLoginErrorMessage(error: any): string {
   if (!error) return 'Login failed. Please try again.'
@@ -69,11 +68,11 @@ export default function AdminLogin() {
             </div>
           )}
 
-          {!supabaseUrl && !hasFallbackAdmin && (
+          {!supabaseUrl && (
             <div className="mb-5 flex items-start gap-3 px-4 py-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
               <AlertCircle size={18} className="text-amber-500 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-amber-500">
-                Supabase is not configured. Add <code className="bg-amber-500/20 px-1 rounded">VITE_SUPABASE_URL</code> and <code className="bg-amber-500/20 px-1 rounded">VITE_SUPABASE_ANON_KEY</code> environment variables, or set <code className="bg-amber-500/20 px-1 rounded">VITE_ADMIN_EMAIL</code> and <code className="bg-amber-500/20 px-1 rounded">VITE_ADMIN_PASSWORD</code> for fallback login.
+                Supabase is not configured. Add <code className="bg-amber-500/20 px-1 rounded">VITE_SUPABASE_URL</code> and <code className="bg-amber-500/20 px-1 rounded">VITE_SUPABASE_ANON_KEY</code> environment variables.
               </p>
             </div>
           )}

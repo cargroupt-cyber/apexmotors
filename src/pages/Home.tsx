@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { thumb } from '@/lib/utils'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, useInView, useMotionValue, useTransform, AnimatePresence } from 'framer-motion'
 import gsap from 'gsap'
@@ -161,7 +162,8 @@ function VehicleCard({ vehicle }: { vehicle: any }) {
         {/* Image */}
         <div className="relative h-[210px] overflow-hidden">
           <img
-            src={vehicleImage}
+            src={thumb(vehicleImage)}
+            loading="lazy" decoding="async"
             alt={vehicleName}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
