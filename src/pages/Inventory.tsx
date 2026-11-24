@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { thumb } from '@/lib/utils'
 import { Link, useSearchParams } from 'react-router-dom'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
@@ -194,8 +194,6 @@ export default function Inventory() {
   const [activeBody, setActiveBody] = useState(searchParams.get('body') || 'Any Body')
   const [activeSort, setActiveSort] = useState('Relevance')
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '')
-  const [filterBarVisible, setFilterBarVisible] = useState(true)
-  const lastScrollY = useRef(0)
 
   // Sync search term back to URL query param
   useEffect(() => {
@@ -209,26 +207,6 @@ export default function Inventory() {
     setSearchParams(params, { replace: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery])
-
-  // Hide sticky filter bar on scroll down, show on scroll up (mobile-friendly)
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY
-      const delta = currentY - lastScrollY.current
-      // Only toggle after scrolling past the hero section and beyond a small threshold
-      if (currentY < 300) {
-        setFilterBarVisible(true)
-      } else if (delta > 10) {
-        setFilterBarVisible(false)
-      } else if (delta < -10) {
-        setFilterBarVisible(true)
-      }
-      lastScrollY.current = currentY
-    }
-
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   const filteredVehicles = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -319,7 +297,7 @@ export default function Inventory() {
       </section>
 
       <section
-        className={`sticky top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-3 lg:py-4 transition-transform duration-300 ${filterBarVisible ? 'translate-y-0' : '-translate-y-full'}`}
+        className={`sticky top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-3 lg:py-4`}
       >
         <div className="container-apex">
           <div className="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-4">
