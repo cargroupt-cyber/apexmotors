@@ -297,7 +297,7 @@ export default function Inventory() {
       </section>
 
       <section
-        className={`sticky top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-3 lg:py-4`}
+        className="lg:sticky lg:top-[72px] z-30 bg-obsidian/95 backdrop-blur-md border-b border-slate/15 py-3 lg:py-4"
       >
         <div className="container-apex">
           <div className="flex flex-col lg:flex-row lg:items-center gap-3 lg:gap-4">
